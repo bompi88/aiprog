@@ -1,9 +1,6 @@
 import sys
 from PyQt4 import QtGui, QtCore
 
-# Has to install tkinter:
-# pip install tkinter
-
 
 class Module1(QtGui.QWidget):
 
