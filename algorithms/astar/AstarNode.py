@@ -5,12 +5,12 @@ import abc
 class AstarNode(object):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, init_state):
+    def __init__(self):
         self.h_tmp = sys.maxint
         self.closed = False
         self.g = 0
         self.count = None
-        self.state = init_state
+        self.state = None
         self.successors = []  # The successors of the node
         self.parents = []  # The parents
 
