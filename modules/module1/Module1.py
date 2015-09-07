@@ -13,11 +13,15 @@ class Module1(QtGui.QWidget):
         self.offset_x = 50  # Offset from left
         self.offset_y = 50  # Offset from top
 
-        self.button = QtGui.QPushButton('Load new level', self)
-        QtCore.QObject.connect(self.button, QtCore.SIGNAL("clicked()"), self.load_level)
+        self.load_level_button = QtGui.QPushButton('Load new level', self)
+        QtCore.QObject.connect(self.load_level_button, QtCore.SIGNAL("clicked()"), self.load_level)
+
+        self.start_astar = QtGui.QPushButton('Start Search', self)
+        QtCore.QObject.connect(self.start_astar, QtCore.SIGNAL("clicked()"), self.run_astar)
 
         layout = QtGui.QVBoxLayout(self)
-        layout.addWidget(self.button)
+        layout.addWidget(self.load_level_button)
+        layout.addWidget(self.start_astar)
 
         self.init_ui()
 
@@ -55,6 +59,9 @@ class Module1(QtGui.QWidget):
                             ((len(self.board[0]) - y - 1) * self.dy) + self.offset_y,
                             self.dx,
                             self.dy)
+
+    def run_astar(self):
+        return
 
     def load_level(self):
         lines = self.read_file()
