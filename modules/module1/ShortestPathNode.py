@@ -1,5 +1,6 @@
 from algorithms.astar.AstarNode import AstarNode
 
+
 class ShortestPathNode(AstarNode):
 
     def __init__(self):
