@@ -1,7 +1,7 @@
 __author__ = 'krisvage'
 
 import copy
-from search_state import SearchState
+from algorithms.astar.search_state import SearchState
 
 class CheckersState(SearchState):
     def create_state_identifier(self):
@@ -35,6 +35,12 @@ class CheckersState(SearchState):
 
     def is_solution(self):
         return '12345678910111213141516171819202122232425' == self.id
+
+    def solution_length(self):
+        if self.parent is None:
+            return 1
+        else:
+            return 1 + self.parent.solution_length()
 
     def generate_all_successors(self, generated):
         succs    = []

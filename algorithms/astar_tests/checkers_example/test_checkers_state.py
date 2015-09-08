@@ -1,7 +1,9 @@
 __author__ = 'krisvage'
 
 import unittest
-from algorithms.astar.checkers_state import CheckersState
+
+from algorithms.astar.checkers_example.checkers_state import CheckersState
+
 
 class TestCheckersState(unittest.TestCase):
     def setUp(self):

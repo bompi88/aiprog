@@ -1,6 +1,4 @@
-__author__ = 'krisvage'
-
-from best_first_search import BestFirstSearch
+from algorithms.astar.best_first_search import BestFirstSearch
 from checkers_state import CheckersState
 
 class Checkers(BestFirstSearch):

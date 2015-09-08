@@ -29,5 +29,8 @@ class SearchState:
     def is_solution(self):
         raise NotImplementedError('Implement is_solution() in SearchState subclass')
 
+    def solution_length(self):
+        raise NotImplementedError('Implement solution_length in SearchState subclass')
+
     def add_child(self, child):
         self.kids.append(child)

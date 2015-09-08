@@ -1,13 +1,15 @@
 __author__ = 'krisvage'
 
+import time
 import heapq as q
 from search_state import SearchState
 
 CLOSED = 1
 
 class BestFirstSearch:
-    def __init__(self, start):
+    def __init__(self, start, gui=None):
         self.start = start
+        self.gui   = gui
 
     def attach_and_eval(self, child, parent):
         child.parent = parent
@@ -29,6 +31,9 @@ class BestFirstSearch:
     def create_root_node(self):
         raise NotImplementedError('Implement create_root_node() in BestFirstSearch subclass')
 
+    def describe_solution(self, nodes, solution_length):
+        print(str(nodes) + ' generated giving ' + str(solution_length) + ' as length')
+
     def best_first_search(self):
         closed = []
         open   = []
@@ -48,20 +53,21 @@ class BestFirstSearch:
         while open:
             x = q.heappop(open)[1]
 
-            print(repr(x.state.current_pos))
-
             closed.append(x)
             x.status = CLOSED
 
-            print(x.id)
-
-            x.print_level()
+            if self.gui:
+                self.gui.paint(x)
+                time.sleep(200.0 / 1000)
 
             if x.is_solution():
+                self.describe_solution(len(generated), x.solution_length())
+
+                if self.gui:
+                    self.gui.paint(x)
                 return x
 
             succ = x.generate_all_successors(generated)
-
 
             for s in succ:
                 if s.id in generated:
