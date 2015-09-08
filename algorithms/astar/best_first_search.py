@@ -41,29 +41,27 @@ class BestFirstSearch:
         n0.h = n0.heuristic_evaluation()
         n0.f = n0.g + n0.h
 
+        generated[n0.id] = n0
+
         q.heappush(open, (n0.f, n0))
 
-        tmp = 1
-        succs = 0
-
-        while True:
-            if len(open) == 0:
-                return -1
-
+        while open:
             x = q.heappop(open)[1]
+
+            print(repr(x.state.current_pos))
 
             closed.append(x)
             x.status = CLOSED
 
-            print(str(tmp) + ': succs - ' + str(succs) + ' - ' + x.id)
-            tmp += 1
+            print(x.id)
+
+            x.print_level()
 
             if x.is_solution():
                 return x
 
             succ = x.generate_all_successors(generated)
 
-            succs += len(succ)
 
             for s in succ:
                 if s.id in generated:
