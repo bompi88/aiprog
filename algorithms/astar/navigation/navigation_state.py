@@ -4,7 +4,6 @@ from algorithms.astar.search_state import SearchState
 from algorithms.astar.navigation.navigation_grid import NavigationGrid
 from algorithms.astar.navigation.const import *
 
-
 class NavigationState(SearchState):
     def create_state_identifier(self):
         flattened_visited = [str(el) for row in self.state.visited for el in row]

@@ -2,17 +2,18 @@ __author__ = 'krisvage'
 
 OPEN   = 0
 CLOSED = 1
+NEW    = 2
 
 class SearchState:
     def __init__(self, state):
         self.state = state # An object describing a state of the search process
         self.id    = self.create_state_identifier()
-        self.g     = None # Cost of getting to this node
-        self.h     = None # Estimated cost to goal
-        self.f     = None # Estimated total cost of a solution path going
-                          # through this node; f = g + h
+        self.g     = None  # Cost of getting to this node
+        self.h     = None  # Estimated cost to goal
+        self.f     = None  # Estimated total cost of a solution path going
+                           # through this node; f = g + h
 
-        self.status = OPEN    # OPEN / CLOSED
+        self.status = NEW  # OPEN / CLOSED / NEW
         self.parent = None # Pointer to best parent node
         self.kids   = []   # list of all successor nodes, whether or not this
                            # node is currently their best parent.

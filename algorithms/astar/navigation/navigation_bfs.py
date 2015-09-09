@@ -18,7 +18,7 @@ class Navigation(BestFirstSearch):
         return const.ARC_COST
 
 def main():
-    map = MapReader('ex_simple.txt')
+    map = MapReader('ex3.txt')
 
     navigation = Navigation(NavigationGrid(map))
 
