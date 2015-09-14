@@ -1,7 +1,7 @@
 __author__ = 'bompi88'
 
 import unittest
-from algorithms.gac.gac import GAC
+from src.algorithms.gac.gac import GAC
 
 
 class TestGAC(unittest.TestCase):
@@ -16,7 +16,7 @@ class TestGAC(unittest.TestCase):
             'd != 0',
             'd != 2',
             'e == a',
-            'a > b'  # This should also work and not fail :(
+            'a > b'
         ]
 
         self.domains = {
@@ -41,7 +41,6 @@ class TestGAC(unittest.TestCase):
 
     def test_solve(self):
         results = self.gac.domain_filtering()
-        print results
         self.assertEqual(results, self.solution)
 
 if __name__ == '__main__':
