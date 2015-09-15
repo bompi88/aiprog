@@ -62,7 +62,7 @@ confidence=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
-disable=I0011,RP0001,RP0002,RP0003,RP0101,RP0401,RP0402,RP0701,RP0801
+disable=I0011,RP0001,RP0002,RP0003,RP0101,RP0401,RP0402,RP0701,RP0801,similarities
 
 
 [REPORTS]
@@ -105,7 +105,7 @@ required-attributes=
 bad-functions=map,filter,input
 
 # Good variable names which should always be accepted, separated by a comma
-good-names=i,j,k,ex,Run,_,a,b,x,y,dx,dy,s,g,f,h
+good-names=i,j,k,ex,Run,_,a,b,x,y,dx,dy,s,g,f,h,ne,nv,x1,x2,y1,y2,v1,v2,p1,p2
 
 # Bad variable names which should always be refused, separated by a comma
 bad-names=foo,bar,baz,toto,tutu,tata
