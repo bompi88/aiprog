@@ -31,6 +31,10 @@ class NavigationGrid(object):
         """ Adds position to current path """
         self.__visited.append(pos)
 
+    def last_visited(self):
+        """ Returns last coordinate on path """
+        return self.__visited[-1]
+
     def is_on_goal(self):
         """ Is the current tile the goal tile """
         return self.map.goal == self.current_pos

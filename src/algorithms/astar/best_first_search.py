@@ -36,7 +36,7 @@ class BestFirstSearch(object):
         """ The agenda loop, runs until a solution is found and returned,
          or until we no longer find new successor nodes.
         """
-        opened, generated, t_0 = [], {}, time.time()
+        opened, closed, generated, t_0 = [], [], {}, time.time()
 
         root = self.create_root_node()
         root.g, root.h = 0, root.heuristic_evaluation()
@@ -48,7 +48,8 @@ class BestFirstSearch(object):
         while opened:
             x = self.open_pop(opened)
 
-            self.node_closed(x, t_0, generated)
+            self.node_closed(x, t_0, generated, opened, closed)
+            closed.append(x)
 
             if x.is_solution():
                 self.status_message(x, t_0, generated)
@@ -98,11 +99,12 @@ class BestFirstSearch(object):
         elif self.mode is C.BFS:
             return opened.pop(0)
 
-    def node_closed(self, node, t_0, generated):
+    def node_closed(self, node, t_0, generated, opened, closed):
         """ Called when node is popped from opened, notifies GUI if needed """
         node.status = C.CLOSED
 
         if self.gui:
+            self.gui.set_opened_closed(opened, closed)
             self.gui.paint(node)
             time.sleep(self.delay / 1000.0)
 

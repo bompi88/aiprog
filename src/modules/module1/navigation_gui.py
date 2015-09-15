@@ -19,6 +19,8 @@ class NavigationGUI(QtGui.QFrame):
         self.dx = self.dy = 40
 
         self.node = None
+        self.opened = None
+        self.closed = None
         self.delay = 50
         self.mode = C.A_STAR
         self.thread = SearchWorker()
@@ -31,6 +33,8 @@ class NavigationGUI(QtGui.QFrame):
     def level_loaded(self, filename, grid):
         """ Called whenever a level is loaded, adjust Widget size """
         self.node = NavigationState(grid)
+        self.opened = None
+        self.closed = None
 
         scaled_dim = (self.node.state.map.x_dim() // 10)
         x = self.node.state.map.x_dim() * (self.dx - (scaled_dim * 5))
@@ -53,6 +57,10 @@ class NavigationGUI(QtGui.QFrame):
         self.status_message.emit(str('Search started'))
         self.thread.search(self, navigation)
 
+    def set_opened_closed(self, opened, closed):
+        self.opened = opened
+        self.closed = closed
+
     def paint(self, node):
         """ Receives a node and tells Qt to update the graphics """
         self.node = node
@@ -72,28 +80,61 @@ class NavigationGUI(QtGui.QFrame):
         y_dim = self.node.state.map.y_dim()
         return self.node.state.is_visited([x, y_dim - y - 1])
 
-    def get_color(self, x, y, is_visited):
+    def is_on_frontier(self, x, y):
+        if not self.opened:
+            return False
+
+        y_dim = self.node.state.map.y_dim()
+
+        for node in self.opened:
+            if type(node) is tuple:
+                node = node[1] # Heapq for astar, normal list for BFS/DFS
+
+            if [x, y_dim - y - 1] == node.state.last_visited():
+                return True
+
+        return False
+
+    def is_closed(self, x, y):
+        if not self.closed:
+            return False
+
+        y_dim = self.node.state.map.y_dim()
+
+        for node in self.closed:
+            if [x, y_dim - y - 1] == node.state.last_visited():
+                return True
+
+        return False
+
+    def get_color(self, x, y, visited=False, frontier=False, closed=False):
         """ Return a QColor based on the tile and whether it is visited """
-        colors = {
-            True: {
-                C.TILE:  QtGui.QColor(160, 160, 160),
+
+        if visited:
+            color = {
+                C.TILE:  QtGui.QColor(80, 80, 80),
                 C.START: QtGui.QColor(153, 204, 255),
                 C.GOAL:  QtGui.QColor(0, 255, 0)
-            },
-            False: {
+            }[self.node.state.map.grid[y][x]]
+        elif frontier:
+            color = QtGui.QColor(255, 255, 80)
+        elif closed:
+            color = QtGui.QColor(210, 210, 210)
+        else:
+            color = {
                 C.TILE:     QtGui.QColor(255, 255, 255),
                 C.OBSTACLE: QtGui.QColor(255, 0, 0),
                 C.START:    QtGui.QColor(0, 0, 255),
                 C.GOAL:     QtGui.QColor(51, 102, 0)
-            }
-        }
-        return colors[is_visited][self.node.state.map.grid[y][x]]
+            }[self.node.state.map.grid[y][x]]
+
+        return color
 
     def draw(self, x, y, painter):
         """ Draws rectangles, either with a black border or without a border.
          If the tile is visited we draw a smaller rectangle on top.
         """
-        color = self.get_color(x, y, False)
+        color = self.get_color(x, y)
 
         dx = dy = self.dx - ((self.node.state.map.y_dim() // 10) * 5)
 
@@ -104,11 +145,15 @@ class NavigationGUI(QtGui.QFrame):
         painter.setBrush(color)
         painter.drawRect((x * dx), (y * dy), dx - 1, dy - 1)
 
-        if self.is_visited(x, y):
-            color = self.get_color(x, y, True)
+        is_visited = self.is_visited(x, y)
+        is_on_frontier = self.is_on_frontier(x, y)
+        is_closed = self.is_closed(x, y)
+        if is_visited or is_on_frontier or is_closed:
+            color = self.get_color(x, y, is_visited, is_on_frontier, is_closed)
             painter.setPen(QtGui.QPen(color, 1))
             painter.setBrush(color)
             painter.drawRect((x * dx) + 4, (y * dy) + 4, dx - 9, dy - 9)
+
 
     def paint_map(self, painter):
         """ Called by the paintEvent, we iterate over the map and draw tiles """
