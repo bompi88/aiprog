@@ -23,7 +23,9 @@ class SearchWorker(QThread):
 
         node = VertexColoringState(
             solution.state,
-            solution.domains
+            None,
+            solution.domains,
+            solution.solution_length
         )
 
         self.gui.node = node

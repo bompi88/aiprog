@@ -37,7 +37,7 @@ class GraphGUI(QtGui.QFrame):
     def level_loaded(self, filename, graph):
         """ Called whenever a level is loaded, adjust Widget size """
         self.graph = graph
-        self.node = VertexColoringState(graph)
+        self.node = VertexColoringState(graph, None)
 
         self.dx = self.dy = 20
         self.offset_dx = self.offset_dy = 35
@@ -98,7 +98,8 @@ class GraphGUI(QtGui.QFrame):
             C.GREEN: QtGui.QColor(0, 200, 0),
             C.BLUE: QtGui.QColor(0, 0, 255),
             C.ORANGE: QtGui.QColor(175, 0, 100),
-            C.WHITE: QtGui.QColor(255, 255, 255)
+            C.WHITE: QtGui.QColor(255, 255, 255),
+            C.BLACK: QtGui.QColor(0, 0, 0)
         }[self.node.vertex_color(vertex[0])]
 
         painter.setPen(color)

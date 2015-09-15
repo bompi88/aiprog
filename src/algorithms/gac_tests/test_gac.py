@@ -7,32 +7,26 @@ from src.algorithms.gac.gac import GAC
 class TestGAC(unittest.TestCase):
     def setUp(self):
 
-        self.variables = ['a', 'b', 'c', 'd', 'e']
+        self.variables = ['a', 'b', 'c']
 
         self.constraints = [
-            'a > 1',
-            'b < 1',
-            'c == 0',
-            'd != 0',
-            'd != 2',
-            'e == a',
-            'a > b'
+            'a != b',
+            'a != c',
+            'b != c',
+            'a == 2',
+            'b == 1',
         ]
 
         self.domains = {
-            'a': [ 0, 1, 2],
-            'b': [ 0, 1, 2],
-            'c': [ 0, 1, 2],
-            'd': [ 0, 1, 2],
-            'e': [ 0, 1, 2]
+            'a': [0, 1, 2],
+            'b': [0, 1, 2],
+            'c': [0, 1, 2]
         }
 
         self.solution = {
             'a': [2],
             'c': [0],
-            'b': [0],
-            'd': [1],
-            'e': [2]
+            'b': [1],
         }
 
         self.gac = GAC()

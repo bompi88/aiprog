@@ -21,6 +21,17 @@ class GraphReader(object):
         self.width = self.max_x - self.min_x
         self.height = self.max_y - self.min_y
 
+        self.constraints = []
+        self.variables = set([])
+        self.init_constraints_and_variables()
+
+    def init_constraints_and_variables(self):
+        for edge in self.edges:
+            for v in edge:
+                self.variables.add('v' + str(v))
+
+            self.constraints.append('v{} != v{}'.format(edge[0], edge[1]))
+
     @staticmethod
     def load_level(gui):
         """ Load level with a QFileDialog """
@@ -63,3 +74,7 @@ class GraphReader(object):
         graph_file = open(path, 'r')
         contents = graph_file.read()
         return contents.splitlines()
+
+g = GraphReader(GraphReader.parse_graph(GraphReader.read_graph('graph-color-1.txt')))
+print g.constraints
+print g.variables

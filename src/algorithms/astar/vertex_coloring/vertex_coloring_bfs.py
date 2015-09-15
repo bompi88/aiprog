@@ -12,12 +12,13 @@ class VertexColoring(BestFirstSearch):
     def __init__(self, start, gui=None):
         BestFirstSearch.__init__(self, start, gui)
 
-    def create_root_node(self):
-        root = VertexColoringState(self.start)
+        self.gac = GAC()
 
-        gac = GAC(root) # TODO fix
-        # gac.initialize()
-        # gac.domain_filtering()
+    def create_root_node(self):
+        root = VertexColoringState(self.start, self.gac)
+
+        self.gac.initialize(root.state.variables, root.domains, root.state.constraints)
+        self.gac.domain_filtering()
 
         return root
 
@@ -27,7 +28,7 @@ class VertexColoring(BestFirstSearch):
 def main():
     """ Text-based test of VertexColoring """
     solution = VertexColoring(GraphReader(
-        GraphReader.parse_graph(GraphReader.read_graph('graph-color-1.txt'))
+        GraphReader.parse_graph(GraphReader.read_graph('spiral-500-4-color1.txt'))
     )).best_first_search()
 
     if not solution:

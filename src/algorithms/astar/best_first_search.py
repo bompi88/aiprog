@@ -3,6 +3,7 @@ import time
 import heapq as q
 from src.algorithms.astar.const import C
 
+
 class BestFirstSearch(object):
     """ Implement A*. Contains methods that raise NotImplementedError,
      so should be treated as an abstract base class.

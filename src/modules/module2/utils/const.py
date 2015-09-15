@@ -6,7 +6,7 @@ from collections import namedtuple
 
 Constants = namedtuple(
     'Constants',
-    ['A_STAR', 'RED', 'GREEN', 'BLUE', 'ORANGE', 'WHITE']
+    ['A_STAR', 'RED', 'GREEN', 'BLUE', 'ORANGE', 'WHITE', 'BLACK']
 )
 
-C = Constants(1, 1, 2, 3, 4, 5)
+C = Constants(1, 1, 2, 3, 4, 5, 6)

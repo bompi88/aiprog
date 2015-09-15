@@ -11,7 +11,6 @@ class GAC(object):
         self.domains = {}  # Key: variable, Value: List of available values that represent the domain of the variable
 
     def initialize(self, variables, domains, constraints):
-
         self.domains = domains
 
         for c in constraints:
@@ -88,9 +87,10 @@ class GAC(object):
         else:
             return False
 
-    def rerun(self, assumption):
-        self.domains[assumption[0]] = assumption[1]
-        self.add_to_queue((assumption, None))
+    def rerun(self, domain, assumption):
+        self.domains = domain
+        # self.domains[assumption[0]] = assumption[1]
+        self.add_to_queue(assumption)
         self.domain_filtering()
 
     def add_to_queue(self, objective, exclude=False):

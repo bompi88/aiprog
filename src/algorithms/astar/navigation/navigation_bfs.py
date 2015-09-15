@@ -20,7 +20,7 @@ class Navigation(BestFirstSearch):
 def main():
     """ Text-based test of Navigation """
     solution = Navigation(
-        NavigationGrid(MapReader(MapReader.read_map('ex_simple.txt')))
+        NavigationGrid(MapReader(MapReader.read_map('ex7.txt')))
     ).best_first_search()
 
     if not solution:
