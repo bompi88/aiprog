@@ -71,6 +71,11 @@ class MainWindow(QtGui.QMainWindow):
         run_action.setStatusTip('Run A*')
         run_action.triggered.connect(self.graph_gui.start_search)
 
+        delay_action_0 = QtGui.QAction('Delay 0', self)
+        delay_action_0.triggered.connect(
+            lambda: self.graph_gui.set_delay(0) and self.delay_changed(0)
+        )
+
         delay_action_50 = QtGui.QAction('Delay 50', self)
         delay_action_50.triggered.connect(
             lambda: self.graph_gui.set_delay(50) and self.delay_changed(50)
@@ -93,6 +98,7 @@ class MainWindow(QtGui.QMainWindow):
 
         toolbar = self.addToolBar('Run')
         toolbar.addAction(run_action)
+        toolbar.addAction(delay_action_0)
         toolbar.addAction(delay_action_50)
         toolbar.addAction(delay_action_150)
         toolbar.addAction(delay_action_500)
