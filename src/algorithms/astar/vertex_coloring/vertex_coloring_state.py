@@ -4,12 +4,13 @@ from src.algorithms.astar.search_state import SearchState
 from src.algorithms.astar.vertex_coloring.utils.const import C
 from src.algorithms.gac.gac import GAC
 from collections import OrderedDict
+import itertools
 
 
 class VertexColoringState(SearchState):
     """  """
 
-    def __init__(self, graph, gac, domains=None, solution_length=0):
+    def __init__(self, graph, gac, domains=None, solution_length=0, new_variable=None, last_variable=None):
         if domains:
             self.domains = domains
         else:
@@ -19,6 +20,8 @@ class VertexColoringState(SearchState):
 
         self.gac = gac
         self._solution_length = solution_length
+        self.new_variable = new_variable
+        self.last_variable = last_variable
 
         SearchState.__init__(self, graph)
 
@@ -28,6 +31,11 @@ class VertexColoringState(SearchState):
 
     def heuristic_evaluation(self):
         sum_h = 0
+
+        if self.last_variable:
+            variables_tbc = set(itertools.chain(*[self.gac.constraint_map[x] for x in self.gac.variable_map[self.last_variable]]))
+            if self.new_variable not in variables_tbc:
+                sum_h += 3
 
         for domain in self.domains.values():
             if (len(domain) == 1):
@@ -68,13 +76,9 @@ class VertexColoringState(SearchState):
             key: domain for key, domain in self.domains.items() if len(domain) > 1
         }
 
-        print(viable_domains)
-
         # foo = OrderedDict(sorted(foo.iteritems(), key=lambda x: x[1]['depth']))
 
         sorted_domains = OrderedDict(sorted(viable_domains.items(), key=lambda x: len(x[1])))
-
-        print(sorted_domains)
 
         for key, domain in sorted_domains.items():
             for color in domain:
@@ -83,7 +87,7 @@ class VertexColoringState(SearchState):
 
                 assumption = (key, [color])
 
-                successor = VertexColoringState(self.state, self.gac, new_domain, self._solution_length + 1)
+                successor = VertexColoringState(self.state, self.gac, new_domain, self._solution_length + 1, key, self.new_variable)
                 self.gac.rerun(new_domain, assumption)
 
                 successors.append(successor)
