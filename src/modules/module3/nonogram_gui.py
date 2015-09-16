@@ -104,3 +104,7 @@ class NonogramGUI(QtGui.QFrame):
         """ Change delay """
         self.delay = delay
         return True
+
+    def set_opened_closed(self, opened, closed):
+        self.opened = opened
+        self.closed = closed
