@@ -8,6 +8,13 @@
 # Icon must end with two \r
 Icon
 
+# Eclipse
+.metadata
+.project
+.texlipse
+
+# Latex output
+*.aux
 
 # Thumbnails
 ._*
