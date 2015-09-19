@@ -1,3 +1,4 @@
+mkdir -p tmp
 echo "Making module 1"
 pdflatex -output-directory=tmp module_1 > /dev/null
 echo "Moving module 1"
