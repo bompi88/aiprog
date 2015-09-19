@@ -1,0 +1,59 @@
+\begin{figure}[h!]
+	\centering
+	\begin{tikzpicture} 
+		\umlclass[x=0,y=0]{best\_first\_search}{
+			delay : int
+		}{
+			+ attach\_and\_eval(child : SearchState, parent : SearchState) : void \\
+			+ propagate\_path\_improvements(parent : SearchState) : void \\
+			+ best\_first\_search() : SearchState \\
+			+ arc\_cost(a : SearchState, b : SearchState) : double \\
+			+ create\_root\_node() : SearchState \\
+			+ open\_push(opened : [], node : SearchState) : void \\
+			+ open\_pop(opened : []) : SearchState \\
+			+ node\_closed(node : SearchState, t\_0 : long, generated : {}, opened : [], closed : []) : void
+		}
+		\umlclass[x=-4,y=-7]{search\_state}{
+			state : object \\
+			sid : string \\
+			status : int \\
+			parent : SearchState \\
+			kids : [] \\
+			g : double \\
+			h : double \\
+			f : double
+		}{
+			+ add\_child(child : SearchState) : void \\
+			+ \umlvirt{create\_state\_identifier() : string} \\
+			+ \umlvirt{heuristic\_evaluation() : double} \\
+			+ \umlvirt{generate\_all\_successors() : SearchState} \\
+			+ \umlvirt{is\_solution() : boolean} \\
+			+ \umlvirt{solution\_length() : double}
+		}
+		\umlclass[x=4.5,y=-9]{navigation\_state}{
+		}{
+			+ print\_level() : void
+		}
+		\umlclass[x=4.5,y=-5]{navigation\_bfs}{}{}
+		\umlclass[x=-2,y=-14]{navigation\_grid}{
+			map : [][] \\
+			\_visited : [] \\
+			current\_pos : SearchState
+		}{
+			+ position\_string() : string \\
+			+ visited\_copy() : [] \\
+			+ visited\_len() : int \\
+			+ is\_visited(pos : SearchState) : boolean \\
+			+ add\_visited(pos : SearchState) : void \\
+			+ last\_visited() : SearchState \\
+			+ is\_on\_goal() : boolean \\
+			+ distance\_from\_goal() : double \\
+			+ euclidean\_distance(a : SearchState, b : SearchState) : double
+		}
+		\umlinherit[geometry=|-]{navigation\_state}{search\_state}
+		\umlinherit[geometry=-|, anchors=180 and 300]{navigation\_bfs}{best\_first\_search}
+		\umlunicompo[geometry=|-, stereo=state, anchors=270 and 0]{navigation\_state}{navigation\_grid}
+		\umlunicompo[geometry=|-, stereo=start, anchors=270 and 20]{best\_first\_search}{search\_state} 
+	\end{tikzpicture}
+	\caption{Class diagram for the navigation task.}
+\end{figure}
