@@ -8,15 +8,32 @@
 % pages, including all diagrams, code segments, etc. (4 points)
 \section{Central aspects of your A* program}
 \subsection{The agenda and how it is managed}
-The agenda\ldots
+The agenda is awesome. list and Heapq\ldots
 
 \subsection{Generality of the program}
 
 \input{module_1/class_diagram}
 
-Very general\ldots
+Figure \ref{run:ex5} shows the class diagram for the navigation problem.
 
 \lstinputlisting[emph={HelloWorldPrintable}]{module_1/code_snippets/hello_world.py}
 
-\subsection{Heuristic function and method for generating successor states}
-Very heuristic..
+\subsection{Heuristics}
+Both the \emph{Manhattan distance} and \emph{Euclidean distance} has been tested on the navigation problem. Each adjusted the behaviour of the agent. Using the manhattan distance the agent seem preferring to minimize the amount of \(90 deg\) turns before reaching the final goal. The euclidean distance seems to do the quite opposite, and the agent goes straight towards the target even though the agent cannot move diagonally. It tries to emulate the behaviour of walking diagonally and follows a diagonal line between the current position and the goal. In the example board number two (Figure \ref{run:ex2}), the manhattan distance wins by generating least amount of nodes, because it can just move right and then up without encounter an obstacle. The euclidean agent has to avoid an obstacle and therefore is generating a few more nodes. On the other hand, in example 5 (Figure \ref{run:ex5}), the euclidean agent slips through the opening between the two last obstacles, while the manhattan agent needs to explore the area before the right-most obstacle. The performance of the agent depends on the heuristics compared with the structure of the board.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{module_1/images/run_ex2}
+	\caption{Comparing euclidian distance and manhattan distance in board example 2}
+	\label{run:ex2}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{module_1/images/run_ex5}
+	\caption{Comparing euclidian distance and manhattan distance in board example 5}
+	\label{run:ex5}
+\end{figure}
+
+\subsection{Generating successor states}
+From each viable state, a maximum of four possible successor states can be created, each by moving in every direction from its currently held position; NORTH, SOUTH, EAST, WEST. Other considered limitations are that the new position should be inside the given dimensions of the board, and that obstacles are not walkable, together with unnecessity to visit positions that previously have been visited. Every state that is within the scope of those limitations, is created and added to the heap.
