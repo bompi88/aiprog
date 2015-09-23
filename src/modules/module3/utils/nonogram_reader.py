@@ -31,6 +31,12 @@ class NonogramReader(object):
 
         print(self.solution)
 
+        self.constraints = []
+        self.variables = set([])
+        self.init_constraints_and_variables()
+
+    def init_constraints_and_variables(self):
+        pass
 
     @staticmethod
     def load_level(gui):

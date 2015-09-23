@@ -1,6 +1,9 @@
 """ A Widget for drawing Graph states """
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import pyqtSignal
+from src.algorithms.astar.nonogram.nonogram_bfs import Nonogram
+from src.modules.module3.utils.const import C
+from src.modules.module3.utils.search_worker import SearchWorker
 
 
 class NonogramGUI(QtGui.QFrame):
@@ -21,8 +24,8 @@ class NonogramGUI(QtGui.QFrame):
         self.nonogram = None
         self.node = None
         self.delay = 50
-        # self.mode = C.A_STAR
-        # self.thread = SearchWorker()
+        self.mode = C.A_STAR
+        self.thread = SearchWorker()
         self.init_ui()
 
     def init_ui(self):
@@ -62,7 +65,7 @@ class NonogramGUI(QtGui.QFrame):
     def start_search(self):
         """ Start the search in the worker thread """
         # TODO fix
-        # vertex_search = VertexColoring(self.nonogram, self)
+        vertex_search = Nonogram(self.nonogram, self)
 
         self.status_message.emit(str('Search started'))
         # self.thread.search(self, vertex_search)
