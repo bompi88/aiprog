@@ -1,7 +1,6 @@
 """ Navigation specialization of A* """
 from src.algorithms.astar.best_first_search import BestFirstSearch
-from src.algorithms.astar\
-    .vertex_coloring.vertex_coloring_state import VertexColoringState
+from src.algorithms.astar.vertex_coloring.vertex_coloring_state import VertexColoringState
 from src.modules.module2.utils.graph_reader import GraphReader
 from src.algorithms.gac.gac import GAC
 
@@ -23,7 +22,8 @@ class VertexColoring(BestFirstSearch):
         return root
 
     def arc_cost(self, a, b):
-        return 0.5
+        return 0
+
 
 def main():
     """ Text-based test of VertexColoring """
