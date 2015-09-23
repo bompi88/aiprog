@@ -1,4 +1,5 @@
 import copy
+import itertools
 
 
 class GAC(object):
@@ -89,26 +90,15 @@ class GAC(object):
 
     def rerun(self, domain, assumption):
         self.domains = domain
-        # self.domains[assumption[0]] = assumption[1]
         self.add_to_queue(assumption)
         self.domain_filtering()
 
     def add_to_queue(self, objective, exclude=False):
-        # all affected variables
-        variables = set()
-
         # All constraints that has to be rechecked
-        constraints = set()
+        constraints = set(self.variable_map[objective[0]])
 
-        # All constraints given the current variable
-
-        for c in self.variable_map[objective[0]]:
-            constraints.add(c)
-
-        # Get all affected variables
-        for c in constraints:
-            for v in self.constraint_map[c]:
-                variables.add(v)
+        # all affected variables
+        variables = set(itertools.chain(*[self.constraint_map[c] for c in constraints]))
 
         for v in variables:
             cs = self.variable_map[v]
