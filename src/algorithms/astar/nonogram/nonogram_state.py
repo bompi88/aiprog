@@ -9,23 +9,23 @@ import itertools
 class NonogramState(SearchState):
     """  """
 
-    def __init__(self, graph, gac, domains=None, solution_length=0, new_variable=None, last_variable=None):
+    def __init__(self, nonogram, gac, domains=None, solution_length=0, new_variable=None, last_variable=None):
         if domains:
             self.domains = domains
         else:
             self.domains = OrderedDict()
-            for i in range(len(graph.rows)):
-                print graph.rows[i]
+            for k in range(len(nonogram.rows)):
+                print nonogram.rows[k]
 
-            for j in range(len(graph.columns)):
-                print graph.columns[j]
+            for l in range(len(nonogram.columns)):
+                print nonogram.columns[l]
 
         self.gac = gac
         self._solution_length = solution_length
         self.new_variable = new_variable
         self.last_variable = last_variable
 
-        SearchState.__init__(self, graph)
+        SearchState.__init__(self, nonogram)
 
     def create_state_identifier(self):
         return ':'.join([','.join(str(d) for d in domain) for domain in self.domains.values()])
