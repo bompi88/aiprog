@@ -1,6 +1,6 @@
 """ Represent a navigable map """
 import os
-import src.modules
+import res
 from src.algorithms.astar.navigation.utils.const import C
 from src.algorithms.astar.navigation.navigation_grid import NavigationGrid
 from PyQt4 import QtGui
@@ -64,8 +64,8 @@ class MapReader(object):
     @staticmethod
     def read_map(filename):
         """ Read a file from /maps """
-        path = os.path.dirname(src.modules.__file__)
-        path += '/module1/maps/' + filename
+        path = os.path.dirname(res.__file__)
+        path += '/maps/' + filename
         map_file = open(path, 'r')
         contents = map_file.read()
         return contents.splitlines()

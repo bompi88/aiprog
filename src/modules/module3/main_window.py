@@ -4,7 +4,7 @@ import sys
 
 from PyQt4 import QtGui
 
-import src.modules
+import res
 from src.modules.module3.utils.nonogram_reader import NonogramReader
 from src.modules.module3.nonogram_gui import NonogramGUI
 
@@ -64,8 +64,8 @@ class MainWindow(QtGui.QMainWindow):
 
     def init_toolbar(self):
         """ Initializes a toolbar, with a run button and delay controls """
-        path = os.path.dirname(src.modules.__file__)
-        path += '/module1/res/'
+        path = os.path.dirname(res.__file__)
+        path += '/imgs/'
         run_action = QtGui.QAction(QtGui.QIcon(path + 'play.png'), 'Run A*', self)
         run_action.setShortcut('Ctrl+R')
         run_action.setStatusTip('Run A*')

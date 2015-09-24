@@ -1,6 +1,6 @@
 """ Represent a graph """
 import os
-import src.modules
+import res
 from PyQt4 import QtGui
 
 
@@ -69,8 +69,8 @@ class GraphReader(object):
     @staticmethod
     def read_graph(filename):
         """ Read a file from /maps """
-        path = os.path.dirname(src.modules.__file__)
-        path += '/module2/graphs/' + filename
+        path = os.path.dirname(res.__file__)
+        path += '/graphs/' + filename
         graph_file = open(path, 'r')
         contents = graph_file.read()
         return contents.splitlines()
