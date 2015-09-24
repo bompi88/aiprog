@@ -2,29 +2,30 @@ import unittest
 from src.algorithms.gac.gac import GAC
 
 
-class TestGAC(unittest.TestCase):
+class TestGACOnNonogram(unittest.TestCase):
     def setUp(self):
 
-        self.variables = ['a', 'b', 'c']
+        self.variables = ['a', 'b', 'c', 'd']
 
         self.constraints = [
-            'a != b',
-            'a != c',
-            'b != c',
-            'a == 2',
-            'b == 1',
+            'a [0] == c [0]',
+            'a [1] == d [0]',
+            'b [0] == c [1]',
+            'b [1] == d [1]'
         ]
 
         self.domains = {
-            'a': [0, 1, 2],
-            'b': [0, 1, 2],
-            'c': [0, 1, 2]
+            'a': ['01', '10', '00', '11'],
+            'b': ['10'],
+            'c': ['01'],
+            'd': ['10']
         }
 
         self.solution = {
-            'a': [2],
-            'c': [0],
-            'b': [1],
+            'a': ['01'],
+            'b': ['10'],
+            'c': ['01'],
+            'd': ['10']
         }
 
         self.gac = GAC()
