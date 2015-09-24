@@ -36,8 +36,11 @@ class NonogramReader(object):
         self.init_constraints_and_variables()
 
     def init_constraints_and_variables(self):
-        for i in range(self.x + self.y):
-            self.variables.add('v' + str(i))
+        for i in range(len(self.rows)):
+            self.variables.add('r' + str(i))
+
+        for i in range(len(self.columns)):
+            self.variables.add('c' + str(i))
 
     @staticmethod
     def load_level(gui):
