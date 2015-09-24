@@ -1,5 +1,3 @@
-__author__ = 'bompi88'
-
 import unittest
 
 from src.algorithms.puzzles.navigation.navigation_bfs import Navigation

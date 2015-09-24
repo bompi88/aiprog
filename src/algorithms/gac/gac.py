@@ -1,5 +1,6 @@
-import copy
+from copy import deepcopy
 import itertools
+import inspect
 
 
 class GAC(object):
@@ -12,7 +13,7 @@ class GAC(object):
         self.domains = {}  # Key: variable, Value: List of available values that represent the domain of the variable
 
     def initialize(self, variables, domains, constraints):
-        self.domains = domains
+        self.domains = deepcopy(domains)
 
         for c in constraints:
             elements = c.split()
@@ -45,7 +46,7 @@ class GAC(object):
 
         size_domain_old = len(self.domains[cv_pair[0]])
 
-        vars_to_consider = copy.deepcopy(self.constraint_map[cv_pair[1]])
+        vars_to_consider = deepcopy(self.constraint_map[cv_pair[1]])
         vars_to_consider.remove(cv_pair[0])
 
         to_remove = []
@@ -61,9 +62,11 @@ class GAC(object):
                     if var_order[0] is cv_pair[0]:
                         if self.functions[cv_pair[1]](d1, d2):
                             retain = True
+
+                    # TODO: Document in report or fix
                     else:
                         if self.functions[cv_pair[1]](d2, d1):
-                            retain = True
+                                retain = True
             else:
                 if self.functions[cv_pair[1]](d1):
                     retain = True

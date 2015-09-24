@@ -46,7 +46,9 @@ class BestFirstSearch(object):
         self.open_push(opened, root)
 
         while opened:
+            print('opened')
             x = self.open_pop(opened)
+            x.print_level()
 
             self.node_closed(x, t_0, generated, opened, closed)
             closed.append(x)
