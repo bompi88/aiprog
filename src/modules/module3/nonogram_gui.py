@@ -1,7 +1,8 @@
 """ A Widget for drawing Graph states """
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import pyqtSignal
-from src.algorithms.astar.nonogram.nonogram_bfs import Nonogram
+
+from src.algorithms.puzzles.nonogram.nonogram_bfs import Nonogram
 from src.modules.module3.utils.const import C
 from src.modules.module3.utils.search_worker import SearchWorker
 

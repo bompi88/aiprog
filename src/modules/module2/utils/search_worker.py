@@ -1,7 +1,7 @@
 """ Worker thread for performing A* search outside of GUI thread """
 from PyQt4.QtCore import QThread, QSize
-from src.algorithms.astar\
-    .vertex_coloring.vertex_coloring_state import VertexColoringState
+
+from src.algorithms.puzzles.vertex_coloring.vertex_coloring_state import VertexColoringState
 
 
 class SearchWorker(QThread):
@@ -24,6 +24,7 @@ class SearchWorker(QThread):
         node = VertexColoringState(
             solution.state,
             None,
+            self.gui.num_colors,
             solution.domains,
             solution.solution_length
         )

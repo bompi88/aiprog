@@ -1,7 +1,7 @@
 """ Unit tests for the 25-Checkers implementation of A* """
 import unittest
 
-from src.algorithms.astar.checkers.checkers_bfs import Checkers
+from src.algorithms.puzzles.checkers.checkers_bfs import Checkers
 from src.algorithms.astar.const import C
 
 

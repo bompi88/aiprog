@@ -1,12 +1,13 @@
 """ A Widget for drawing Graph states """
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import pyqtSignal
+
 from src.modules.module2.utils.const import C
 from src.modules.module2.utils.search_worker import SearchWorker
-from src.algorithms.astar.\
-    vertex_coloring.vertex_coloring_bfs import VertexColoring
-from src.algorithms.astar.\
+from src.algorithms.puzzles.vertex_coloring.vertex_coloring_bfs import VertexColoring
+from src.algorithms.puzzles.\
     vertex_coloring.vertex_coloring_state import VertexColoringState
+
 
 class GraphGUI(QtGui.QFrame):
     """ Implement QFrame, which is a subclass of QWidget """
@@ -23,10 +24,11 @@ class GraphGUI(QtGui.QFrame):
         self.vertex_radii = 5
         self.corners = []
 
+        self.delay = 0
         self.graph = None
         self.node = None
-        self.delay = 50
         self.mode = C.A_STAR
+        self.num_colors = 4
         self.thread = SearchWorker()
         self.init_ui()
 
@@ -37,7 +39,7 @@ class GraphGUI(QtGui.QFrame):
     def level_loaded(self, filename, graph):
         """ Called whenever a level is loaded, adjust Widget size """
         self.graph = graph
-        self.node = VertexColoringState(graph, None)
+        self.node = VertexColoringState(graph, None, self.num_colors)
 
         self.dx = self.dy = 20
         self.offset_dx = self.offset_dy = 35
@@ -99,7 +101,11 @@ class GraphGUI(QtGui.QFrame):
             C.BLUE: QtGui.QColor(0, 0, 255),
             C.ORANGE: QtGui.QColor(175, 0, 100),
             C.WHITE: QtGui.QColor(255, 255, 255),
-            C.BLACK: QtGui.QColor(0, 0, 0)
+            C.BLACK: QtGui.QColor(0, 0, 0),
+            C.PINK: QtGui.QColor(255, 20, 147),
+            C.YELLOW: QtGui.QColor(255, 255, 0),
+            C.PURPLE: QtGui.QColor(238,130,238),
+            C.BROWN: QtGui.QColor(222,184,135)
         }[self.node.vertex_color(vertex[0])]
 
         painter.setPen(color)
@@ -148,9 +154,9 @@ class GraphGUI(QtGui.QFrame):
 
         self.level_loaded(filename, graph)
 
-    def set_delay(self, delay):
+    def set_color(self, colors):
         """ Change delay """
-        self.delay = delay
+        self.num_colors = colors
         return True
 
     def set_opened_closed(self, opened, closed):

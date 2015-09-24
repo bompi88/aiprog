@@ -1,6 +1,6 @@
 """ Nonogram specialization of A* """
 from src.algorithms.astar.best_first_search import BestFirstSearch
-from src.algorithms.astar.nonogram.nonogram_state import NonogramState
+from src.algorithms.puzzles.nonogram.nonogram_state import NonogramState
 from src.modules.module3.utils.nonogram_reader import NonogramReader
 from src.algorithms.gac.gac import GAC
 

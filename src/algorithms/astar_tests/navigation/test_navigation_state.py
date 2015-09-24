@@ -1,7 +1,8 @@
 import unittest
-from src.algorithms.astar.navigation.navigation_bfs import Navigation
-from src.algorithms.astar.navigation.navigation_state import NavigationState
-from src.algorithms.astar.navigation.navigation_grid import NavigationGrid
+
+from src.algorithms.puzzles.navigation.navigation_bfs import Navigation
+from src.algorithms.puzzles.navigation.navigation_state import NavigationState
+from src.algorithms.puzzles.navigation.navigation_grid import NavigationGrid
 from src.modules.module1.utils.map_reader import MapReader
 
 
