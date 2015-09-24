@@ -15,22 +15,27 @@ class GAC(object):
     def initialize(self, variables, domains, constraints):
         self.domains = deepcopy(domains)
 
-        for c in constraints:
-            elements = c.split()
+        for (c1, c2) in constraints:
+            elements1 = c1.split()
+            elements2 = c2.split()
 
-            vars = list(set(elements) & set(variables))
+            vars = list(set(elements1) & set(elements2) & set(variables))
 
-            self.constraint_map[c] = vars
+            self.constraint_map[c1] = vars
+            self.constraint_map[c2] = vars
 
             for v in vars:
                 if v in self.variable_map.keys():
-                    self.variable_map[v].append(c)
+                    self.variable_map[v].append(c1)
+                    self.variable_map[v].append(c2)
                 else:
-                    self.variable_map[v] = [c]
+                    self.variable_map[v] = [c1]
+                    self.variable_map[v].append(c2)
 
-                self.queue.append((v, c))
+                self.queue.append((v, c1))
+                self.queue.append((v, c2))
 
-            self.functions[c] = self.make_function(vars, c)
+            self.functions[c1] = (self.make_function(vars, c1), self.make_function(vars, c2))
 
     def domain_filtering(self):
         while len(self.queue):
@@ -60,12 +65,12 @@ class GAC(object):
                     var_order = cv_pair[1].split()
 
                     if var_order[0] is cv_pair[0]:
-                        if self.functions[cv_pair[1]](d1, d2):
+                        if self.functions[cv_pair[1]][0](d1, d2):
                             retain = True
 
                     # TODO: Document in report or fix
                     else:
-                        if self.functions[cv_pair[1]](d2, d1):
+                        if self.functions[cv_pair[1]][1](d2, d1):
                                 retain = True
             else:
                 if self.functions[cv_pair[1]](d1):
