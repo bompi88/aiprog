@@ -1,8 +1,8 @@
 """ Specialization of SearchState """
 from src.algorithms.astar.search_state import SearchState
-from src.algorithms.astar.navigation.navigation_grid import NavigationGrid
-from src.algorithms.astar.navigation.utils.const import C
-from src.algorithms.astar.navigation.utils.id_generator import ID_GENERATOR
+from src.algorithms.puzzles.navigation.navigation_grid import NavigationGrid
+from src.algorithms.puzzles.navigation.utils.const import C
+from src.algorithms.puzzles.navigation.utils.id_generator import ID_GENERATOR
 
 
 class NavigationState(SearchState):

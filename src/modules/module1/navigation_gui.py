@@ -4,9 +4,9 @@ from PyQt4.QtCore import pyqtSignal
 
 from src.modules.module1.utils.search_worker import SearchWorker
 from src.modules.module1.utils.const import C
-from src.algorithms.astar.navigation.navigation_bfs import Navigation
-from src.algorithms.astar.navigation.navigation_grid import NavigationGrid
-from src.algorithms.astar.navigation.navigation_state import NavigationState
+from src.algorithms.puzzles.navigation.navigation_bfs import Navigation
+from src.algorithms.puzzles.navigation.navigation_grid import NavigationGrid
+from src.algorithms.puzzles.navigation.navigation_state import NavigationState
 
 
 class NavigationGUI(QtGui.QFrame):

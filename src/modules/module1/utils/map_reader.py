@@ -1,9 +1,11 @@
 """ Represent a navigable map """
 import os
-import res
-from src.algorithms.astar.navigation.utils.const import C
-from src.algorithms.astar.navigation.navigation_grid import NavigationGrid
+
 from PyQt4 import QtGui
+
+import res
+from src.algorithms.puzzles.navigation.utils.const import C
+from src.algorithms.puzzles.navigation.navigation_grid import NavigationGrid
 
 
 class MapReader(object):

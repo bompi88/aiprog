@@ -1,6 +1,6 @@
 """ Runnable script for solving 25-Checkers """
 from src.algorithms.astar.best_first_search import BestFirstSearch
-from src.algorithms.astar.checkers.checkers_state import CheckersState
+from src.algorithms.puzzles.checkers.checkers_state import CheckersState
 
 
 class Checkers(BestFirstSearch):

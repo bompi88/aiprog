@@ -1,7 +1,8 @@
 """ Worker thread for performing A* search outside of GUI thread """
 from PyQt4.QtCore import QThread, QSize
-from src.algorithms.astar.navigation.navigation_grid import NavigationGrid
-from src.algorithms.astar.navigation.navigation_state import NavigationState
+
+from src.algorithms.puzzles.navigation.navigation_grid import NavigationGrid
+from src.algorithms.puzzles.navigation.navigation_state import NavigationState
 
 
 class SearchWorker(QThread):

@@ -1,12 +1,13 @@
 """ A Widget for drawing Graph states """
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import pyqtSignal
+
 from src.modules.module2.utils.const import C
 from src.modules.module2.utils.search_worker import SearchWorker
-from src.algorithms.astar.\
-    vertex_coloring.vertex_coloring_bfs import VertexColoring
-from src.algorithms.astar.\
+from src.algorithms.puzzles.vertex_coloring.vertex_coloring_bfs import VertexColoring
+from src.algorithms.puzzles.\
     vertex_coloring.vertex_coloring_state import VertexColoringState
+
 
 class GraphGUI(QtGui.QFrame):
     """ Implement QFrame, which is a subclass of QWidget """

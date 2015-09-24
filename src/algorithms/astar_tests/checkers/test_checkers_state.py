@@ -1,7 +1,8 @@
 """ Unit tests for checkers state """
 import unittest
-from src.algorithms.astar.checkers.checkers_bfs import Checkers
-from src.algorithms.astar.checkers.checkers_state import CheckersState
+
+from src.algorithms.puzzles.checkers.checkers_bfs import Checkers
+from src.algorithms.puzzles.checkers.checkers_state import CheckersState
 
 
 class TestCheckersState(unittest.TestCase):

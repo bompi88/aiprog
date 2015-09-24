@@ -1,6 +1,7 @@
 """ Worker thread for performing A* search outside of GUI thread """
 from PyQt4.QtCore import QThread, QSize
-from src.algorithms.astar.nonogram.nonogram_state import NonogramState
+
+from src.algorithms.puzzles.nonogram.nonogram_state import NonogramState
 
 
 class SearchWorker(QThread):

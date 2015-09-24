@@ -1,6 +1,6 @@
 """ Navigation specialization of A* """
 from src.algorithms.astar.best_first_search import BestFirstSearch
-from src.algorithms.astar.vertex_coloring.vertex_coloring_state import VertexColoringState
+from src.algorithms.puzzles.vertex_coloring.vertex_coloring_state import VertexColoringState
 from src.modules.module2.utils.graph_reader import GraphReader
 from src.algorithms.gac.gac import GAC
 
