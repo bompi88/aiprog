@@ -1,5 +1,3 @@
-__author__ = 'bompi88'
-
 import unittest
 from src.algorithms.astar.navigation.navigation_bfs import Navigation
 from src.algorithms.astar.navigation.navigation_state import NavigationState

@@ -2,7 +2,6 @@
 from copy import deepcopy
 from src.algorithms.astar.search_state import SearchState
 from src.algorithms.astar.vertex_coloring.utils.const import C
-from src.algorithms.gac.gac import GAC
 from collections import OrderedDict
 import itertools
 

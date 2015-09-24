@@ -10,26 +10,9 @@ class NonogramReader(object):
     def __init__(self, nonogram):
         self.x, self.y, self.rows, self.columns = nonogram
 
-        print(list(reversed(self.rows)))
-        print(self.columns)
-
-        self.solution = [
-            [0, 0, 1, 1, 1, 1, 0, 0, 0, 0], # 4
-            [0, 1, 1, 1, 1, 1, 1, 0, 0, 0], # 6
-            [1, 1, 1, 1, 1, 1, 1, 1, 0, 0], # 8
-            [0, 1, 1, 1, 1, 1, 1, 1, 1, 0], # 8
-            [0, 0, 1, 1, 1, 1, 1, 1, 1, 1], # 8
-            [], # 8
-            [], # 8
-            [], # 8
-            [], # 6
-            []  # 4
-        ]
-
-        for i in range(5):
-            self.solution[9 - i] = self.solution[i]
-
-        print(self.solution)
+        for row in self.rows:
+            print('row')
+            print(row)
 
         self.constraints = []
         self.variables = set([])
@@ -41,6 +24,10 @@ class NonogramReader(object):
 
         for i in range(len(self.columns)):
             self.variables.add('c' + str(i))
+
+        for i in range(len(self.rows)):
+            for j in range(len(self.columns)):
+                self.constraints.append('r{r} [{c}] == c{c} [{r}]'.format(r=i, c=j))
 
     @staticmethod
     def load_level(gui):
@@ -67,9 +54,10 @@ class NonogramReader(object):
 
     @staticmethod
     def parse_nonogram(lines):
-        x, y = [int(e) for e in lines[0].split(' ')]
-        rows = [list(int(e) for e in lines.pop().split(' ')) for _ in range(y)]
-        columns = [list(int(e) for e in lines.pop().split(' ')) for _ in range(x)]
+        x, y = [int(e) for e in lines.pop(0).split(' ')]
+        rows = [list(int(e) for e in lines.pop(0).split(' ')) for _ in range(y)]
+        rows = list(reversed(rows))
+        columns = [list(int(e) for e in lines.pop(0).split(' ')) for _ in range(x)]
 
         return [x, y, rows, columns]
 
@@ -82,6 +70,6 @@ class NonogramReader(object):
         contents = graph_file.read()
         return contents.splitlines()
 
-NonogramReader(NonogramReader.parse_nonogram(
-    NonogramReader.read_nonogram('nono-heart-1.txt')
-))
+#NonogramReader(NonogramReader.parse_nonogram(
+#    NonogramReader.read_nonogram('nono-heart-1.txt')
+#))
