@@ -71,38 +71,44 @@ class MainWindow(QtGui.QMainWindow):
         run_action.setStatusTip('Run A*')
         run_action.triggered.connect(self.graph_gui.start_search)
 
-        delay_action_0 = QtGui.QAction('Delay 0', self)
-        delay_action_0.triggered.connect(
-            lambda: self.graph_gui.set_delay(0) and self.delay_changed(0)
+        color_action_3 = QtGui.QAction('Colors 3', self)
+        color_action_3.triggered.connect(
+            lambda: self.graph_gui.set_color(3) and self.color_changed(3)
         )
 
-        delay_action_50 = QtGui.QAction('Delay 50', self)
-        delay_action_50.triggered.connect(
-            lambda: self.graph_gui.set_delay(50) and self.delay_changed(50)
+        color_action_4 = QtGui.QAction('Colors 4', self)
+        color_action_4.triggered.connect(
+            lambda: self.graph_gui.set_color(4) and self.color_changed(4)
         )
 
-        delay_action_150 = QtGui.QAction('Delay 150', self)
-        delay_action_150.triggered.connect(
-            lambda: self.graph_gui.set_delay(150) and self.delay_changed(150)
+        color_action_5 = QtGui.QAction('Colors 5', self)
+        color_action_5.triggered.connect(
+            lambda: self.graph_gui.set_color(5) and self.color_changed(5)
         )
 
-        delay_action_500 = QtGui.QAction('Delay 500', self)
-        delay_action_500.triggered.connect(
-            lambda: self.graph_gui.set_delay(500) and self.delay_changed(500)
+        color_action_6 = QtGui.QAction('Colors 6', self)
+        color_action_6.triggered.connect(
+            lambda: self.graph_gui.set_color(6) and self.color_changed(6)
         )
 
-        delay_action_1000 = QtGui.QAction('Delay 1000', self)
-        delay_action_1000.triggered.connect(
-            lambda: self.graph_gui.set_delay(1000) and self.delay_changed(1000)
+        color_action_7 = QtGui.QAction('Colors 7', self)
+        color_action_7.triggered.connect(
+            lambda: self.graph_gui.set_color(7) and self.color_changed(7)
+        )
+
+        color_action_8 = QtGui.QAction('Colors 8', self)
+        color_action_8.triggered.connect(
+            lambda: self.graph_gui.set_color(8) and self.color_changed(8)
         )
 
         toolbar = self.addToolBar('Run')
         toolbar.addAction(run_action)
-        toolbar.addAction(delay_action_0)
-        toolbar.addAction(delay_action_50)
-        toolbar.addAction(delay_action_150)
-        toolbar.addAction(delay_action_500)
-        toolbar.addAction(delay_action_1000)
+        toolbar.addAction(color_action_3)
+        toolbar.addAction(color_action_4)
+        toolbar.addAction(color_action_5)
+        toolbar.addAction(color_action_6)
+        toolbar.addAction(color_action_7)
+        toolbar.addAction(color_action_8)
 
     def center(self):
         """ Center window  [http://zetcode.com/gui/pyqt4/firstprograms/] """
@@ -111,9 +117,9 @@ class MainWindow(QtGui.QMainWindow):
         geometry.moveCenter(desktop_center)
         self.move(geometry.topLeft())
 
-    def delay_changed(self, delay):
-        """ Writes to status bar when delay is changed """
-        self.statusBar().showMessage('Delay: ' + str(delay))
+    def color_changed(self, color):
+        """ Writes to status bar when color is changed """
+        self.statusBar().showMessage('Amount of colors available: ' + str(color))
 
 
 def main():

@@ -14,7 +14,7 @@ class VertexColoring(BestFirstSearch):
         self.gac = GAC()
 
     def create_root_node(self):
-        root = VertexColoringState(self.start, self.gac)
+        root = VertexColoringState(self.start, self.gac, self.gui.num_colors)
 
         self.gac.initialize(root.state.variables, root.domains, root.state.constraints)
         self.gac.domain_filtering()

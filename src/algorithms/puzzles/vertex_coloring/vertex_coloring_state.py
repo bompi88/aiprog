@@ -10,18 +10,22 @@ from src.algorithms.puzzles.vertex_coloring.utils.const import C
 class VertexColoringState(SearchState):
     """  """
 
-    def __init__(self, graph, gac, domains=None, solution_length=0, new_variable=None, last_variable=None):
+    def __init__(self, graph, gac, num_colors, domains=None, solution_length=0, new_variable=None, last_variable=None):
+
+        viable_values = [C.RED, C.GREEN, C.BLUE, C.ORANGE, C.PINK, C.YELLOW, C.PURPLE, C.BROWN]
+
         if domains:
             self.domains = domains
         else:
             self.domains = OrderedDict()
             for i in range(graph.nv):
-                self.domains['v' + str(i)] = [C.RED, C.GREEN, C.BLUE, C.ORANGE]
+                self.domains['v' + str(i)] = viable_values[:num_colors]
 
         self.gac = gac
         self._solution_length = solution_length
         self.new_variable = new_variable
         self.last_variable = last_variable
+        self.num_colors = num_colors
 
         SearchState.__init__(self, graph)
 
@@ -45,9 +49,9 @@ class VertexColoringState(SearchState):
             sum_h -= len(variables_tbc_new)
 
         for domain in self.domains.values():
-            if (len(domain) == 1):
+            if len(domain) == 1:
                 sum_h -= 0.05
-            elif (len(domain) == 0):
+            elif len(domain) == 0:
                 sum_h += 5
             else:
                 sum_h += len(domain) - 1
@@ -94,7 +98,7 @@ class VertexColoringState(SearchState):
 
                 assumption = (key, [color])
 
-                successor = VertexColoringState(self.state, self.gac, new_domain, self._solution_length + 1, key, self.new_variable)
+                successor = VertexColoringState(self.state, self.gac, self.num_colors, new_domain, self._solution_length + 1, key, self.new_variable)
                 self.gac.rerun(new_domain, assumption)
 
                 successors.append(successor)
