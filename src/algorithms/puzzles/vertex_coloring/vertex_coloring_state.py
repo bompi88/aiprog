@@ -2,6 +2,7 @@
 from src.utils.domaincopy import domaincopy
 from collections import OrderedDict
 import itertools
+import math
 
 from src.algorithms.astar.search_state import SearchState
 from src.algorithms.puzzles.vertex_coloring.utils.const import C
@@ -41,21 +42,20 @@ class VertexColoringState(SearchState):
             variables_tbc_old = set(itertools.chain(*[self.gac.constraint_map[x] for x in self.gac.variable_map[self.last_variable]]))
 
             if self.new_variable not in variables_tbc_old:
-                sum_h += 3
+                sum_h += math.log(10)
 
         # Give credits for being the most constrained vertex
         if self.new_variable:
             variables_tbc_new = set(itertools.chain(*[self.gac.constraint_map[x] for x in self.gac.variable_map[self.new_variable]]))
-            sum_h -= len(variables_tbc_new)
+            sum_h -= math.log(len(variables_tbc_new) * 20)
 
-        # Se paa loesningsrommet domains ^variables
+        # Look at the solotion domain, and use log to transform
+        # it to simple additions in the solution space
         for domain in self.domains.values():
-            if len(domain) == 1:
-                sum_h -= 0.05
-            elif len(domain) == 0:
-                sum_h += 5
+            if len(domain) == 0:
+                sum_h += math.log(10)
             else:
-                sum_h += len(domain) - 1
+                sum_h += math.log(len(domain))
 
         return sum_h
 
