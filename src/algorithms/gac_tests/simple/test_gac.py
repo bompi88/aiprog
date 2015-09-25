@@ -8,11 +8,11 @@ class TestGAC(unittest.TestCase):
         self.variables = ['a', 'b', 'c']
 
         self.constraints = [
-            'a != b',
-            'a != c',
-            'b != c',
-            'a == 2',
-            'b == 1',
+            ('a != b', 'b != a'),
+            ('a != c', 'c != a'),
+            ('b != c', 'c != b'),
+            ('a == 2', 'a == 2'),
+            ('b == 1', 'b == 1'),
         ]
 
         self.domains = {

@@ -8,10 +8,10 @@ class TestGACVertexColoring(unittest.TestCase):
         self.variables = ['v1', 'v2', 'v3', 'v4']
 
         self.constraints = [
-            'v1 != v2',
-            'v2 != v3',
-            'v3 != v4',
-            'v4 != v1'
+            ('v1 != v2', 'v2 != v1'),
+            ('v2 != v3', 'v3 != v2'),
+            ('v3 != v4', 'v4 != v3'),
+            ('v4 != v1', 'v1 != v4')
         ]
 
         self.domains = {

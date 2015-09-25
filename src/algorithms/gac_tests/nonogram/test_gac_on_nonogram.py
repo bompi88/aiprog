@@ -8,10 +8,10 @@ class TestGACOnNonogram(unittest.TestCase):
         self.variables = ['a', 'b', 'c', 'd']
 
         self.constraints = [
-            'a [0] == c [0]',
-            'a [1] == d [0]',
-            'b [0] == c [1]',
-            'b [1] == d [1]'
+            ('a [0] == c [0]', 'c [0] == a [0]'),
+            ('a [1] == d [0]', 'd [1] == a [0]'),
+            ('b [0] == c [1]', 'c [0] == b [1]'),
+            ('b [1] == d [1]', 'd [1] == b [1]')
         ]
 
         self.domains = {
