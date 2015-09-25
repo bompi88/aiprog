@@ -27,13 +27,13 @@ class GAC(object):
             for v in vars:
                 if v in self.variable_map.keys():
                     self.variable_map[v].append(c1)
-                    self.variable_map[v].append(c2)
+                    # self.variable_map[v].append(c2)
                 else:
                     self.variable_map[v] = [c1]
-                    self.variable_map[v].append(c2)
+                    # self.variable_map[v].append(c2)
 
                 self.queue.append((v, c1))
-                self.queue.append((v, c2))
+                # self.queue.append((v, c2))
 
             self.functions[c1] = (self.make_function(vars, c1), self.make_function(vars, c2))
 
@@ -71,13 +71,16 @@ class GAC(object):
                     # TODO: Document in report or fix
                     else:
                         if self.functions[cv_pair[1]][1](d2, d1):
-                                retain = True
+                            retain = True
             else:
-                if self.functions[cv_pair[1]](d1):
+                if self.functions[cv_pair[1]][0](d1):
                     retain = True
 
             if not retain and d1 in self.domains[cv_pair[0]]:
                 to_remove.append(d1)
+
+        if len(to_remove):
+            self.domains[cv_pair[0]] = deepcopy(self.domains[cv_pair[0]])
 
         # Remove the values from the domain if
         for r in to_remove:

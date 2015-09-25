@@ -30,7 +30,9 @@ class GraphReader(object):
             for v in edge:
                 self.variables.add('v' + str(v))
 
-            self.constraints.append('v{} != v{}'.format(edge[0], edge[1]))
+            c1 = 'v{} != v{}'.format(edge[0], edge[1])
+            c2 = 'v{} != v{}'.format(edge[1], edge[0])
+            self.constraints.append((c1, c2))
 
     @staticmethod
     def load_level(gui):

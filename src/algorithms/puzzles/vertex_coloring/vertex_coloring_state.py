@@ -1,5 +1,5 @@
 """ Specialization of SearchState """
-from copy import deepcopy
+from src.utils.domaincopy import domaincopy
 from collections import OrderedDict
 import itertools
 
@@ -48,6 +48,7 @@ class VertexColoringState(SearchState):
             variables_tbc_new = set(itertools.chain(*[self.gac.constraint_map[x] for x in self.gac.variable_map[self.new_variable]]))
             sum_h -= len(variables_tbc_new)
 
+        # Se paa loesningsrommet domains ^variables
         for domain in self.domains.values():
             if len(domain) == 1:
                 sum_h -= 0.05
@@ -93,7 +94,8 @@ class VertexColoringState(SearchState):
 
         for key, domain in sorted_domains.items():
             for color in domain:
-                new_domain = deepcopy(self.domains)
+
+                new_domain = domaincopy(self.domains)
                 new_domain[key] = [color]
 
                 assumption = (key, [color])
