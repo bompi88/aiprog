@@ -9,7 +9,7 @@ class Navigation(BestFirstSearch):
     """ Map navigation version of A* """
 
     def __init__(self, start, gui=None):
-        BestFirstSearch.__init__(self, start, gui)
+        BestFirstSearch.__init__(self, start, gui, True)
 
     def create_root_node(self):
         return NavigationState(self.start)

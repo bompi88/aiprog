@@ -9,12 +9,13 @@ class BestFirstSearch(object):
      so should be treated as an abstract base class.
     """
 
-    def __init__(self, start, gui=None):
+    def __init__(self, start, gui=None, retain=False):
         self.start = start
         self.gui = gui
         self.mode = C.A_STAR if not gui else gui.mode
         self.delay = 50 if not gui else gui.delay # milliseconds
         self.verbosity = C.SILENT
+        self.retain = retain
 
     def attach_and_eval(self, child, parent):
         """ Attach parent to child and find calculate the child costs """
@@ -46,12 +47,13 @@ class BestFirstSearch(object):
         self.open_push(opened, root)
 
         while opened:
-            print('opened')
             x = self.open_pop(opened)
             x.print_level()
 
             self.node_closed(x, t_0, generated, opened, closed)
-            closed.append(x)
+
+            if self.retain:
+                closed.append(x)
 
             if x.is_solution():
                 self.status_message(x, t_0, generated)
