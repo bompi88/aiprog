@@ -10,10 +10,6 @@ class NonogramReader(object):
     def __init__(self, nonogram):
         self.x, self.y, self.rows, self.columns = nonogram
 
-        for row in self.rows:
-            print('row')
-            print(row)
-
         self.constraints = []
         self.variables = set([])
         self.init_constraints_and_variables()

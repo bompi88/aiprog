@@ -14,17 +14,10 @@ class Nonogram(BestFirstSearch):
         self.gac = GAC()
 
     def create_root_node(self):
-        print 'root node'
         root = NonogramState(self.start, self.gac)
-        print 'root node created'
-        print 'FUCKK'
-        print root.domains
 
         self.gac.initialize(root.state.variables, root.domains, root.state.constraints)
         self.gac.domain_filtering()
-
-        print 'FUCKK'
-        print root.domains
 
         return root
 
@@ -35,7 +28,7 @@ class Nonogram(BestFirstSearch):
 def main():
     """ Text-based test of nonogram """
     solution = Nonogram(NonogramReader(NonogramReader.parse_nonogram(
-        NonogramReader.read_nonogram('nono-heart-1.txt')
+        NonogramReader.read_nonogram('nono-simple.txt')
     ))).best_first_search()
 
     if not solution:

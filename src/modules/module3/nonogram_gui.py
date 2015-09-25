@@ -37,7 +37,6 @@ class NonogramGUI(QtGui.QFrame):
         """ Called whenever a level is loaded, adjust Widget size """
         self.nonogram = nonogram
 
-        print('level loaded')
         # self.node = VertexColoringState(graph)
 
         self.dx = self.dy = 20
@@ -86,7 +85,6 @@ class NonogramGUI(QtGui.QFrame):
 
         painter = QtGui.QPainter(self)
         self.draw_nonogram(painter)
-        print('paint event')
 
     def draw_nonogram(self, painter):
         colors = {

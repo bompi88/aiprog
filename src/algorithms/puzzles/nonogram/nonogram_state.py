@@ -27,11 +27,8 @@ class NonogramState(SearchState):
         self.new_variable = new_variable
         self.last_variable = last_variable
         self.state = nonogram
-        print('domains')
-        print(self.domains)
 
         SearchState.__init__(self, nonogram)
-
 
     @staticmethod
     def init_domain(length, blocks, domains=None, total_length=None):
@@ -72,7 +69,6 @@ class NonogramState(SearchState):
         return NonogramState.init_domain(length - first, rest, new_domains, total_length)
 
     def create_state_identifier(self):
-        print('lagd ny')
         return ':'.join([','.join(str(d) for d in domain) for domain in self.domains.values()])
 
     def heuristic_evaluation(self):
@@ -101,31 +97,26 @@ class NonogramState(SearchState):
     def generate_all_successors(self):
         successors = []
 
-        print('run')
-
         # TODO create successors
 
         viable_domains = {
             key: domain for key, domain in self.domains.items() if len(domain) > 1
         }
-        #
-        # # foo = OrderedDict(sorted(foo.iteritems(), key=lambda x: x[1]['depth']))
-        #
+
         sorted_domains = OrderedDict(sorted(viable_domains.items(), key=lambda x: len(x[1])))
 
         for key, domain in sorted_domains.items():
             for element in domain:
                 new_domain = deepcopy(self.domains)
                 new_domain[key] = [element]
-        #
+
                 assumption = (key, [element])
-        #
+
                 successor = NonogramState(self.state, self.gac, new_domain, self._solution_length + 1, key, self.new_variable)
                 self.gac.rerun(new_domain, assumption)
-        #
+
                 successors.append(successor)
 
-        print(len(successors))
         return successors
 
     def print_level(self):
