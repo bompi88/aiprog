@@ -1,6 +1,5 @@
 from copy import deepcopy
 import itertools
-import inspect
 
 
 class GAC(object):
@@ -103,7 +102,7 @@ class GAC(object):
         return size_domain_new < size_domain_old
 
     def rerun(self, domain, assumption):
-        self.domains = domain
+        self.domains = deepcopy(domain)
         self.add_to_queue(assumption)
         self.domain_filtering()
 

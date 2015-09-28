@@ -3,6 +3,7 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import pyqtSignal
 
 from src.algorithms.puzzles.nonogram.nonogram_bfs import Nonogram
+from src.algorithms.puzzles.nonogram.nonogram_state import NonogramState
 from src.modules.module3.utils.const import C
 from src.modules.module3.utils.search_worker import SearchWorker
 
@@ -28,6 +29,7 @@ class NonogramGUI(QtGui.QFrame):
         self.mode = C.A_STAR
         self.thread = SearchWorker()
         self.init_ui()
+        self.solved = False
 
     def init_ui(self):
         """ Initialize the UI """
@@ -35,7 +37,9 @@ class NonogramGUI(QtGui.QFrame):
 
     def level_loaded(self, filename, nonogram):
         """ Called whenever a level is loaded, adjust Widget size """
+        self.solved = False
         self.nonogram = nonogram
+        self.node = NonogramState(nonogram, None)
 
         # self.node = VertexColoringState(graph)
 
@@ -64,18 +68,16 @@ class NonogramGUI(QtGui.QFrame):
 
     def start_search(self):
         """ Start the search in the worker thread """
-        # TODO fix
         vertex_search = Nonogram(self.nonogram, self)
 
         self.status_message.emit(str('Search started'))
-        # self.thread.search(self, vertex_search)
+        self.thread.search(self, vertex_search)
 
     def paint(self, node):
         """ Receives a node and tells Qt to update the graphics """
-        # self.nonogram = node.state
+        self.node = node
+        self.nonogram = node.state
 
-        self.nonogram = node
-        # self.node = node
         self.update()
 
     def paintEvent(self, _): # pylint: disable=invalid-name
@@ -88,16 +90,64 @@ class NonogramGUI(QtGui.QFrame):
 
     def draw_nonogram(self, painter):
         colors = {
-            1: QtGui.QColor(255, 0, 150),
-            0: QtGui.QColor(255, 255, 150)
+            -1: QtGui.QColor(0, 0, 0), # Unset
+            0: QtGui.QColor(255, 255, 150), # Drawn
+            1: QtGui.QColor(255, 0, 150), # Space
+            2: QtGui.QColor(255, 255, 255) # No domains
         }
 
-        for y, row in enumerate(self.nonogram.solution):
+        domains = self.node.domains if self.node else {}
+
+        print(domains)
+
+        state = [
+            [-1] * self.nonogram.x for _ in range(self.nonogram.y)
+        ]
+
+        row_state = [
+            [-1] * self.nonogram.x for _ in range(self.nonogram.y)
+        ]
+
+        column_state = [
+            [-1] * self.nonogram.x for _ in range(self.nonogram.y)
+        ]
+
+        if domains:
+            for k in range(self.nonogram.y):
+                row_domains = domains['r' + str(k)]
+                if len(row_domains) == 1:
+                    for i, el in enumerate(list(row_domains[0])):
+                        state[self.nonogram.y - k - 1][i] = int(el)
+                        row_state[k][i] = int(el)
+                elif len(row_domains) == 0:
+                    for i in range(self.nonogram.y):
+                        state[k][i] = 2
+
+            # for l in range(self.nonogram.x):
+            #     column_domains = domains['c' + str(l)]
+            #     if len(column_domains) == 1:
+            #         for i, el in enumerate(list(column_domains[0])):
+            #             state[i][l] = int(el)
+            #             column_state[i][l] = int(el)
+            #     elif len(column_domains) == 0:
+            #         for i in range(self.nonogram.x):
+            #             state[i][l] = 2
+            #
+
+        if self.solved:
+            print(row_state)
+            print(column_state)
+
+
+        for y, row in enumerate(state):
             for x, element in enumerate(row):
                 painter.setBrush(colors[element])
                 painter.drawRect((x * self.dx), (y * self.dy), self.dx - 1, self.dy - 1)
 
     def set_graph(self, graph_read):
+        if not graph_read:
+            return
+
         filename, graph = graph_read
 
         self.level_loaded(filename, graph)

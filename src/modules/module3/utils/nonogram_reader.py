@@ -15,19 +15,18 @@ class NonogramReader(object):
         self.init_constraints_and_variables()
 
     def init_constraints_and_variables(self):
-        for i in range(len(self.rows)):
+        for i in range(self.y):
             self.variables.add('r' + str(i))
 
-        for i in range(len(self.columns)):
+        for i in range(self.x):
             self.variables.add('c' + str(i))
 
-        for i in range(len(self.rows)):
-            for j in range(len(self.columns)):
-                id = i * len(self.columns) + j
-                c1 = 'r{r} [{c}] == c{c} [{r}]'.format(r=i, c=j)
-                c2 = 'c{c} [{r}] == r{r} [{c}]'.format(r=i, c=j)
+        for y in range(self.y):
+            for x in range(self.x):
+                id = (y * self.x) + x
+                c1 = 'r{r} [{c}] == c{c} [{r}]'.format(r=y, c=x)
+                c2 = 'c{c} [{r}] == r{r} [{c}]'.format(r=y, c=x)
                 self.constraints.append((id, c1, c2))
-
 
     @staticmethod
     def load_level(gui):
@@ -70,6 +69,6 @@ class NonogramReader(object):
         contents = graph_file.read()
         return contents.splitlines()
 
-#NonogramReader(NonogramReader.parse_nonogram(
-#    NonogramReader.read_nonogram('nono-heart-1.txt')
-#))
+# NonogramReader(NonogramReader.parse_nonogram(
+#     NonogramReader.read_nonogram('nono-a-easypeasy.txt')
+# ))

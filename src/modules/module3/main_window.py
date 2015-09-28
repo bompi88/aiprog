@@ -49,7 +49,7 @@ class MainWindow(QtGui.QMainWindow):
 
         kill_action = QtGui.QAction('&Kill search', self)
         kill_action.setShortcut('Ctrl+K')
-        # kill_action.triggered.connect(self.nonogram_gui.thread.terminate)
+        kill_action.triggered.connect(self.nonogram_gui.thread.end_search)
 
         exit_action = QtGui.QAction('&Exit', self)
         exit_action.setShortcut('Ctrl+Q')

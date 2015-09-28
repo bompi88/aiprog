@@ -7,25 +7,23 @@ from collections import OrderedDict
 class NonogramState(SearchState):
     """  """
 
-    def __init__(self, nonogram, gac, domains=None, solution_length=0, new_variable=None, last_variable=None):
+    def __init__(self, nonogram, gac, domains=None, solution_length=0):
         if domains:
             self.domains = domains
         else:
             self.domains = OrderedDict()
-            for k in range(len(nonogram.rows)):
-                self.domains['r' + str(k)] = NonogramState.init_domain(
+            for k in range(nonogram.y):
+                self.domains['r' + str(nonogram.y - k - 1)] = NonogramState.init_domain(
                     nonogram.x, nonogram.rows[k]
                 )
 
-            for l in range(len(nonogram.columns)):
+            for l in range(nonogram.x):
                 self.domains['c' + str(l)] = NonogramState.init_domain(
                     nonogram.y, nonogram.columns[l]
                 )
 
         self.gac = gac
         self._solution_length = solution_length
-        self.new_variable = new_variable
-        self.last_variable = last_variable
         self.state = nonogram
 
         SearchState.__init__(self, nonogram)
@@ -97,22 +95,21 @@ class NonogramState(SearchState):
     def generate_all_successors(self):
         successors = []
 
-        # TODO create successors
-
         viable_domains = {
             key: domain for key, domain in self.domains.items() if len(domain) > 1
         }
 
-        sorted_domains = OrderedDict(sorted(viable_domains.items(), key=lambda x: len(x[1])))
-
-        for key, domain in sorted_domains.items():
+        for key, domain in viable_domains.items():
             for element in domain:
                 new_domain = deepcopy(self.domains)
                 new_domain[key] = [element]
 
                 assumption = (key, [element])
 
-                successor = NonogramState(self.state, self.gac, new_domain, self._solution_length + 1, key, self.new_variable)
+                successor = NonogramState(self.state,
+                                          self.gac,
+                                          new_domain,
+                                          self._solution_length + 1)
                 self.gac.rerun(new_domain, assumption)
 
                 successors.append(successor)

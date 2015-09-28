@@ -21,14 +21,23 @@ class SearchWorker(QThread):
         """
         solution = self.nonogram_search.best_first_search()
 
-        node = NonogramState(
-            solution.state,
-            None,
-            solution.domains,
-            solution.solution_length
-        )
+        if solution:
+            node = NonogramState(
+                solution.state,
+                None,
+                solution.domains,
+                solution.solution_length
+            )
 
-        self.gui.node = node
+            self.gui.node = node
+            self.gui.solved = True
+        else:
+            self.gui.status_message.emit('Failed')
+
+    def end_search(self):
+        self.gui.status_message.emit('Killing search')
+        self.setTerminationEnabled(True)
+        self.terminate()
 
     def __del__(self):
         self.exiting = True

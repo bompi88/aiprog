@@ -33,6 +33,7 @@ class SearchWorker(QThread):
         self.gui.node = node
 
     def __del__(self):
+        self.gui.status_message.emit(str('Killing search'))
         self.exiting = True
         self.wait()
 
