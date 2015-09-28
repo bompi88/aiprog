@@ -38,6 +38,7 @@ class MainWindow(QtGui.QMainWindow):
     def init_menubar(self):
         """ Initializes a menubar with the following items:
          File -> [ Load, Kill, Exit ]
+         Vertex Numbers -> [Yes, No]
         """
         load_action = QtGui.QAction('&Load graph', self)
         load_action.setShortcut('Ctrl+L')
@@ -49,11 +50,23 @@ class MainWindow(QtGui.QMainWindow):
 
         kill_action = QtGui.QAction('&Kill search', self)
         kill_action.setShortcut('Ctrl+K')
-        kill_action.triggered.connect(self.graph_gui.thread.terminate)
+        kill_action.triggered.connect(self.graph_gui.thread.end_search)
 
         exit_action = QtGui.QAction('&Exit', self)
         exit_action.setShortcut('Ctrl+Q')
         exit_action.triggered.connect(QtGui.qApp.quit)
+
+        yes_action = QtGui.QAction('&Yes', self)
+        yes_action.triggered.connect(
+            lambda: (self.graph_gui.set_vertex_numbering(True)
+                     and self.numbering_changed(True))
+        )
+
+        no_action = QtGui.QAction('&No', self)
+        no_action.triggered.connect(
+            lambda: (self.graph_gui.set_vertex_numbering(False)
+                     and self.numbering_changed(False))
+        )
 
         menu = self.menuBar()
         menu.setNativeMenuBar(False)
@@ -61,6 +74,10 @@ class MainWindow(QtGui.QMainWindow):
         file_menu.addAction(load_action)
         file_menu.addAction(kill_action)
         file_menu.addAction(exit_action)
+
+        numbering_menu = menu.addMenu('&Vertex Numbers')
+        numbering_menu.addAction(yes_action)
+        numbering_menu.addAction(no_action)
 
     def init_toolbar(self):
         """ Initializes a toolbar, with a run button and delay controls """
@@ -120,6 +137,13 @@ class MainWindow(QtGui.QMainWindow):
     def color_changed(self, color):
         """ Writes to status bar when color is changed """
         self.statusBar().showMessage('Amount of colors available: ' + str(color))
+
+    def numbering_changed(self, numbering):
+        if numbering:
+            self.statusBar().showMessage('Showing vertex numbers')
+        else:
+            self.statusBar().showMessage('Hiding vertex numbers')
+
 
 
 def main():

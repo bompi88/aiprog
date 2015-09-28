@@ -94,7 +94,6 @@ class VertexColoringState(SearchState):
 
         for key, domain in sorted_domains.items():
             for color in domain:
-
                 new_domain = domaincopy(self.domains)
                 new_domain[key] = [color]
 

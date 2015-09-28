@@ -2,18 +2,17 @@ from copy import deepcopy
 
 
 class GAC(object):
-
     def __init__(self):
-        self.variable_map = {}  # Key: variable, Value: all constraints which includes this variable
-        self.constraint_map = {}  # Key: expression/constraint, Value: all variables in this constraint
-        self.queue = []  # tuples (variable, expression/constraint)
-        self.functions = {} # Key: expression/constraint, Value: method to evaluate constraint
-        self.domains = {}  # Key: variable, Value: List of available values that represent the domain of the variable
+        self.variable_map = {}  # variable => list of constraint ids
+        self.constraint_map = {}  # constraint_id => list of vars
+        self.queue = []  # tuples (variable, constraint)
+        self.functions = {} # constraint_id => (f(x, y), f(y, x))
+        self.domains = {}  # variable => list of domains
 
         self.constraints = {} # Key: constraint_id, Value: c1, c2
 
     def initialize(self, variables, domains, constraints):
-        self.domains = deepcopy(domains)
+        self.domains = domains
 
         for (id, c1, c2) in constraints:
             elements = c1.split()
@@ -43,8 +42,6 @@ class GAC(object):
             if self.revise_star(todo_revise):
                 self.add_to_queue(todo_revise, True)
 
-        return self.domains
-
     def revise_star(self, var_cons_pair):
         variable = var_cons_pair[0]
         original_domain_size = len(self.domains[variable])
@@ -58,29 +55,34 @@ class GAC(object):
         for d1 in self.domains[variable]:
             retain = False
 
-            if vars_to_consider and len(vars_to_consider) > 0:
-                for d2 in self.domains[vars_to_consider[0]]:
-                    var_order = c1.split()
+            funcs = self.functions[constraint_id]
 
-                    if var_order[0] is variable:
-                        if self.functions[constraint_id][0](d1, d2):
-                            retain = True
+            for v in vars_to_consider:
+                for d2 in self.domains[v]:
+                    if c1[:2] == v:
+                        try:
+                            if funcs[0](d1, d2):
+                                retain = True
+                        except:
+                            pass
                     else:
-                        if self.functions[constraint_id][1](d1, d2):
-                            retain = True
+                        try:
+                            if funcs[1](d2, d1):
+                                retain = True
+                        except:
+                            pass
 
-            else:
-                if self.functions[constraint_id][0](d1):
-                    retain = True
+            if not vars_to_consider and funcs[0](d1):
+                retain = True
 
-            if not retain and d1 in self.domains[variable]:
+            if not retain:
                 to_remove.append(d1)
 
         self.domains[variable] = [
             e for e in self.domains[variable] if e not in to_remove
         ]
 
-        if (len(self.domains[variable]) - len(to_remove)) is 1:
+        if len(self.domains[variable]) is 1:
             for el in self.queue:
                 if el[0] is variable:
                     self.queue.remove(el)
@@ -98,7 +100,7 @@ class GAC(object):
         var = objective[0]
         constraints = set(self.variable_map[var])
 
-        # all affected variables
+        # All affected variables
         variable_lists = [self.constraint_map[c] for c in constraints]
         variables = set([el for row in variable_lists for el in row]) # Flatten
 

@@ -11,7 +11,7 @@ class NonogramState(SearchState):
         if domains:
             self.domains = domains
         else:
-            self.domains = OrderedDict()
+            self.domains = {}
             for k in range(nonogram.y):
                 self.domains['r' + str(nonogram.y - k - 1)] = NonogramState.init_domain(
                     nonogram.x, nonogram.rows[k]
@@ -44,10 +44,7 @@ class NonogramState(SearchState):
 
         first, rest = blocks[0], blocks[1:]
 
-        if rest:
-            min_length_rest = sum(rest) + len(rest)
-        else:
-            min_length_rest = 0
+        min_length_rest = sum(rest) + len(rest)
 
         free_space = length - min_length_rest
         max_index = free_space - first + 1
@@ -106,11 +103,12 @@ class NonogramState(SearchState):
 
                 assumption = (key, [element])
 
+
+                self.gac.rerun(new_domain, assumption)
                 successor = NonogramState(self.state,
                                           self.gac,
                                           new_domain,
                                           self._solution_length + 1)
-                self.gac.rerun(new_domain, assumption)
 
                 successors.append(successor)
 

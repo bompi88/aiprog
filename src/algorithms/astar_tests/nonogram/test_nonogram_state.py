@@ -1,5 +1,5 @@
 import unittest
-from src.algorithms.astar.nonogram.nonogram_state import NonogramState
+from src.algorithms.puzzles.nonogram.nonogram_state import NonogramState
 
 class TestNonogramState(unittest.TestCase):
     def test_init_domain_one_block(self):

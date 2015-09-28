@@ -16,11 +16,12 @@ class GraphGUI(QtGui.QFrame):
     def __init__(self, parent):
         QtGui.QFrame.__init__(self, parent)
 
-        self.dx = self.dy = 20
-        self.offset_dx = self.offset_dy = 35
+        self.dx = self.dy = None
+        self.offset_dx = self.offset_dy = None
         self.graph_width_px = self.graph_height_px = 600
         self.nc_adjust_x = 0 # Adjustment for negative coordinates
         self.nc_adjust_y = 0
+        self.total_height = 0
         self.vertex_radii = 5
         self.corners = []
 
@@ -28,6 +29,7 @@ class GraphGUI(QtGui.QFrame):
         self.graph = None
         self.node = None
         self.mode = C.A_STAR
+        self.vertex_numbering = False
         self.num_colors = 4
         self.thread = SearchWorker()
         self.init_ui()
@@ -53,6 +55,7 @@ class GraphGUI(QtGui.QFrame):
 
         self.dy = self.dy * (self.graph_height_px / height_orig)
         height = (self.graph.height * self.dy) + (2 * self.offset_dy)
+        self.total_height = height
 
         self.nc_adjust_x = self.graph.min_x * self.dx
         self.nc_adjust_y = self.graph.min_y * self.dy
@@ -90,12 +93,13 @@ class GraphGUI(QtGui.QFrame):
         painter = QtGui.QPainter(self)
         self.paint_graph(painter)
 
-    def draw_vertex(self, vertex, painter):
+    def draw_vertex(self, vid, vertex, painter):
         x = (vertex[1] * self.dx) + self.offset_dx - self.nc_adjust_x
         y = (vertex[2] * self.dy) + self.offset_dy - self.nc_adjust_y
+        y = self.total_height - y
         point = QtCore.QPoint(x, y)
 
-        color = {
+        colors = {
             C.RED: QtGui.QColor(255, 128, 0),
             C.GREEN: QtGui.QColor(0, 200, 0),
             C.BLUE: QtGui.QColor(0, 0, 255),
@@ -106,11 +110,16 @@ class GraphGUI(QtGui.QFrame):
             C.YELLOW: QtGui.QColor(255, 255, 0),
             C.PURPLE: QtGui.QColor(238,130,238),
             C.BROWN: QtGui.QColor(222,184,135)
-        }[self.node.vertex_color(vertex[0])]
+        }
+        color = colors[self.node.vertex_color(vertex[0])]
 
         painter.setPen(color)
         painter.setBrush(color)
         painter.drawEllipse(point, self.vertex_radii, self.vertex_radii)
+
+        if self.vertex_numbering:
+            painter.setPen(colors[C.BLACK])
+            painter.drawText(x, y, str(vid))
 
     def draw_edge(self, edge, painter):
         v1, v2 = self.graph.vertices[edge[0]], self.graph.vertices[edge[1]]
@@ -119,6 +128,8 @@ class GraphGUI(QtGui.QFrame):
         y1 = (v1[2] * self.dy) + self.offset_dy - self.nc_adjust_y
         x2 = (v2[1] * self.dx) + self.offset_dx - self.nc_adjust_x
         y2 = (v2[2] * self.dy) + self.offset_dy - self.nc_adjust_y
+
+        y1, y2 = self.total_height - y1, self.total_height - y2
 
         p1, p2 = QtCore.QPoint(x1, y1), QtCore.QPoint(x2, y2)
 
@@ -146,8 +157,8 @@ class GraphGUI(QtGui.QFrame):
         for edge in self.graph.edges:
             self.draw_edge(edge, painter)
 
-        for vertex in self.graph.vertices:
-            self.draw_vertex(vertex, painter)
+        for i, vertex in enumerate(self.graph.vertices):
+            self.draw_vertex(i, vertex, painter)
 
     def set_graph(self, graph_read):
         filename, graph = graph_read
@@ -157,6 +168,11 @@ class GraphGUI(QtGui.QFrame):
     def set_color(self, colors):
         """ Change delay """
         self.num_colors = colors
+        return True
+
+    def set_vertex_numbering(self, numbering):
+        self.vertex_numbering = numbering
+        self.update()
         return True
 
     # Not needed in GraphGui

@@ -90,15 +90,13 @@ class NonogramGUI(QtGui.QFrame):
 
     def draw_nonogram(self, painter):
         colors = {
-            -1: QtGui.QColor(0, 0, 0), # Unset
+            -1: QtGui.QColor(130, 130, 130), # Unset
             0: QtGui.QColor(255, 255, 150), # Drawn
             1: QtGui.QColor(255, 0, 150), # Space
             2: QtGui.QColor(255, 255, 255) # No domains
         }
 
         domains = self.node.domains if self.node else {}
-
-        print(domains)
 
         state = [
             [-1] * self.nonogram.x for _ in range(self.nonogram.y)
@@ -113,26 +111,26 @@ class NonogramGUI(QtGui.QFrame):
         ]
 
         if domains:
-            for k in range(self.nonogram.y):
-                row_domains = domains['r' + str(k)]
-                if len(row_domains) == 1:
-                    for i, el in enumerate(list(row_domains[0])):
-                        state[self.nonogram.y - k - 1][i] = int(el)
-                        row_state[k][i] = int(el)
-                elif len(row_domains) == 0:
-                    for i in range(self.nonogram.y):
-                        state[k][i] = 2
-
-            # for l in range(self.nonogram.x):
-            #     column_domains = domains['c' + str(l)]
-            #     if len(column_domains) == 1:
-            #         for i, el in enumerate(list(column_domains[0])):
-            #             state[i][l] = int(el)
-            #             column_state[i][l] = int(el)
-            #     elif len(column_domains) == 0:
-            #         for i in range(self.nonogram.x):
-            #             state[i][l] = 2
+            # for k in range(self.nonogram.y):
+            #     row_domains = domains['r' + str(k)]
+            #     if len(row_domains) == 1:
+            #         for i, el in enumerate(list(row_domains[0])):
+            #             state[self.nonogram.y - k - 1][i] = int(el)
+            #             row_state[k][i] = int(el)
+            #     elif len(row_domains) == 0:
+            #         for i in range(self.nonogram.y):
+            #             state[k][i] = 2
             #
+            for l in range(self.nonogram.x):
+                column_domains = domains['c' + str(l)]
+                if len(column_domains) == 1:
+                    for i, el in enumerate(list(column_domains[0])):
+                        state[i][l] = int(el)
+                        column_state[i][l] = int(el)
+                elif len(column_domains) == 0:
+                    for i in range(self.nonogram.x):
+                        state[i][l] = 2
+
 
         if self.solved:
             print(row_state)
