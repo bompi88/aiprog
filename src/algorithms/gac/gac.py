@@ -1,5 +1,4 @@
 from copy import deepcopy
-import itertools
 
 
 class GAC(object):
@@ -46,18 +45,14 @@ class GAC(object):
 
         return self.domains
 
-    def revise_star(self, cv_pair):
-        # todo: add multiple variable support
-
-        variable = cv_pair[0]
-        constraint_id, c1, c2 = cv_pair[1]
-
-        size_domain_old = len(self.domains[variable])
-
-        vars_to_consider = deepcopy(self.constraint_map[constraint_id])
-        vars_to_consider.remove(variable)
+    def revise_star(self, var_cons_pair):
+        variable = var_cons_pair[0]
+        original_domain_size = len(self.domains[variable])
+        constraint_id, c1, c2 = var_cons_pair[1]
 
         to_remove = []
+        vars_to_consider = deepcopy(self.constraint_map[constraint_id])
+        vars_to_consider.remove(variable)
 
         # For all values in focus variable's domain
         for d1 in self.domains[variable]:
@@ -71,12 +66,9 @@ class GAC(object):
                         if self.functions[constraint_id][0](d1, d2):
                             retain = True
                     else:
-                        try:
-                            if self.functions[constraint_id][1](d1, d2):
-                                retain = True
-                        except:
-                            if self.functions[constraint_id][1](d2, d1):
-                                retain = True
+                        if self.functions[constraint_id][1](d1, d2):
+                            retain = True
+
             else:
                 if self.functions[constraint_id][0](d1):
                     retain = True
@@ -84,41 +76,40 @@ class GAC(object):
             if not retain and d1 in self.domains[variable]:
                 to_remove.append(d1)
 
-        if len(to_remove):
-            self.domains[variable] = deepcopy(self.domains[variable])
+        self.domains[variable] = [
+            e for e in self.domains[variable] if e not in to_remove
+        ]
 
-        # Remove the values from the domain if
-        for r in to_remove:
-            self.domains[variable].remove(r)
-
-        if len(self.domains[variable]) is 1:
+        if (len(self.domains[variable]) - len(to_remove)) is 1:
             for el in self.queue:
                 if el[0] is variable:
                     self.queue.remove(el)
 
-        size_domain_new = len(self.domains[variable])
-
         # if domain gets reduced, return true
-        return size_domain_new < size_domain_old
+        return len(self.domains[variable]) < original_domain_size
 
     def rerun(self, domain, assumption):
-        self.domains = deepcopy(domain)
+        self.domains = domain
         self.add_to_queue(assumption)
         self.domain_filtering()
 
     def add_to_queue(self, objective, exclude=False):
         # All constraints that has to be rechecked
-        constraints = set(self.variable_map[objective[0]])
+        var = objective[0]
+        constraints = set(self.variable_map[var])
 
         # all affected variables
-        variables = set(itertools.chain(*[self.constraint_map[c] for c in constraints]))
+        variable_lists = [self.constraint_map[c] for c in constraints]
+        variables = set([el for row in variable_lists for el in row]) # Flatten
+
+        objective_id = objective[1][0]
 
         for v in variables:
             cs = self.variable_map[v]
 
             for c_id in cs:
                 # Do not consider the last revised constraint
-                if exclude and c_id is objective[1]:
+                if exclude and c_id is objective_id:
                     continue
                 else:
                     c1, c2 = self.constraints[c_id]

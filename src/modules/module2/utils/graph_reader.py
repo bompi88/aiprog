@@ -77,6 +77,4 @@ class GraphReader(object):
         contents = graph_file.read()
         return contents.splitlines()
 
-g = GraphReader(GraphReader.parse_graph(GraphReader.read_graph('graph-color-1.txt')))
-print g.constraints
-print g.variables
+# g = GraphReader(GraphReader.parse_graph(GraphReader.read_graph('graph-color-1.txt')))

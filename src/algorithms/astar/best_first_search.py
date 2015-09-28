@@ -105,7 +105,6 @@ class BestFirstSearch(object):
     def node_closed(self, node, t_0, generated, opened, closed):
         """ Called when node is popped from opened, notifies GUI if needed """
         node.status = C.CLOSED
-        print("node closed")
 
         if self.gui:
             self.gui.set_opened_closed(opened, closed)
