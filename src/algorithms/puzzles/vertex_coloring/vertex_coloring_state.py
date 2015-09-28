@@ -38,11 +38,11 @@ class VertexColoringState(SearchState):
         sum_h = 0
 
         # Give penalty for not being a neighbor
-        if self.last_variable:
-            variables_tbc_old = set(itertools.chain(*[self.gac.constraint_map[x] for x in self.gac.variable_map[self.last_variable]]))
-
-            if self.new_variable not in variables_tbc_old:
-                sum_h += math.log(10)
+        # if self.last_variable:
+        #     variables_tbc_old = set(itertools.chain(*[self.gac.constraint_map[x] for x in self.gac.variable_map[self.last_variable]]))
+        #
+        #     if self.new_variable not in variables_tbc_old:
+        #         sum_h += math.log(10)
 
         # Give credits for being the most constrained vertex
         if self.new_variable:
