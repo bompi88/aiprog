@@ -26,13 +26,13 @@ class GraphReader(object):
         self.init_constraints_and_variables()
 
     def init_constraints_and_variables(self):
-        for edge in self.edges:
-            for v in edge:
-                self.variables.add('v' + str(v))
+        for v in range(self.nv):
+            self.variables.add('v' + str(v))
 
+        for id, edge in enumerate(self.edges):
             c1 = 'v{} != v{}'.format(edge[0], edge[1])
             c2 = 'v{} != v{}'.format(edge[1], edge[0])
-            self.constraints.append((c1, c2))
+            self.constraints.append((id, c1, c2))
 
     @staticmethod
     def load_level(gui):

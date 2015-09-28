@@ -25,11 +25,33 @@ class VertexColoring(BestFirstSearch):
         return 0
 
 
+class StatusMock(object):
+    def emit(self, str):
+        pass
+
+
+class GuiMock(object):
+
+    def __init__(self):
+        self.num_colors = 4
+        self.mode = 1 # TODO: C.A_STAR
+        self.delay = 0
+        self.status_message = StatusMock()
+
+    def set_opened_closed(self, opened, closed):
+        pass
+
+    def paint(self, node):
+        pass
+
 def main():
     """ Text-based test of VertexColoring """
-    solution = VertexColoring(GraphReader(
-        GraphReader.parse_graph(GraphReader.read_graph('spiral-500-4-color1.txt'))
-    )).best_first_search()
+    solution = VertexColoring(
+        GraphReader(GraphReader.parse_graph(
+            GraphReader.read_graph('rand-50-4-color1.txt')
+        )),
+        GuiMock()
+    ).best_first_search()
 
     if not solution:
         print "Failed"
