@@ -12,30 +12,31 @@ class GAC(object):
         self.functions = {} # Key: expression/constraint, Value: method to evaluate constraint
         self.domains = {}  # Key: variable, Value: List of available values that represent the domain of the variable
 
+        self.constraints = {} # Key: constraint_id, Value: c1, c2
+
     def initialize(self, variables, domains, constraints):
         self.domains = deepcopy(domains)
 
-        for (c1, c2) in constraints:
-            elements1 = c1.split()
-            elements2 = c2.split()
+        for (id, c1, c2) in constraints:
+            elements = c1.split()
 
-            vars = list(set(elements1) & set(elements2) & set(variables))
+            vars = list(set(elements) & set(variables))
 
-            self.constraint_map[c1] = vars
-            self.constraint_map[c2] = vars
+            self.constraints[id] = (c1, c2)
+            self.constraint_map[id] = vars
 
             for v in vars:
                 if v in self.variable_map.keys():
-                    self.variable_map[v].append(c1)
-                    # self.variable_map[v].append(c2)
+                    self.variable_map[v].append(id)
                 else:
-                    self.variable_map[v] = [c1]
-                    # self.variable_map[v].append(c2)
+                    self.variable_map[v] = [id]
 
-                self.queue.append((v, c1))
-                # self.queue.append((v, c2))
+                self.queue.append((v, (id, c1, c2)))
 
-            self.functions[c1] = (self.make_function(vars, c1), self.make_function(vars, c2))
+            self.functions[id] = (
+                self.make_function(vars, c1),
+                self.make_function(vars, c2)
+            )
 
     def domain_filtering(self):
         while len(self.queue):
@@ -49,55 +50,57 @@ class GAC(object):
     def revise_star(self, cv_pair):
         # todo: add multiple variable support
 
-        size_domain_old = len(self.domains[cv_pair[0]])
+        variable = cv_pair[0]
+        constraint_id, c1, c2 = cv_pair[1]
 
-        vars_to_consider = deepcopy(self.constraint_map[cv_pair[1]])
-        vars_to_consider.remove(cv_pair[0])
+        size_domain_old = len(self.domains[variable])
+
+        vars_to_consider = deepcopy(self.constraint_map[constraint_id])
+        vars_to_consider.remove(variable)
 
         to_remove = []
 
         # For all values in focus variable's domain
-        for d1 in self.domains[cv_pair[0]]:
+        for d1 in self.domains[variable]:
             retain = False
 
             if vars_to_consider and len(vars_to_consider) > 0:
                 for d2 in self.domains[vars_to_consider[0]]:
-                    var_order = cv_pair[1].split()
+                    var_order = c1.split()
 
-                    if var_order[0] is cv_pair[0]:
-                        if self.functions[cv_pair[1]][0](d1, d2):
+                    if var_order[0] is variable:
+                        if self.functions[constraint_id][0](d1, d2):
                             retain = True
-
-                    # TODO: Document in report or fix
                     else:
-                        if self.functions[cv_pair[1]][1](d2, d1):
-                            retain = True
+                        try:
+                            if self.functions[constraint_id][1](d1, d2):
+                                retain = True
+                        except:
+                            if self.functions[constraint_id][1](d2, d1):
+                                retain = True
             else:
-                if self.functions[cv_pair[1]][0](d1):
+                if self.functions[constraint_id][0](d1):
                     retain = True
 
-            if not retain and d1 in self.domains[cv_pair[0]]:
+            if not retain and d1 in self.domains[variable]:
                 to_remove.append(d1)
 
         if len(to_remove):
-            self.domains[cv_pair[0]] = deepcopy(self.domains[cv_pair[0]])
+            self.domains[variable] = deepcopy(self.domains[variable])
 
         # Remove the values from the domain if
         for r in to_remove:
-            self.domains[cv_pair[0]].remove(r)
+            self.domains[variable].remove(r)
 
-        if len(self.domains[cv_pair[0]]) is 1:
+        if len(self.domains[variable]) is 1:
             for el in self.queue:
-                if el[0] is cv_pair[0]:
+                if el[0] is variable:
                     self.queue.remove(el)
 
-        size_domain_new = len(self.domains[cv_pair[0]])
+        size_domain_new = len(self.domains[variable])
 
         # if domain gets reduced, return true
-        if size_domain_new < size_domain_old:
-            return True
-        else:
-            return False
+        return size_domain_new < size_domain_old
 
     def rerun(self, domain, assumption):
         self.domains = domain
@@ -114,12 +117,13 @@ class GAC(object):
         for v in variables:
             cs = self.variable_map[v]
 
-            for c in cs:
+            for c_id in cs:
                 # Do not consider the last revised constraint
-                if exclude and c is objective[1]:
+                if exclude and c_id is objective[1]:
                     continue
                 else:
-                    self.queue.append((v, c))
+                    c1, c2 = self.constraints[c_id]
+                    self.queue.append((v, (c_id, c1, c2)))
 
     @staticmethod
     def make_function(variable_names, expression, environment=globals()):

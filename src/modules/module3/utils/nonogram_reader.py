@@ -23,9 +23,10 @@ class NonogramReader(object):
 
         for i in range(len(self.rows)):
             for j in range(len(self.columns)):
+                id = i * len(self.columns) + j
                 c1 = 'r{r} [{c}] == c{c} [{r}]'.format(r=i, c=j)
                 c2 = 'c{c} [{r}] == r{r} [{c}]'.format(r=i, c=j)
-                self.constraints.append((c1, c2))
+                self.constraints.append((id, c1, c2))
 
 
     @staticmethod

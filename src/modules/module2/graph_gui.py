@@ -159,6 +159,6 @@ class GraphGUI(QtGui.QFrame):
         self.num_colors = colors
         return True
 
+    # Not needed in GraphGui
     def set_opened_closed(self, opened, closed):
-        self.opened = opened
-        self.closed = closed
+        pass
