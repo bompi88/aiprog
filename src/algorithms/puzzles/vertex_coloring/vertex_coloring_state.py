@@ -1,5 +1,4 @@
 """ Specialization of SearchState """
-from src.utils.domaincopy import domaincopy
 from collections import OrderedDict
 from copy import copy
 import itertools
@@ -39,16 +38,10 @@ class VertexColoringState(SearchState):
         sum_h = 0
 
         # Give penalty for not being a neighbor
-        # if self.last_variable:
-        #     variables_tbc_old = set(itertools.chain(*[self.gac.constraint_map[x] for x in self.gac.variable_map[self.last_variable]]))
-        #
-        #     if self.new_variable not in variables_tbc_old:
-        #         sum_h += math.log(10)
-
-        # Give credits for being the most constrained vertex
-        # if self.new_variable:
-        #     variables_tbc_new = set(itertools.chain(*[self.gac.constraint_map[x] for x in self.gac.variable_map[self.new_variable]]))
-        #     sum_h -= math.log(len(variables_tbc_new) * 20)
+        if self.last_variable:
+            variables_tbc_old = set(itertools.chain(*[x.variables for x in self.gac.variable_map[self.last_variable]]))
+            if self.new_variable not in variables_tbc_old:
+                sum_h += math.log(20)
 
         # Look at the solotion domain, and use log to transform
         # it to simple additions in the solution space
@@ -62,6 +55,7 @@ class VertexColoringState(SearchState):
 
     def is_solution(self):
         for domain in self.domains.values():
+            print domain
             if len(domain) != 1:
                 return False
 
@@ -91,7 +85,7 @@ class VertexColoringState(SearchState):
 
         # foo = OrderedDict(sorted(foo.iteritems(), key=lambda x: x[1]['depth']))
 
-        sorted_domains = OrderedDict(sorted(viable_domains.items(), key=lambda x: len(x[1])))
+        sorted_domains = OrderedDict(sorted(viable_domains.items(), key=lambda x: (-len(self.gac.variable_map[x[0]]), len(x[0]))))
 
         for key, domain in sorted_domains.items():
             for color in domain:
