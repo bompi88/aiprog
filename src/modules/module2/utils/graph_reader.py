@@ -2,6 +2,7 @@
 import os
 import res
 from PyQt4 import QtGui
+from src.modules.module2.constraint import VertexConstraint
 
 
 class GraphReader(object):
@@ -30,9 +31,7 @@ class GraphReader(object):
             self.variables.add('v' + str(v))
 
         for id, edge in enumerate(self.edges):
-            c1 = 'v{} != v{}'.format(edge[0], edge[1])
-            c2 = 'v{} != v{}'.format(edge[1], edge[0])
-            self.constraints.append((id, c1, c2))
+            self.constraints.append(VertexConstraint('v{} != v{}'.format(edge[0], edge[1])))
 
     @staticmethod
     def load_level(gui):

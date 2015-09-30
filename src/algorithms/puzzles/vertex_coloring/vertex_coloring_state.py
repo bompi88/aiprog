@@ -1,6 +1,7 @@
 """ Specialization of SearchState """
 from src.utils.domaincopy import domaincopy
 from collections import OrderedDict
+from copy import copy
 import itertools
 import math
 
@@ -45,9 +46,9 @@ class VertexColoringState(SearchState):
         #         sum_h += math.log(10)
 
         # Give credits for being the most constrained vertex
-        if self.new_variable:
-            variables_tbc_new = set(itertools.chain(*[self.gac.constraint_map[x] for x in self.gac.variable_map[self.new_variable]]))
-            sum_h -= math.log(len(variables_tbc_new) * 20)
+        # if self.new_variable:
+        #     variables_tbc_new = set(itertools.chain(*[self.gac.constraint_map[x] for x in self.gac.variable_map[self.new_variable]]))
+        #     sum_h -= math.log(len(variables_tbc_new) * 20)
 
         # Look at the solotion domain, and use log to transform
         # it to simple additions in the solution space
@@ -94,15 +95,14 @@ class VertexColoringState(SearchState):
 
         for key, domain in sorted_domains.items():
             for color in domain:
-                new_domain = domaincopy(self.domains)
+                new_domain = copy(self.domains)
                 new_domain[key] = [color]
 
-                assumption = (key, [color])
-
                 successor = VertexColoringState(self.state, self.gac, self.num_colors, new_domain, self._solution_length + 1, key, self.new_variable)
-                self.gac.rerun(new_domain, assumption)
+                result = self.gac.rerun(new_domain, key)
 
-                successors.append(successor)
+                if result:
+                    successors.append(successor)
 
         return successors
 

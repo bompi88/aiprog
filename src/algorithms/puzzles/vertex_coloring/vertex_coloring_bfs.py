@@ -16,7 +16,7 @@ class VertexColoring(BestFirstSearch):
     def create_root_node(self):
         root = VertexColoringState(self.start, self.gac, self.gui.num_colors)
 
-        self.gac.initialize(root.state.variables, root.domains, root.state.constraints)
+        self.gac.initialize(root.domains, root.state.constraints)
         self.gac.domain_filtering()
 
         return root
@@ -43,6 +43,7 @@ class GuiMock(object):
 
     def paint(self, node):
         pass
+
 
 def main():
     """ Text-based test of VertexColoring """
