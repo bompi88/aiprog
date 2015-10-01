@@ -11,7 +11,7 @@ class Constraint(object):
         """ Creates the runtime method to evaluate the constraint """
         raise NotImplementedError('Implement create_func() in Constraint subclass')
 
-    def evaluate(self, focus_var, focus_val, domains):
+    def revise(self, v, c, domains):
         """ Evaluates the constraint with the given variables """
         raise NotImplementedError('Implement evaluate() in Constraint subclass')
 

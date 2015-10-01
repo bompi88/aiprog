@@ -1,5 +1,6 @@
 from src.algorithms.gac.constraint import Constraint
 from src.algorithms.gac.func import make_function
+from copy import deepcopy
 
 
 class VertexConstraint(Constraint):
@@ -14,8 +15,18 @@ class VertexConstraint(Constraint):
     def create_func(self):
         self.function = make_function(self.variables, self.expression)
 
-    def evaluate(self, focus_var, focus_val, other_var, domains):
-        return focus_val not in domains[other_var]
+    def revise(self, v, c, domains):
+        want_new = True
+
+        for variable in c.variables:
+            if v != variable and len(domains[variable]) == 1 and domains[variable][0] in domains[v]:
+                if want_new:
+                    domains[v] = deepcopy(domains[v])
+                    want_new = False
+
+                domains[v].remove(domains[variable][0])
+                return True
+        return False
 
     def parse_vars(self):
         self.variables = list(i for i in self.expression.split() if i != '!=')

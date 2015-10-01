@@ -31,17 +31,7 @@ class GAC(object):
         return True
 
     def revise(self, v, c):
-        want_new = True
-
-        for variable in c.variables:
-            if v != variable and len(self.domains[variable]) == 1 and self.domains[variable][0] in self.domains[v]:
-                if want_new:
-                    self.domains[v] = deepcopy(self.domains[v])
-                    want_new = False
-
-                self.domains[v].remove(self.domains[variable][0])
-                return True
-        return False
+        return c.revise(v, c, self.domains)
 
     def rerun(self, domains, assumption):
         self.domains = domains
