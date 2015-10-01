@@ -1,6 +1,6 @@
 """ Specialization of SearchState """
 from collections import OrderedDict
-from copy import copy
+from src.utils.domaincopy import domaincopy
 import itertools
 import math
 
@@ -43,7 +43,7 @@ class VertexColoringState(SearchState):
             if self.new_variable not in variables_tbc_old:
                 sum_h += math.log(20)
 
-        # Give credits for being most constrained
+        # Give credits for being the most constrained vertex
         if self.new_variable:
             variables_tbc_new = set(itertools.chain(*[x.variables for x in self.gac.variable_map[self.new_variable]]))
             sum_h -= math.log(len(variables_tbc_new) * 20)
@@ -57,7 +57,6 @@ class VertexColoringState(SearchState):
 
     def is_solution(self):
         for domain in self.domains.values():
-            print domain
             if len(domain) != 1:
                 return False
 
@@ -91,7 +90,7 @@ class VertexColoringState(SearchState):
 
         for key, domain in sorted_domains.items():
             for color in domain:
-                new_domains = copy(self.domains)
+                new_domains = domaincopy(self.domains)
                 new_domains[key] = [color]
 
                 successor = VertexColoringState(self.state, self.gac, self.num_colors, new_domains, self._solution_length + 1, key, self.new_variable)

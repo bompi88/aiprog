@@ -21,7 +21,7 @@ class GAC(object):
             v, c = self.queue.pop(0)
 
             if self.revise(v, c):
-                if len(self.domains[v]) < 2:
+                if len(self.domains[v]) == 0:
                     return False
 
                 for constraint in set(self.variable_map[v]):
@@ -31,19 +31,17 @@ class GAC(object):
         return True
 
     def revise(self, v, c):
-        domain = self.domains[v]
         want_new = True
-        revised = False
 
-        for value in domain:
-            if not c.evaluate(v, value, self.domains):
+        for variable in c.variables:
+            if v != variable and len(self.domains[variable]) == 1 and self.domains[variable][0] in self.domains[v]:
                 if want_new:
-                    domain = deepcopy(domain)
+                    self.domains[v] = deepcopy(self.domains[v])
                     want_new = False
-                domain.remove(value)
-                revised = True
 
-        return revised
+                self.domains[v].remove(self.domains[variable][0])
+                return True
+        return False
 
     def rerun(self, domains, assumption):
         self.domains = domains

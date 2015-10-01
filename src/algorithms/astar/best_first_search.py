@@ -74,6 +74,9 @@ class BestFirstSearch(object):
                     if s.status is C.CLOSED:
                         self.propagate_path_improvements(s)
 
+            if not self.retain:
+                del x
+
     def arc_cost(self, a, b):
         """ An estimate of the cost of moving from a to b """
         raise NotImplementedError(
