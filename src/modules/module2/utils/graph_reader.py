@@ -2,7 +2,7 @@
 import os
 import res
 from PyQt4 import QtGui
-from src.modules.module2.constraint import VertexConstraint
+from src.modules.module2.vertex_constraint import VertexConstraint
 
 
 class GraphReader(object):
