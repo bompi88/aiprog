@@ -43,13 +43,15 @@ class VertexColoringState(SearchState):
             if self.new_variable not in variables_tbc_old:
                 sum_h += math.log(20)
 
+        # Give credits for being most constrained
+        if self.new_variable:
+            variables_tbc_new = set(itertools.chain(*[x.variables for x in self.gac.variable_map[self.new_variable]]))
+            sum_h -= math.log(len(variables_tbc_new) * 20)
+
         # Look at the solotion domain, and use log to transform
         # it to simple additions in the solution space
         for domain in self.domains.values():
-            if len(domain) == 0:
-                sum_h += math.log(10)
-            else:
-                sum_h += math.log(len(domain))
+            sum_h += math.log(len(domain))
 
         return sum_h
 
@@ -89,13 +91,14 @@ class VertexColoringState(SearchState):
 
         for key, domain in sorted_domains.items():
             for color in domain:
-                new_domain = copy(self.domains)
-                new_domain[key] = [color]
+                new_domains = copy(self.domains)
+                new_domains[key] = [color]
 
-                successor = VertexColoringState(self.state, self.gac, self.num_colors, new_domain, self._solution_length + 1, key, self.new_variable)
-                result = self.gac.rerun(new_domain, key)
+                successor = VertexColoringState(self.state, self.gac, self.num_colors, new_domains, self._solution_length + 1, key, self.new_variable)
+                result = self.gac.rerun(new_domains, key)
 
                 if result:
+                    successor.h = successor.heuristic_evaluation()
                     successors.append(successor)
 
         return successors
