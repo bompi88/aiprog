@@ -23,7 +23,7 @@ class NonogramReader(object):
 
         for y in range(self.y):
             for x in range(self.x):
-                self.constraints.append(NonoConstraint('r{r} == c{c}'.format(r=y, c=x)))
+                self.constraints.append(NonoConstraint('r{r} [{c}] == c{c} [{r}]'.format(r=y, c=x)))
 
     @staticmethod
     def load_level(gui):

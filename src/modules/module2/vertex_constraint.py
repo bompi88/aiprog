@@ -16,13 +16,9 @@ class VertexConstraint(Constraint):
         self.function = make_function(self.variables, self.expression)
 
     def revise(self, v, c, domains):
-        want_new = True
-
         for variable in c.variables:
             if v != variable and len(domains[variable]) == 1 and domains[variable][0] in domains[v]:
-                if want_new:
-                    domains[v] = deepcopy(domains[v])
-                    want_new = False
+                domains[v] = deepcopy(domains[v])
 
                 domains[v].remove(domains[variable][0])
                 return True

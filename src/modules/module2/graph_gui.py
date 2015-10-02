@@ -25,7 +25,7 @@ class GraphGUI(QtGui.QFrame):
         self.vertex_radii = 5
         self.corners = []
 
-        self.delay = 0
+        self.delay = 50
         self.graph = None
         self.node = None
         self.mode = C.A_STAR
@@ -93,7 +93,7 @@ class GraphGUI(QtGui.QFrame):
         painter = QtGui.QPainter(self)
         self.paint_graph(painter)
 
-    def draw_vertex(self, vid, vertex, painter):
+    def draw_vertex(self, vid, vertex, painter, whites=False):
         x = (vertex[1] * self.dx) + self.offset_dx - self.nc_adjust_x
         y = (vertex[2] * self.dy) + self.offset_dy - self.nc_adjust_y
         y = self.total_height - y
@@ -111,11 +111,16 @@ class GraphGUI(QtGui.QFrame):
             C.PURPLE: QtGui.QColor(238,130,238),
             C.BROWN: QtGui.QColor(222,184,135)
         }
-        color = colors[self.node.vertex_color(vertex[0])]
+        vertex_color = self.node.vertex_color(vertex[0])
+        color = colors[vertex_color]
 
         painter.setPen(color)
         painter.setBrush(color)
-        painter.drawEllipse(point, self.vertex_radii, self.vertex_radii)
+
+        if whites and vertex_color is C.WHITE:
+            painter.drawEllipse(point, self.vertex_radii, self.vertex_radii)
+        elif not whites and not vertex_color is C.WHITE:
+            painter.drawEllipse(point, self.vertex_radii, self.vertex_radii)
 
         if self.vertex_numbering:
             painter.setPen(colors[C.BLACK])
@@ -156,6 +161,10 @@ class GraphGUI(QtGui.QFrame):
 
         for edge in self.graph.edges:
             self.draw_edge(edge, painter)
+
+        # Draw white vertices first
+        for i, vertex in enumerate(self.graph.vertices):
+            self.draw_vertex(i, vertex, painter, True)
 
         for i, vertex in enumerate(self.graph.vertices):
             self.draw_vertex(i, vertex, painter)

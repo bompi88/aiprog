@@ -110,7 +110,8 @@ class BestFirstSearch(object):
         node.status = C.CLOSED
 
         if self.gui:
-            self.gui.set_opened_closed(opened, closed)
+            if self.retain:
+                self.gui.set_opened_closed(opened, closed)
             self.gui.paint(node)
             time.sleep(self.delay / 1000.0)
 

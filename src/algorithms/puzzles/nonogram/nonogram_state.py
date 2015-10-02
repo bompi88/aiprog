@@ -6,7 +6,6 @@ from collections import OrderedDict
 
 class NonogramState(SearchState):
     """  """
-
     def __init__(self, nonogram, gac, domains=None, solution_length=0):
         if domains:
             self.domains = domains
