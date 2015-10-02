@@ -2,7 +2,7 @@
 import os
 import res
 from PyQt4 import QtGui
-
+from src.modules.module3.nono_constraint import NonoConstraint
 
 class NonogramReader(object):
     # pylint: disable=too-many-instance-attributes
@@ -23,10 +23,7 @@ class NonogramReader(object):
 
         for y in range(self.y):
             for x in range(self.x):
-                id = (y * self.x) + x
-                c1 = 'r{r} [{c}] == c{c} [{r}]'.format(r=y, c=x)
-                c2 = 'c{c} [{r}] == r{r} [{c}]'.format(r=y, c=x)
-                self.constraints.append((id, c1, c2))
+                self.constraints.append(NonoConstraint('r{r} == c{c}'.format(r=y, c=x)))
 
     @staticmethod
     def load_level(gui):

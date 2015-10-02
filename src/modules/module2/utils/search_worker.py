@@ -21,6 +21,9 @@ class SearchWorker(QThread):
         """
         solution = self.vertex_search.best_first_search()
 
+        if not solution:
+            return
+
         node = VertexColoringState(
             solution.state,
             None,

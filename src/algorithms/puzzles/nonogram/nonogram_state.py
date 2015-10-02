@@ -101,10 +101,7 @@ class NonogramState(SearchState):
                 new_domain = deepcopy(self.domains)
                 new_domain[key] = [element]
 
-                assumption = (key, [element])
-
-
-                self.gac.rerun(new_domain, assumption)
+                self.gac.rerun(new_domain, key)
                 successor = NonogramState(self.state,
                                           self.gac,
                                           new_domain,
