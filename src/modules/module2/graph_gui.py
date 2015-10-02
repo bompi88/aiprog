@@ -170,6 +170,8 @@ class GraphGUI(QtGui.QFrame):
             self.draw_vertex(i, vertex, painter)
 
     def set_graph(self, graph_read):
+        if not graph_read:
+            return
         filename, graph = graph_read
 
         self.level_loaded(filename, graph)
