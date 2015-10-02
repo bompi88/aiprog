@@ -1,8 +1,11 @@
 """ Represent a graph """
 import os
-import res
+
 from PyQt4 import QtGui
-from src.modules.module3.nono_constraint import NonoConstraint
+
+import res
+from src.algorithms.puzzles.nonogram.nono_constraint import NonoConstraint
+
 
 class NonogramReader(object):
     # pylint: disable=too-many-instance-attributes

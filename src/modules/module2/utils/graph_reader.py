@@ -1,8 +1,10 @@
 """ Represent a graph """
 import os
-import res
+
 from PyQt4 import QtGui
-from src.modules.module2.vertex_constraint import VertexConstraint
+
+import res
+from src.algorithms.puzzles.vertex_coloring.vertex_constraint import VertexConstraint
 
 
 class GraphReader(object):
