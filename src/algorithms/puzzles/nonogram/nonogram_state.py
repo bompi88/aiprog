@@ -1,7 +1,7 @@
 """ Specialization of SearchState """
 from copy import deepcopy
 from src.algorithms.astar.search_state import SearchState
-from collections import OrderedDict
+import math
 
 
 class NonogramState(SearchState):
@@ -69,12 +69,10 @@ class NonogramState(SearchState):
         sum_h = 0
 
         for domain in self.domains.values():
-            if len(domain) == 1:
-                sum_h -= 0.05
-            elif len(domain) == 0:
-                sum_h += 5
+            if len(domain) == 0:
+                sum_h += 1000
             else:
-                sum_h += len(domain) - 1
+                sum_h += math.log(len(domain))
 
         return sum_h
 
