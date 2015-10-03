@@ -41,23 +41,17 @@ class NonogramGUI(QtGui.QFrame):
         self.nonogram = nonogram
         self.node = NonogramState(nonogram, None)
 
-        # self.node = VertexColoringState(graph)
-
         self.dx = self.dy = 20
         self.offset_dx = self.offset_dy = 35
 
         width_orig = (self.nonogram.x * self.dx)
         height_orig = (self.nonogram.y * self.dy)
 
-        self.dx = self.dx * (self.graph_width_px / width_orig)
+        self.dx = self.dx * (self.graph_width_px / float(width_orig))
         width = (self.nonogram.x * self.dx)
 
-        self.dy = self.dy * (self.graph_height_px / height_orig)
+        self.dy = self.dy * (self.graph_height_px / float(height_orig))
         height = self.nonogram.y * self.dy
-
-
-        #width = self.dx * self.nonogram.x
-        #height = self.dy * self.nonogram.y
 
         self.setMinimumSize(QtCore.QSize(width, height))
         self.parent().adjustSize()
@@ -111,16 +105,16 @@ class NonogramGUI(QtGui.QFrame):
         ]
 
         if domains:
-            # for k in range(self.nonogram.y):
-            #     row_domains = domains['r' + str(k)]
-            #     if len(row_domains) == 1:
-            #         for i, el in enumerate(list(row_domains[0])):
-            #             state[self.nonogram.y - k - 1][i] = int(el)
-            #             row_state[k][i] = int(el)
-            #     elif len(row_domains) == 0:
-            #         for i in range(self.nonogram.y):
-            #             state[k][i] = 2
-            #
+            for k in range(self.nonogram.y):
+                row_domains = domains['r' + str(k)]
+                if len(row_domains) == 1:
+                    for i, el in enumerate(list(row_domains[0])):
+                        state[self.nonogram.y - k - 1][i] = int(el)
+                        row_state[k][i] = int(el)
+                elif len(row_domains) == 0:
+                    for i in range(self.nonogram.x):
+                        state[k][i] = 2
+
             for l in range(self.nonogram.x):
                 column_domains = domains['c' + str(l)]
                 if len(column_domains) == 1:
@@ -130,12 +124,6 @@ class NonogramGUI(QtGui.QFrame):
                 elif len(column_domains) == 0:
                     for i in range(self.nonogram.y):
                         state[i][l] = 2
-
-
-        if self.solved:
-            print(row_state)
-            print(column_state)
-
 
         for y, row in enumerate(state):
             for x, element in enumerate(row):

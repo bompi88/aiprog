@@ -34,8 +34,9 @@ class NonogramReader(object):
         if gui.nonogram is None:
             filename = 'nono-heart-1.txt'
         else:
+            dir = os.path.dirname(res.__file__) + '/nonograms'
             path = QtGui.QFileDialog.getOpenFileName(
-                gui.window(), "Open Map File", "", "Text files (*.txt)"
+                gui.window(), "Open Nonogram File", dir, "Text files (*.txt)"
             )
             filename = list(path.split('/')).pop()
 
