@@ -128,7 +128,7 @@ class NonogramGUI(QtGui.QFrame):
                         state[i][l] = int(el)
                         column_state[i][l] = int(el)
                 elif len(column_domains) == 0:
-                    for i in range(self.nonogram.x):
+                    for i in range(self.nonogram.y):
                         state[i][l] = 2
 
 

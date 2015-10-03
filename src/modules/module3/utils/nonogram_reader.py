@@ -55,7 +55,6 @@ class NonogramReader(object):
     def parse_nonogram(lines):
         x, y = [int(e) for e in lines.pop(0).split(' ')]
         rows = [list(int(e) for e in lines.pop(0).split(' ')) for _ in range(y)]
-        rows = list(reversed(rows))
         columns = [list(int(e) for e in lines.pop(0).split(' ')) for _ in range(x)]
 
         return [x, y, rows, columns]
