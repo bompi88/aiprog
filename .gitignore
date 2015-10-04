@@ -15,6 +15,7 @@ Icon
 
 # Latex output
 *.aux
+*.pdf
 
 # Thumbnails
 ._*

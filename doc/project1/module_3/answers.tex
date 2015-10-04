@@ -12,7 +12,17 @@
 
 \section{Central aspects of the Nonogram implementation}
 \subsection{Variables, domains, constraints}
-The agenda is awesome. list and Heapq\ldots
+For our representation of a Nonogram we have chosen to
+use the rows and columns as variables. An idealized pseudocode
+version can be seen below. The domain of each variable consists
+of all the possible permutations of strings where 1 represents
+marked and 0 represents unmarked in the final Nonogram.
+
+If the amount of columns is 5, and a row has the set of segment
+sizes [1 2] our generated domains for this row rn will be
+$ ['10110','01011', '10011'] $
+
+\lstinputlisting[emph={Nonogram}]{module_3/code_snippets/nonogram.py}
 
 \subsection{Heuristics}
 * H\-function
