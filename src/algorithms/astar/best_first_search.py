@@ -37,7 +37,12 @@ class BestFirstSearch(object):
         """ The agenda loop, runs until a solution is found and returned,
          or until we no longer find new successor nodes.
         """
-        opened, closed, generated, t_0 = [], [], {}, time.time()
+        opened, generated, t_0 = [], {}, time.time()
+        closed, closed_counter = None, None
+        if self.retain:
+            closed = []
+        else:
+            closed_counter = 0
 
         root = self.create_root_node()
         root.g, root.h = 0, root.heuristic_evaluation()
@@ -49,13 +54,15 @@ class BestFirstSearch(object):
         while opened:
             x = self.open_pop(opened)
 
-            self.node_closed(x, t_0, generated, opened, closed)
+            self.node_closed(x, t_0, generated, opened, closed, closed_counter)
 
             if self.retain:
                 closed.append(x)
+            else:
+                closed_counter += 1
 
             if x.is_solution():
-                self.status_message(x, t_0, generated)
+                self.status_message(x, t_0, generated, closed, closed_counter)
                 return x
 
             for s in x.generate_all_successors():
@@ -105,7 +112,7 @@ class BestFirstSearch(object):
         elif self.mode is C.search_mode.BFS:
             return opened.pop(0)
 
-    def node_closed(self, node, t_0, generated, opened, closed):
+    def node_closed(self, node, t_0, generated, opened, closed, closed_cnt):
         # pylint: disable=too-many-arguments
         """ Called when node is popped from opened, notifies GUI if needed """
         node.status = C.status.CLOSED
@@ -119,9 +126,9 @@ class BestFirstSearch(object):
         if not self.verbosity is C.verbosity.DEBUG:
             return
 
-        self.status_message(node, t_0, generated, False)
+        self.status_message(node, t_0, generated, closed, closed_cnt, False)
 
-    def status_message(self, solution, t_0, generated, paint=True):
+    def status_message(self, solution, t_0, generated, closed, cnt, paint=True):
         """ Based on GUI and verbosity, shows the status of the search """
         if self.gui and paint:
             self.gui.paint(solution)
@@ -131,8 +138,18 @@ class BestFirstSearch(object):
 
         t_1 = time.time()
 
-        message = 'Nodes: {} Path length: {} Time elapsed: {:.5f} sec'.format(
-            len(generated), solution.solution_length(), t_1 - t_0)
+        if self.retain:
+            closed_length = len(closed)
+        else:
+            closed_length = cnt
+
+        message = 'Nodes generated: {}, Nodes expanded: {}, '\
+                  'Path length: {}, Time elapsed: {:.5f} sec'.format(
+                        len(generated),
+                        closed_length,
+                        solution.solution_length(),
+                        t_1 - t_0
+        )
 
         if self.verbosity in [C.verbosity.TEST, C.verbosity.SILENT]:
             return

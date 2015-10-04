@@ -47,7 +47,6 @@ class MainWindow(QtGui.QMainWindow):
         exit_action.triggered.connect(QtGui.qApp.quit)
 
         menu = self.menuBar()
-        menu.setNativeMenuBar(False)
         file_menu = menu.addMenu('&File')
         file_menu.addAction(load_action)
         file_menu.addAction(kill_action)

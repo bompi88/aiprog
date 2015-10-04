@@ -60,7 +60,6 @@ class MainWindow(QtGui.QMainWindow):
         )
 
         menu = self.menuBar()
-        menu.setNativeMenuBar(False)
         file_menu = menu.addMenu('&File')
         file_menu.addAction(load_action)
         file_menu.addAction(kill_action)
