@@ -16,8 +16,6 @@ The agenda is awesome. list and Heapq\ldots
 
 Figure \ref{run:ex5} shows the class diagram for the navigation problem.
 
-\lstinputlisting[emph={HelloWorldPrintable}]{module_1/code_snippets/hello_world.py}
-
 \subsection{Heuristics}
 Both the \emph{Manhattan distance} and \emph{Euclidean distance} has been tested on the navigation problem. Each adjusted the behaviour of the agent. Using the manhattan distance the agent seem preferring to minimize the amount of \(90 deg\) turns before reaching the final goal. The euclidean distance seems to do the quite opposite, and the agent goes straight towards the target even though the agent cannot move diagonally. It tries to emulate the behaviour of walking diagonally and follows a diagonal line between the current position and the goal. In the example board number two (Figure \ref{run:ex2}), the manhattan distance wins by generating least amount of nodes, because it can just move right and then up without encounter an obstacle. The euclidean agent has to avoid an obstacle and therefore is generating a few more nodes. On the other hand, in example 5 (Figure \ref{run:ex5}), the euclidean agent slips through the opening between the two last obstacles, while the manhattan agent needs to explore the area before the right-most obstacle. The performance of the agent depends on the heuristics compared with the structure of the board.
 
