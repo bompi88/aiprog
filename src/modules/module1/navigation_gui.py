@@ -25,6 +25,7 @@ class NavigationGUI(QtGui.QFrame):
         self.delay = 50
         self.diagonal = False
         self.mode = C.search_mode.A_STAR
+        self.heuristics_type = 'euclidean'
 
         self.node = None
         self.opened = None
@@ -208,4 +209,9 @@ class NavigationGUI(QtGui.QFrame):
     def set_diagonal(self, is_diagonal):
         """ Set diagonal mode """
         self.diagonal = is_diagonal
+        return True
+
+    def set_heuristics_type(self, heuristics_type):
+        """ Set heuristics """
+        self.heuristics_type = heuristics_type
         return True

@@ -39,11 +39,16 @@ class NavigationGrid(object):
         """ Is the current tile the goal tile """
         return self.map.goal == self.current_pos
 
-    def distance_from_goal(self):
+    def distance_from_goal(self, heuristics_type):
         """ Returns the euclidean distance from the goal to current tile.
          Euclidean distance gave better results on some boards vs. manhattan
         """
-        return self.euclidean_distance(self.map.goal, self.current_pos)
+        if heuristics_type == 'euclidean':
+            return self.euclidean_distance(self.map.goal, self.current_pos)
+        elif heuristics_type == 'manhattan':
+            return self.manhattan_distance(self.map.goal, self.current_pos)
+        else:
+            return self.euclidean_distance(self.map.goal, self.current_pos)
 
     @classmethod
     def euclidean_distance(cls, a, b):
@@ -52,3 +57,11 @@ class NavigationGrid(object):
         y = (b[1] - a[1]) ** 2
 
         return (x + y) ** 0.5
+
+    @classmethod
+    def manhattan_distance(cls, a, b):
+        """ x + y """
+        x = b[0] - a[0]
+        y = b[1] - a[1]
+
+        return x + y

@@ -82,6 +82,18 @@ class MainWindow(QtGui.QMainWindow):
                      self.diagonal_changed(False))
         )
 
+        euclidean_option = QtGui.QAction('&Euclidean distance', self)
+        euclidean_option.triggered.connect(
+            lambda: (self.nav_gui.set_heuristics_type('euclidean') and
+                     self.heuristics_changed('Euclidean distance'))
+        )
+
+        manhattan_option = QtGui.QAction('&Manhattan distance', self)
+        manhattan_option.triggered.connect(
+            lambda: (self.nav_gui.set_heuristics_type('manhattan') and
+                     self.heuristics_changed('Manhattan distance'))
+        )
+
         menu = self.menuBar()
         menu.setNativeMenuBar(False)
         file_menu = menu.addMenu('&File')
@@ -97,6 +109,10 @@ class MainWindow(QtGui.QMainWindow):
         diagonal_menu = menu.addMenu('&Diagonal')
         diagonal_menu.addAction(diagonal_on)
         diagonal_menu.addAction(diagonal_off)
+
+        heuristics_menu = menu.addMenu('&Heuristics')
+        heuristics_menu.addAction(euclidean_option)
+        heuristics_menu.addAction(manhattan_option)
 
     def init_toolbar(self):
         """ Initializes a toolbar, with a run button and delay controls """
@@ -161,8 +177,13 @@ class MainWindow(QtGui.QMainWindow):
         self.statusBar().showMessage('Delay: ' + str(delay))
 
     def diagonal_changed(self, is_diagonal):
-        """ Writes to status bar when delay is changed """
+        """ Writes to status bar when diagonal option has changed """
         self.statusBar().showMessage('Diagonal mode: ' + str(is_diagonal))
+
+    def heuristics_changed(self, heuristics_type):
+        """ Writes to status bar when heuristics option has changed """
+        self.statusBar().showMessage('Heuristics: ' + str(heuristics_type))
+
 
 def main():
     """ Creates Qt app and loads default level """

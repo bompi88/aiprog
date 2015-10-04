@@ -10,10 +10,11 @@ class Navigation(BestFirstSearch):
 
     def __init__(self, start, gui=None):
         self.diagonal = gui.diagonal
+        self.heuristics_type = gui.heuristics_type
         BestFirstSearch.__init__(self, start, gui, True)
 
     def create_root_node(self):
-        return NavigationState(self.start, self.diagonal)
+        return NavigationState(self.start, self.diagonal, self.heuristics_type)
 
     def arc_cost(self, a, b):
         return 0.5

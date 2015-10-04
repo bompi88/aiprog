@@ -8,15 +8,16 @@ from src.utils.id_generator import ID_GENERATOR
 class NavigationState(SearchState):
     """ A navigation, containing the state of the map as a NavigationGrid """
 
-    def __init__(self, navigation, diagonal=False):
+    def __init__(self, navigation, diagonal=False, heuristics_type=None):
         self.diagonal = diagonal
+        self.heuristics_type = heuristics_type
         SearchState.__init__(self, navigation)
 
     def create_state_identifier(self):
         return ID_GENERATOR.get_id(self.state.position_string())
 
     def heuristic_evaluation(self):
-        return self.state.distance_from_goal()
+        return self.state.distance_from_goal(self.heuristics_type)
 
     def is_solution(self):
         return self.state.is_on_goal()
@@ -59,7 +60,8 @@ class NavigationState(SearchState):
 
             successor = NavigationState(
                 NavigationGrid(self.state.map, visited, next_pos),
-                self.diagonal
+                self.diagonal,
+                self.heuristics_type
             )
 
             successors.append(successor)
