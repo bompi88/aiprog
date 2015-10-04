@@ -1,6 +1,8 @@
-
+""" GAC constraint superclass """
 
 class Constraint(object):
+    """ Object holding an expression with variables, and implements
+    a revise method tailored to the problem. """
 
     def __init__(self):
         self.variables = []
@@ -9,7 +11,8 @@ class Constraint(object):
 
     def create_func(self):
         """ Creates the runtime method to evaluate the constraint """
-        raise NotImplementedError('Implement create_func() in Constraint subclass')
+        raise NotImplementedError(
+            'Implement create_func() in Constraint subclass')
 
     def revise(self, v, c, domains):
         """ Evaluates the constraint with the given variables """
@@ -17,4 +20,5 @@ class Constraint(object):
 
     def parse_vars(self):
         """ Creates variables from constraint """
-        raise NotImplementedError('Implement parse_vars() in Constraint subclass')
+        raise NotImplementedError(
+            'Implement parse_vars() in Constraint subclass')

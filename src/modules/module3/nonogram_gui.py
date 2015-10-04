@@ -2,10 +2,12 @@
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import pyqtSignal
 
-from src.algorithms.puzzles.nonogram.nonogram_bfs import Nonogram
-from src.algorithms.puzzles.nonogram.nonogram_state import NonogramState
-from src.modules.module3.utils.const import C
-from src.modules.module3.utils.search_worker import SearchWorker
+from src.puzzles.nonogram.nonogram_bfs import NonogramBfs
+from src.puzzles.nonogram.nonogram_state import NonogramState
+from src.puzzles.nonogram.nonogram import Nonogram
+from src.utils.const import C
+from src.utils.search_worker import SearchWorker
+import res.nonograms
 
 
 class NonogramGUI(QtGui.QFrame):
@@ -15,133 +17,108 @@ class NonogramGUI(QtGui.QFrame):
     def __init__(self, parent):
         QtGui.QFrame.__init__(self, parent)
 
-        self.dx = self.dy = 20
-        # self.offset_dx = self.offset_dy = 35
-        self.graph_width_px = self.graph_height_px = 600
-        # self.nc_adjust_x = 0 # Adjustment for negative coordinates
-        # self.nc_adjust_y = 0
-        # self.vertex_radii = 5
-        # self.corners = []
+        self.dx = self.dy = 1
+        self.minimum_width_px = self.minimum_height_px = 600
+        self.widget_width_px = self.widget_height_px = 600
 
-        self.nonogram = None
-        self.node = None
+        self.nonogram_state = None
+        self.set_nonogram(True)
         self.delay = 50
-        self.mode = C.A_STAR
-        self.thread = SearchWorker()
+        self.mode = C.search_mode.A_STAR
+        self.thread = SearchWorker(self)
         self.init_ui()
-        self.solved = False
 
     def init_ui(self):
         """ Initialize the UI """
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
-
-    def level_loaded(self, filename, nonogram):
-        """ Called whenever a level is loaded, adjust Widget size """
-        self.solved = False
-        self.nonogram = nonogram
-        self.node = NonogramState(nonogram, None)
-
-        self.dx = self.dy = 20
-        self.offset_dx = self.offset_dy = 35
-
-        width_orig = (self.nonogram.x * self.dx)
-        height_orig = (self.nonogram.y * self.dy)
-
-        self.dx = self.dx * (self.graph_width_px / float(width_orig))
-        width = (self.nonogram.x * self.dx)
-
-        self.dy = self.dy * (self.graph_height_px / float(height_orig))
-        height = self.nonogram.y * self.dy
-
-        self.setMinimumSize(QtCore.QSize(width, height))
+        size = QtCore.QSize(self.minimum_width_px, self.minimum_height_px)
+        self.setMinimumSize(size)
         self.parent().adjustSize()
-        self.parent().resize(self.graph_width_px, self.parent().height())
-        self.parent().setWindowTitle('Module 2 - A*-GAC - {}'.format(filename))
-        self.update()
-        self.status_message.emit(str('Loaded: {}'.format(filename)))
+
+    def level_loaded(self, nonogram):
+        """ Called whenever a level is loaded, adjust Widget size """
+        self.nonogram_state = NonogramState(nonogram, None)
+
+        self.compute_tile_size()
+
+    def compute_tile_size(self):
+        self.dx = self.dy = 1
+        x, y = self.nonogram_state.state.x, self.nonogram_state.state.y
+
+        self.dx = self.dx * (self.widget_width_px / float(x))
+        self.dy = self.dy * (self.widget_height_px / float(y))
 
     def start_search(self):
         """ Start the search in the worker thread """
-        vertex_search = Nonogram(self.nonogram, self)
-
         self.status_message.emit(str('Search started'))
-        self.thread.search(self, vertex_search)
+        search = NonogramBfs(self.nonogram_state.state, self)
+        self.thread.search(search)
 
-    def paint(self, node):
+    def set_solution(self, solution):
+        self.nonogram_state = NonogramState(
+            solution.state,
+            None,
+            solution.domains,
+            solution.solution_length
+        )
+
+    def paint(self, state):
         """ Receives a node and tells Qt to update the graphics """
-        self.node = node
-        self.nonogram = node.state
+        self.nonogram_state = state
 
         self.update()
 
     def paintEvent(self, _): # pylint: disable=invalid-name
         """ Called by the Qt event loop when the widget should be updated """
-        if self.nonogram is None:
-            return
-
         painter = QtGui.QPainter(self)
         self.draw_nonogram(painter)
 
+    def resizeEvent(self, e): # pylint: disable=invalid-name
+        self.widget_width_px = e.size().width()
+        self.widget_height_px = e.size().height()
+        self.compute_tile_size()
+
     def draw_nonogram(self, painter):
         colors = {
-            -1: QtGui.QColor(130, 130, 130), # Unset
-            0: QtGui.QColor(255, 255, 150), # Drawn
-            1: QtGui.QColor(255, 0, 150), # Space
-            2: QtGui.QColor(255, 255, 255) # No domains
+            C.colors.GREY: QtGui.QColor(130, 130, 130), # Unset
+            C.colors.PINK: QtGui.QColor(255, 255, 150), # Drawn
+            C.colors.YELLOW: QtGui.QColor(255, 0, 150), # Space
+            C.colors.WHITE: QtGui.QColor(255, 255, 255) # No domains
         }
 
-        domains = self.node.domains if self.node else {}
-
-        state = [
-            [-1] * self.nonogram.x for _ in range(self.nonogram.y)
-        ]
-
-        row_state = [
-            [-1] * self.nonogram.x for _ in range(self.nonogram.y)
-        ]
-
-        column_state = [
-            [-1] * self.nonogram.x for _ in range(self.nonogram.y)
-        ]
-
-        if domains:
-            for k in range(self.nonogram.y):
-                row_domains = domains['r' + str(k)]
-                if len(row_domains) == 1:
-                    for i, el in enumerate(list(row_domains[0])):
-                        state[self.nonogram.y - k - 1][i] = int(el)
-                        row_state[k][i] = int(el)
-                elif len(row_domains) == 0:
-                    for i in range(self.nonogram.x):
-                        state[k][i] = 2
-
-            for l in range(self.nonogram.x):
-                column_domains = domains['c' + str(l)]
-                if len(column_domains) == 1:
-                    for i, el in enumerate(list(column_domains[0])):
-                        state[i][l] = int(el)
-                        column_state[i][l] = int(el)
-                elif len(column_domains) == 0:
-                    for i in range(self.nonogram.y):
-                        state[i][l] = 2
-
-        for y, row in enumerate(state):
+        for y, row in enumerate(self.nonogram_state.representation()):
             for x, element in enumerate(row):
-                painter.setBrush(colors[element])
+                painter.setBrush(colors[int(element)])
                 painter.drawRect((x * self.dx), (y * self.dy), self.dx - 1, self.dy - 1)
 
-    def set_graph(self, graph_read):
-        if not graph_read:
-            return
+    def set_nonogram(self, default=False):
+        """ Load level with a QFileDialog """
+        folder = res.nonograms.__path__[0]
+        if default:
+            path = folder + '/nono-heart-1.txt'
+        else:
+            path = QtGui.QFileDialog.getOpenFileName(
+                self.window(), "Nonogram Selector", folder, "Text files (*.txt)"
+            )
+            if not path:
+                return
 
-        filename, graph = graph_read
+        nonogram_file = open(path, 'r')
+        contents = nonogram_file.read().splitlines()
 
-        self.level_loaded(filename, graph)
+        graph = Nonogram(contents)
+
+        self.level_loaded(graph)
+
+        filename = path.split('/')[-1]
+        self.parent().setWindowTitle('Module 3 - Nonogram - {}'.format(filename))
+        self.status_message.emit(str('Loaded: {}'.format(filename)))
+        self.update()
 
     def set_delay(self, delay):
         """ Change delay """
         self.delay = delay
-        return True
+        self.status_message.emit('Delay: ' + str(delay))
 
     # Not needed in NonogramGUI
     def set_opened_closed(self, opened, closed):

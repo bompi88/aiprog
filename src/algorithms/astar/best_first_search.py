@@ -1,7 +1,7 @@
 """ Implement the agenda loop and helper methods of A* """
 import time
 import heapq as q
-from src.algorithms.astar.const import C
+from src.utils.const import C
 
 
 class BestFirstSearch(object):
@@ -12,9 +12,9 @@ class BestFirstSearch(object):
     def __init__(self, start, gui=None, retain=False):
         self.start = start
         self.gui = gui
-        self.mode = C.A_STAR if not gui else gui.mode
+        self.mode = C.search_mode.A_STAR if not gui else gui.mode
         self.delay = 50 if not gui else gui.delay # milliseconds
-        self.verbosity = C.SILENT
+        self.verbosity = C.verbosity.VERBOSE
         self.retain = retain
 
     def attach_and_eval(self, child, parent):
@@ -64,14 +64,14 @@ class BestFirstSearch(object):
 
                 x.add_child(s)
 
-                if s.status is C.NEW:
+                if s.status is C.status.NEW:
                     self.attach_and_eval(s, x)
 
                     generated[s.sid] = s
                     self.open_push(opened, s)
                 elif (x.g + self.arc_cost(x, s)) < s.g:
                     self.attach_and_eval(s, x)
-                    if s.status is C.CLOSED:
+                    if s.status is C.status.CLOSED:
                         self.propagate_path_improvements(s)
 
             if not self.retain:
@@ -89,25 +89,26 @@ class BestFirstSearch(object):
 
     def open_push(self, opened, node):
         """ Push node onto opened according to mode, and set status """
-        node.status = C.OPEN
+        node.status = C.status.OPEN
 
-        if self.mode is C.A_STAR:
+        if self.mode is C.search_mode.A_STAR:
             q.heappush(opened, (node.f, node))
-        elif self.mode is C.DFS or self.mode is C.BFS:
+        elif self.mode is C.search_mode.DFS or self.mode is C.search_mode.BFS:
             opened.append(node)
 
     def open_pop(self, opened):
         """Pop node from opened according to mode """
-        if self.mode is C.A_STAR:
+        if self.mode is C.search_mode.A_STAR:
             return q.heappop(opened)[1]
-        elif self.mode is C.DFS:
+        elif self.mode is C.search_mode.DFS:
             return opened.pop()
-        elif self.mode is C.BFS:
+        elif self.mode is C.search_mode.BFS:
             return opened.pop(0)
 
     def node_closed(self, node, t_0, generated, opened, closed):
+        # pylint: disable=too-many-arguments
         """ Called when node is popped from opened, notifies GUI if needed """
-        node.status = C.CLOSED
+        node.status = C.status.CLOSED
 
         if self.gui:
             if self.retain:
@@ -115,7 +116,7 @@ class BestFirstSearch(object):
             self.gui.paint(node)
             time.sleep(self.delay / 1000.0)
 
-        if self.verbosity is C.SILENT:
+        if not self.verbosity is C.verbosity.DEBUG:
             return
 
         self.status_message(node, t_0, generated, False)
@@ -125,7 +126,7 @@ class BestFirstSearch(object):
         if self.gui and paint:
             self.gui.paint(solution)
         else:
-            if self.verbosity < C.SILENT:
+            if self.verbosity is C.verbosity.DEBUG:
                 solution.print_level()
 
         t_1 = time.time()
@@ -133,7 +134,7 @@ class BestFirstSearch(object):
         message = 'Nodes: {} Path length: {} Time elapsed: {:.5f} sec'.format(
             len(generated), solution.solution_length(), t_1 - t_0)
 
-        if self.verbosity is C.TEST:
+        if self.verbosity in [C.verbosity.TEST, C.verbosity.SILENT]:
             return
 
         if self.gui:

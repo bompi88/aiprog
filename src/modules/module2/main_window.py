@@ -1,11 +1,7 @@
 """ A GUI application for showing vertex coloring on graphs """
-import os
-import sys
-
 from PyQt4 import QtGui
 
-import res
-from src.modules.module2.utils.graph_reader import GraphReader
+import res.imgs
 from src.modules.module2.graph_gui import GraphGUI
 
 
@@ -42,11 +38,7 @@ class MainWindow(QtGui.QMainWindow):
         """
         load_action = QtGui.QAction('&Load graph', self)
         load_action.setShortcut('Ctrl+L')
-        load_action.triggered.connect(
-            lambda: self.graph_gui.set_graph(
-                GraphReader.load_level(self.graph_gui)
-            )
-        )
+        load_action.triggered.connect(self.graph_gui.set_graph)
 
         kill_action = QtGui.QAction('&Kill search', self)
         kill_action.setShortcut('Ctrl+K')
@@ -113,11 +105,10 @@ class MainWindow(QtGui.QMainWindow):
 
     def init_toolbar(self):
         """ Initializes a toolbar, with a run button and delay controls """
-        path = os.path.dirname(res.__file__)
-        path += '/imgs/'
-        run_action = QtGui.QAction(QtGui.QIcon(path + 'play.png'), 'Run A*', self)
+        play_icon = QtGui.QIcon(res.imgs.__path__[0]  + '/play.png')
+        run_action = QtGui.QAction(play_icon, 'Run search', self)
         run_action.setShortcut('Ctrl+R')
-        run_action.setStatusTip('Run A*')
+        run_action.setStatusTip('Run search')
         run_action.triggered.connect(self.graph_gui.start_search)
 
         color_action_3 = QtGui.QAction('Colors 3', self)
@@ -183,12 +174,10 @@ class MainWindow(QtGui.QMainWindow):
 
 def main():
     """ Creates Qt app and loads default level """
+    import sys
     app = QtGui.QApplication(sys.argv)
 
-    main_window = MainWindow()
-    filename, graph = list(GraphReader.load_level(main_window.graph_gui))
-    main_window.graph_gui.level_loaded(filename, graph)
-    main_window.graph_gui.update()
+    _ = MainWindow()
 
     sys.exit(app.exec_())
 

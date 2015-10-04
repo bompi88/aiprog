@@ -1,12 +1,8 @@
 """ A GUI application for showing A* runs """
-import os
-import sys
-
 from PyQt4 import QtGui
 
-import res
-from src.modules.module1.utils.const import C
-from src.modules.module1.utils.map_reader import MapReader
+import res.imgs
+from src.utils.const import C
 from src.modules.module1.navigation_gui import NavigationGUI
 
 
@@ -43,9 +39,7 @@ class MainWindow(QtGui.QMainWindow):
         """
         load_action = QtGui.QAction('&Load map', self)
         load_action.setShortcut('Ctrl+L')
-        load_action.triggered.connect(
-            lambda: MapReader.load_level(self.nav_gui)
-        )
+        load_action.triggered.connect(self.nav_gui.set_map)
 
         kill_action = QtGui.QAction('&Kill search', self)
         kill_action.setShortcut('Ctrl+K')
@@ -58,20 +52,22 @@ class MainWindow(QtGui.QMainWindow):
         a_star_action = QtGui.QAction('&A* Mode', self)
         a_star_action.setShortcut('Ctrl+1')
         a_star_action.triggered.connect(
-            lambda: (self.nav_gui.set_mode(C.A_STAR) and
-                     self.mode_changed(C.A_STAR))
+            lambda: (self.nav_gui.set_mode(C.search_mode.A_STAR) and
+                     self.mode_changed(C.search_mode.A_STAR))
         )
 
         dfs_action = QtGui.QAction('&DFS Mode', self)
         dfs_action.setShortcut('Ctrl+2')
         dfs_action.triggered.connect(
-            lambda: self.nav_gui.set_mode(C.DFS) and self.mode_changed(C.DFS)
+            lambda: (self.nav_gui.set_mode(C.search_mode.DFS) and
+                     self.mode_changed(C.search_mode.DFS))
         )
 
         bfs_action = QtGui.QAction('&BFS Mode', self)
         bfs_action.setShortcut('Ctrl+3')
         bfs_action.triggered.connect(
-            lambda: self.nav_gui.set_mode(C.BFS) and self.mode_changed(C.BFS)
+            lambda: (self.nav_gui.set_mode(C.search_mode.BFS) and
+                     self.mode_changed(C.search_mode.BFS))
         )
 
         menu = self.menuBar()
@@ -88,11 +84,10 @@ class MainWindow(QtGui.QMainWindow):
 
     def init_toolbar(self):
         """ Initializes a toolbar, with a run button and delay controls """
-        path = os.path.dirname(res.__file__)
-        path += '/imgs/'
-        run_action = QtGui.QAction(QtGui.QIcon(path + 'play.png'), 'Run A*', self)
+        play_icon = QtGui.QIcon(res.imgs.__path__[0] + '/play.png')
+        run_action = QtGui.QAction(play_icon, 'Run search', self)
         run_action.setShortcut('Ctrl+R')
-        run_action.setStatusTip('Run A*')
+        run_action.setStatusTip('Run search')
         run_action.triggered.connect(self.nav_gui.start_search)
 
         delay_action_0 = QtGui.QAction('Delay 0', self)
@@ -137,7 +132,11 @@ class MainWindow(QtGui.QMainWindow):
 
     def mode_changed(self, mode):
         """ Writes to status bar when mode is changed """
-        mode_s = {C.A_STAR: 'A*', C.BFS: 'BFS', C.DFS: 'DFS'}[mode]
+        mode_s = {
+            C.search_mode.A_STAR: 'A*',
+            C.search_mode.BFS: 'BFS',
+            C.search_mode.DFS: 'DFS'
+        }[mode]
 
         self.statusBar().showMessage('Mode: ' + mode_s)
 
@@ -148,10 +147,10 @@ class MainWindow(QtGui.QMainWindow):
 
 def main():
     """ Creates Qt app and loads default level """
+    import sys
     app = QtGui.QApplication(sys.argv)
 
-    main_window = MainWindow()
-    MapReader.load_level(main_window.nav_gui)
+    _ = MainWindow()
 
     sys.exit(app.exec_())
 

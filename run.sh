@@ -1,1 +1,2 @@
-python -m src.modules.module1.main_window &
+#!/usr/bin/env bash
+python -m src.modules.unified.app &

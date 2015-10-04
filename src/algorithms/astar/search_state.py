@@ -1,5 +1,5 @@
 """ Represent a node in A* search """
-from src.algorithms.astar.const import C
+from src.utils.const import C
 
 
 class SearchState(object):
@@ -22,27 +22,32 @@ class SearchState(object):
         self.kids = []   # list of all successor nodes, whether or not this
                            # node is currently their best parent.
 
-        self.status = C.NEW # OPEN / CLOSED / NEW
+        self.status = C.status.NEW # OPEN / CLOSED / NEW
 
     def heuristic_evaluation(self):
         """ Returns an estimate of distance to goal """
-        raise NotImplementedError('Implement compute_h() in SearchState subclass')
+        raise NotImplementedError(
+            'Implement compute_h() in SearchState subclass')
 
     def create_state_identifier(self):
         """ Creates a unique id based on state """
-        raise NotImplementedError('Implement create_state_identifier() in SearchState subclass')
+        raise NotImplementedError(
+            'Implement create_state_identifier() in SearchState subclass')
 
     def generate_all_successors(self):
         """ Generate a list of successors """
-        raise NotImplementedError('Implement generate_all_successors() in SearchState subclass')
+        raise NotImplementedError(
+            'Implement generate_all_successors() in SearchState subclass')
 
     def is_solution(self):
         """ Return whether the current state is a valid solution """
-        raise NotImplementedError('Implement is_solution() in SearchState subclass')
+        raise NotImplementedError(
+            'Implement is_solution() in SearchState subclass')
 
     def solution_length(self):
         """ Return a length of the search path of the current state """
-        raise NotImplementedError('Implement solution_length() in SearchState subclass')
+        raise NotImplementedError(
+            'Implement solution_length() in SearchState subclass')
 
     def add_child(self, child):
         """ Add a child to this node """

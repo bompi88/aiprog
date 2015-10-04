@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 mkdir -p tmp
 echo "Making module 1"
 pdflatex -output-directory=tmp module_1 > /dev/null
@@ -11,4 +12,3 @@ pdflatex -output-directory=tmp project > /dev/null
 
 echo "Moving Project 1"
 mv tmp/project.pdf pdfs/project_1.pdf
-

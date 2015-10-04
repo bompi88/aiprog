@@ -2,52 +2,50 @@
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import pyqtSignal
 
-from src.modules.module1.utils.search_worker import SearchWorker
-from src.modules.module1.utils.const import C
-from src.algorithms.puzzles.navigation.navigation_bfs import Navigation
-from src.algorithms.puzzles.navigation.navigation_grid import NavigationGrid
-from src.algorithms.puzzles.navigation.navigation_state import NavigationState
+import res.maps
+from src.utils.const import C
+from src.utils.search_worker import SearchWorker
+from src.puzzles.navigation.map import Map
+from src.puzzles.navigation.navigation_bfs import Navigation
+from src.puzzles.navigation.navigation_grid import NavigationGrid
+from src.puzzles.navigation.navigation_state import NavigationState
 
 
 class NavigationGUI(QtGui.QFrame):
+    # pylint: disable=too-many-instance-attributes
     """ Implement QFrame, which is a subclass of QWidget """
     status_message = pyqtSignal(str)
 
     def __init__(self, parent):
         QtGui.QFrame.__init__(self, parent)
 
-        self.dx = self.dy = 40
+        self.dx = self.dy = 0
+        self.graph_width_px = self.graph_height_px = 600
+
+        self.delay = 50
+        self.mode = C.search_mode.A_STAR
 
         self.node = None
         self.opened = None
         self.closed = None
-        self.delay = 50
-        self.mode = C.A_STAR
-        self.thread = SearchWorker()
+        self.set_map(True)
+        self.thread = SearchWorker(self)
         self.init_ui()
 
     def init_ui(self):
         """ Initialize the UI """
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
-
-    def level_loaded(self, filename, grid):
-        """ Called whenever a level is loaded, adjust Widget size """
-        self.node = NavigationState(grid)
-        self.opened = None
-        self.closed = None
-
-        scaled_dim = (self.node.state.map.x_dim() // 10)
-        x = self.node.state.map.x_dim() * (self.dx - (scaled_dim * 5))
-        y = self.node.state.map.y_dim() * (self.dy - (scaled_dim * 5))
-        self.setMinimumSize(QtCore.QSize(x, y))
-
+        minimum_size = QtCore.QSize(self.graph_width_px, self.graph_height_px)
+        self.setMinimumSize(minimum_size)
         self.parent().adjustSize()
-        self.parent().resize(600, self.parent().height())
-        self.parent().setWindowTitle(
-            'Module 1 - A* Navigation Problems - {}'.format(filename)
-        )
 
-        self.status_message.emit(str('Loaded: {}'.format(filename)))
+    def level_loaded(self, grid):
+        """ Called whenever a level is loaded, adjust Widget size """
+        self.node = NavigationState(NavigationGrid(grid))
+        self.opened, self.closed = None, None
+
+        self.dx = self.graph_width_px / float(self.node.state.map.x_dim())
+        self.dy = self.graph_height_px / float(self.node.state.map.y_dim())
 
     def start_search(self):
         """ Start the search in the worker thread """
@@ -55,9 +53,19 @@ class NavigationGUI(QtGui.QFrame):
             NavigationGrid(self.node.state.map), self)
 
         self.status_message.emit(str('Search started'))
-        self.thread.search(self, navigation)
+        self.thread.search(navigation)
+
+    def set_solution(self, solution):
+        visited = solution.state.visited_copy()
+
+        self.node = NavigationState(NavigationGrid(
+            self.node.state.map,
+            visited,
+            solution.state.current_pos
+        ))
 
     def set_opened_closed(self, opened, closed):
+        """ Sets the opened and closed lists of states """
         self.opened = opened
         self.closed = closed
 
@@ -81,13 +89,14 @@ class NavigationGUI(QtGui.QFrame):
         return self.node.state.is_visited([x, y_dim - y - 1])
 
     def is_on_frontier(self, x, y):
+        """ Checks whether (x,y) is in the opened list """
         if not self.opened:
             return False
 
         y_dim = self.node.state.map.y_dim()
 
         for node in self.opened:
-            if type(node) is tuple:
+            if isinstance(node, tuple):
                 node = node[1] # Heapq for astar, normal list for BFS/DFS
 
             if [x, y_dim - y - 1] == node.state.last_visited():
@@ -96,6 +105,7 @@ class NavigationGUI(QtGui.QFrame):
         return False
 
     def is_closed(self, x, y):
+        """ Checks whether (x,y) is in the closed list """
         if not self.closed:
             return False
 
@@ -108,13 +118,14 @@ class NavigationGUI(QtGui.QFrame):
         return False
 
     def get_color(self, x, y, visited=False, frontier=False, closed=False):
+        # pylint: disable=too-many-arguments
         """ Return a QColor based on the tile and whether it is visited """
 
         if visited:
             color = {
-                C.TILE:  QtGui.QColor(80, 80, 80),
-                C.START: QtGui.QColor(153, 204, 255),
-                C.GOAL:  QtGui.QColor(0, 255, 0)
+                C.nav_tile.TILE:  QtGui.QColor(80, 80, 80),
+                C.nav_tile.START: QtGui.QColor(153, 204, 255),
+                C.nav_tile.GOAL:  QtGui.QColor(0, 255, 0)
             }[self.node.state.map.grid[y][x]]
         elif frontier:
             color = QtGui.QColor(255, 255, 80)
@@ -122,10 +133,10 @@ class NavigationGUI(QtGui.QFrame):
             color = QtGui.QColor(210, 210, 210)
         else:
             color = {
-                C.TILE:     QtGui.QColor(255, 255, 255),
-                C.OBSTACLE: QtGui.QColor(255, 0, 0),
-                C.START:    QtGui.QColor(0, 0, 255),
-                C.GOAL:     QtGui.QColor(51, 102, 0)
+                C.nav_tile.TILE:     QtGui.QColor(255, 255, 255),
+                C.nav_tile.OBSTACLE: QtGui.QColor(255, 0, 0),
+                C.nav_tile.START:    QtGui.QColor(0, 0, 255),
+                C.nav_tile.GOAL:     QtGui.QColor(51, 102, 0)
             }[self.node.state.map.grid[y][x]]
 
         return color
@@ -135,10 +146,9 @@ class NavigationGUI(QtGui.QFrame):
          If the tile is visited we draw a smaller rectangle on top.
         """
         color = self.get_color(x, y)
+        dx, dy = self.dx, self.dy
 
-        dx = dy = self.dx - ((self.node.state.map.y_dim() // 10) * 5)
-
-        if self.node.state.map.grid[y][x] is C.OBSTACLE:
+        if self.node.state.map.grid[y][x] is C.nav_tile.OBSTACLE:
             painter.setPen(QtGui.QPen(QtGui.QColor(0, 0, 0), 1))
         else:
             painter.setPen(QtGui.QPen(color, 1))
@@ -154,12 +164,34 @@ class NavigationGUI(QtGui.QFrame):
             painter.setBrush(color)
             painter.drawRect((x * dx) + 4, (y * dy) + 4, dx - 9, dy - 9)
 
-
     def paint_map(self, painter):
         """ Called by the paintEvent, we iterate over the map and draw tiles """
         for y in range(self.node.state.map.y_dim()):
             for x in range(self.node.state.map.x_dim()):
                 self.draw(x, y, painter)
+
+    def set_map(self, default=False):
+        """ Load level with a QFileDialog """
+        folder = res.maps.__path__[0]
+        if default:
+            path = folder + '/ex0.txt'
+        else:
+            path = QtGui.QFileDialog.getOpenFileName(
+                self.window(), "Open Map File", folder, "Text files (*.txt)"
+            )
+            if not path:
+                return
+
+        graph = Map(open(path, 'r').read().splitlines())
+
+        self.level_loaded(graph)
+
+        filename = path.split('/')[-1]
+        self.parent().setWindowTitle(
+            'Module 1 - Navigation - {}'.format(filename)
+        )
+        self.status_message.emit(str('Loaded: {}'.format(filename)))
+        self.update()
 
     def set_mode(self, mode):
         """ Chainable method for use in lambdas, change mode """
