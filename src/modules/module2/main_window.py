@@ -68,6 +68,31 @@ class MainWindow(QtGui.QMainWindow):
                      and self.numbering_changed(False))
         )
 
+        delay_action_0 = QtGui.QAction('&Delay 0', self)
+        delay_action_0.triggered.connect(
+            lambda: self.graph_gui.set_delay(0) and self.delay_changed(0)
+        )
+
+        delay_action_50 = QtGui.QAction('&Delay 50', self)
+        delay_action_50.triggered.connect(
+            lambda: self.graph_gui.set_delay(50) and self.delay_changed(50)
+        )
+
+        delay_action_150 = QtGui.QAction('&Delay 150', self)
+        delay_action_150.triggered.connect(
+            lambda: self.graph_gui.set_delay(150) and self.delay_changed(150)
+        )
+
+        delay_action_500 = QtGui.QAction('&Delay 500', self)
+        delay_action_500.triggered.connect(
+            lambda: self.graph_gui.set_delay(500) and self.delay_changed(500)
+        )
+
+        delay_action_1000 = QtGui.QAction('&Delay 1000', self)
+        delay_action_1000.triggered.connect(
+            lambda: self.graph_gui.set_delay(1000) and self.delay_changed(1000)
+        )
+
         menu = self.menuBar()
         menu.setNativeMenuBar(False)
         file_menu = menu.addMenu('&File')
@@ -78,6 +103,13 @@ class MainWindow(QtGui.QMainWindow):
         numbering_menu = menu.addMenu('&Vertex Numbers')
         numbering_menu.addAction(yes_action)
         numbering_menu.addAction(no_action)
+
+        delay_menu = menu.addMenu('&Delay')
+        delay_menu.addAction(delay_action_0)
+        delay_menu.addAction(delay_action_50)
+        delay_menu.addAction(delay_action_150)
+        delay_menu.addAction(delay_action_500)
+        delay_menu.addAction(delay_action_1000)
 
     def init_toolbar(self):
         """ Initializes a toolbar, with a run button and delay controls """
@@ -144,6 +176,9 @@ class MainWindow(QtGui.QMainWindow):
         else:
             self.statusBar().showMessage('Hiding vertex numbers')
 
+    def delay_changed(self, delay):
+        """ Writes to status bar when delay is changed """
+        self.statusBar().showMessage('Delay: ' + str(delay))
 
 
 def main():

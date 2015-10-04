@@ -1,5 +1,6 @@
 from src.algorithms.gac.constraint import Constraint
 from src.algorithms.gac.func import make_function
+from copy import deepcopy
 
 
 class NonoConstraint(Constraint):
@@ -32,6 +33,7 @@ class NonoConstraint(Constraint):
 
     def reduce(self, v1, v2, domains):
         revised = False
+        want_new = True
 
         for d1 in domains[v1]:
             satisfied = False
@@ -40,6 +42,9 @@ class NonoConstraint(Constraint):
                     satisfied = True
                     break
             if not satisfied:
+                if want_new:
+                    domains[v1] = deepcopy(domains[v1])
+                    want_new = False
                 domains[v1].remove(d1)
                 revised = True
 
