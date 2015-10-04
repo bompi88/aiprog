@@ -108,9 +108,6 @@ class NonogramState(SearchState):
                                             self._solution_length + 1)
                 result = self.gac.rerun(new_domains, key)
 
-                successor.print_level()
-                print result
-
                 if successor.is_solution():
                     return [successor]
 
