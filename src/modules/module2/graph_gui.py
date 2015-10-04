@@ -63,6 +63,7 @@ class GraphGUI(QtGui.QFrame):
         self.thread.search(VertexColoringBfs(self.node.state, self))
 
     def set_solution(self, solution):
+        """ Receives a solution from search and sets the node """
         self.node = VertexColoringState(
             solution.state,
             None,
@@ -73,7 +74,6 @@ class GraphGUI(QtGui.QFrame):
 
     def paint(self, node):
         """ Receives a node and tells Qt to update the graphics """
-        self.graph = node.state
         self.node = node
         self.update()
 
@@ -177,6 +177,7 @@ class GraphGUI(QtGui.QFrame):
         return True
 
     def set_vertex_numbering(self, numbering):
+        """ Boolean numbering decides if we show vertex numbers. """
         self.vertex_numbering = numbering
         self.update()
         return True
@@ -186,6 +187,6 @@ class GraphGUI(QtGui.QFrame):
         self.delay = delay
         return True
 
-    # Not needed in GraphGui
     def set_opened_closed(self, opened, closed):
+        """ No nice way of showing this in the GraphGUI """
         pass

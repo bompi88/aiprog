@@ -56,6 +56,7 @@ class NavigationGUI(QtGui.QFrame):
         self.thread.search(navigation)
 
     def set_solution(self, solution):
+        """ Receives a solution from search and sets the node """
         visited = solution.state.visited_copy()
 
         self.node = NavigationState(NavigationGrid(

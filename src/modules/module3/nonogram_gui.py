@@ -18,7 +18,6 @@ class NonogramGUI(QtGui.QFrame):
         QtGui.QFrame.__init__(self, parent)
 
         self.dx = self.dy = 1
-        self.minimum_width_px = self.minimum_height_px = 600
         self.widget_width_px = self.widget_height_px = 600
 
         self.nonogram_state = None
@@ -31,7 +30,7 @@ class NonogramGUI(QtGui.QFrame):
     def init_ui(self):
         """ Initialize the UI """
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
-        size = QtCore.QSize(self.minimum_width_px, self.minimum_height_px)
+        size = QtCore.QSize(self.widget_width_px, self.widget_height_px)
         self.setMinimumSize(size)
         self.parent().adjustSize()
 
@@ -42,6 +41,7 @@ class NonogramGUI(QtGui.QFrame):
         self.compute_tile_size()
 
     def compute_tile_size(self):
+        """ Computes tile size based on widget size and nonogram """
         self.dx = self.dy = 1
         x, y = self.nonogram_state.state.x, self.nonogram_state.state.y
 
@@ -55,6 +55,7 @@ class NonogramGUI(QtGui.QFrame):
         self.thread.search(search)
 
     def set_solution(self, solution):
+        """ Receives a solution from search and sets the node """
         self.nonogram_state = NonogramState(
             solution.state,
             None,
@@ -74,11 +75,13 @@ class NonogramGUI(QtGui.QFrame):
         self.draw_nonogram(painter)
 
     def resizeEvent(self, e): # pylint: disable=invalid-name
+        """ Handles widget resize and scales Nonogram """
         self.widget_width_px = e.size().width()
         self.widget_height_px = e.size().height()
         self.compute_tile_size()
 
     def draw_nonogram(self, painter):
+        """ Draws a Nonogram, WHITE should be treated as an error. """
         colors = {
             C.colors.GREY: QtGui.QColor(130, 130, 130), # Unset
             C.colors.PINK: QtGui.QColor(255, 255, 150), # Drawn
@@ -89,7 +92,7 @@ class NonogramGUI(QtGui.QFrame):
         for y, row in enumerate(self.nonogram_state.representation()):
             for x, element in enumerate(row):
                 painter.setBrush(colors[int(element)])
-                painter.drawRect((x * self.dx), (y * self.dy), self.dx - 1, self.dy - 1)
+                painter.drawRect(x*self.dx, y*self.dy, self.dx - 1, self.dy - 1)
 
     def set_nonogram(self, default=False):
         """ Load level with a QFileDialog """
@@ -111,7 +114,8 @@ class NonogramGUI(QtGui.QFrame):
         self.level_loaded(graph)
 
         filename = path.split('/')[-1]
-        self.parent().setWindowTitle('Module 3 - Nonogram - {}'.format(filename))
+        title = 'Module 3 - Nonogram - {}'.format(filename)
+        self.parent().setWindowTitle(title)
         self.status_message.emit(str('Loaded: {}'.format(filename)))
         self.update()
 
@@ -120,6 +124,6 @@ class NonogramGUI(QtGui.QFrame):
         self.delay = delay
         self.status_message.emit('Delay: ' + str(delay))
 
-    # Not needed in NonogramGUI
     def set_opened_closed(self, opened, closed):
+        """ No nice way of showing this in the NonogramGUI """
         pass

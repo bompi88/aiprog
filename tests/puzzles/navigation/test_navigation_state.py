@@ -1,3 +1,4 @@
+""" Tests methods on NavigationState """
 import unittest
 
 from src.puzzles.navigation.navigation_bfs import Navigation
@@ -9,7 +10,7 @@ import res.maps
 
 
 class TestNavigationState(unittest.TestCase):
-
+    """ Performs tests on NavigationState """
     def setUp(self):
         path = res.maps.__path__[0] + '/ex_simple.txt'
         self.task = NavigationGrid(Map(open(path, 'r').read().splitlines()))

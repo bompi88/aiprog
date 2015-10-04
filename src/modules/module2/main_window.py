@@ -157,19 +157,20 @@ class MainWindow(QtGui.QMainWindow):
         geometry.moveCenter(desktop_center)
         self.move(geometry.topLeft())
 
-    def color_changed(self, color):
+    def color_changed(self, c):
         """ Writes to status bar when color is changed """
-        self.statusBar().showMessage('Amount of colors available: ' + str(color))
+        self.statusBar().showMessage('Amount of colors available: ' + str(c))
 
     def numbering_changed(self, numbering):
+        """ Sets status message based on numbering """
         if numbering:
-            self.statusBar().showMessage('Showing vertex numbers')
+            self.graph_gui.status_message.emit('Showing vertex numbers')
         else:
-            self.statusBar().showMessage('Hiding vertex numbers')
+            self.graph_gui.status_message.emit('Hiding vertex numbers')
 
     def delay_changed(self, delay):
         """ Writes to status bar when delay is changed """
-        self.statusBar().showMessage('Delay: ' + str(delay))
+        self.graph_gui.status_message.emit('Delay: ' + str(delay))
 
 
 def main():

@@ -21,8 +21,8 @@ class TestNavigation(unittest.TestCase):
                 '/ex3.txt', '/ex4.txt', '/ex5.txt', '/ex6.txt', '/ex7.txt']
 
         self.tasks = []
-        for map in maps:
-            path = base_path + map
+        for _map in maps:
+            path = base_path + _map
             grid = NavigationGrid(Map(open(path, 'r').read().splitlines()))
             self.tasks.append(grid)
 

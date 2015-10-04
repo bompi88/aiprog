@@ -30,6 +30,8 @@ class NonogramState(SearchState):
 
     @staticmethod
     def init_domain(length, blocks, domains=None, total_length=None):
+        """ Helper method for creating all the possible domains of a given row
+        or column. Example (5, [1 2]) => ['10110', '01011', '10011'] """
         if not total_length:
             total_length = length
 
@@ -121,6 +123,7 @@ class NonogramState(SearchState):
         return successors
 
     def representation(self):
+        """ Returns the state as printable 2D board """
         unset = 2
         empty_domain = 3
         state = [[unset] * self.state.x for _ in range(self.state.y)]
@@ -151,4 +154,5 @@ class NonogramState(SearchState):
         return '\n'.join([' '.join([str(el) for el in col]) for col in state])
 
     def print_level(self):
+        """ Prints state to terminal """
         print self

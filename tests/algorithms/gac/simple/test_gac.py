@@ -1,9 +1,11 @@
+""" Test GAC on simple math example """
 import unittest
 from src.algorithms.gac.gac import GAC
 from tests.algorithms.gac.simple.simple_constraint import SimpleConstraint
 
 
 class TestGAC(unittest.TestCase):
+    """ Simple GAC test case """
     def setUp(self):
         variables = ['a', 'b', 'c']
         self.constraints = [
@@ -30,6 +32,7 @@ class TestGAC(unittest.TestCase):
         self.gac.initialize(self.domains, self.constraints)
 
     def test_solve(self):
+        """ Test domain filtering on example which yields solution first run """
         results = self.gac.domain_filtering()
         self.assertTrue(results)
         self.assertEqual(self.domains, self.solution)

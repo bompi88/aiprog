@@ -1,5 +1,4 @@
-import sys
-
+""" Unified app for the entire course """
 from PyQt4 import QtGui
 
 from src.modules.module1.main_window import MainWindow as Navigation
@@ -8,6 +7,8 @@ from src.modules.module3.main_window import MainWindow as Nonogram
 
 
 class App(object):
+    """ Loads a navigation window as default, and lets the user choose between
+    all the different modules from the course """
     def __init__(self, qt_app):
         self.qt_app = qt_app
         self.main_window = Navigation()
@@ -16,6 +17,7 @@ class App(object):
         self.add_switcher_menu()
 
     def navigation(self):
+        """ Loads a Navigation instance into main window """
         self.main_window.close()
         self.main_window = Navigation()
         self.qt_app.setActiveWindow(self.main_window)
@@ -23,6 +25,7 @@ class App(object):
         self.add_switcher_menu()
 
     def graph(self):
+        """ Loads a Graph instance into main window """
         self.main_window.close()
         self.main_window = Graph()
         self.qt_app.setActiveWindow(self.main_window)
@@ -30,6 +33,7 @@ class App(object):
         self.add_switcher_menu()
 
     def nonogram(self):
+        """ Loads a Nonogram instance into main window """
         self.main_window.close()
         self.main_window = Nonogram()
         self.qt_app.setActiveWindow(self.main_window)
@@ -58,6 +62,7 @@ class App(object):
 
 def main():
     """ Creates Qt app and loads default level """
+    import sys
     qt_app = QtGui.QApplication(sys.argv)
     _ = App(qt_app)
     sys.exit(qt_app.exec_())
