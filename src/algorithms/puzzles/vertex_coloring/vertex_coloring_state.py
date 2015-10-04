@@ -81,6 +81,9 @@ class VertexColoringState(SearchState):
             successor = VertexColoringState(self.state, self.gac, self.num_colors, new_domains, self._solution_length + 1, key, self.new_variable)
             result = self.gac.rerun(new_domains, key)
 
+            if successor.is_solution():
+                return [successor]
+
             if result:
                 successors.append(successor)
 

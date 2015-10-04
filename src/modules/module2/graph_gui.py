@@ -189,3 +189,8 @@ class GraphGUI(QtGui.QFrame):
     # Not needed in GraphGui
     def set_opened_closed(self, opened, closed):
         pass
+
+    def set_delay(self, delay):
+        """ Change delay """
+        self.delay = delay
+        return True

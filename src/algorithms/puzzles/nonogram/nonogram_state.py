@@ -1,7 +1,8 @@
 """ Specialization of SearchState """
-from copy import deepcopy
 from src.algorithms.astar.search_state import SearchState
 import math
+from src.utils.domaincopy import domaincopy
+from collections import OrderedDict
 
 
 class NonogramState(SearchState):
@@ -93,18 +94,25 @@ class NonogramState(SearchState):
             key: domain for key, domain in self.domains.items() if len(domain) > 1
         }
 
-        for key, domain in viable_domains.items():
-            for element in domain:
-                new_domain = deepcopy(self.domains)
-                new_domain[key] = [element]
+        sorted_domains = OrderedDict(sorted(viable_domains.items(), key=lambda x: -len(x[1])))
 
-                self.gac.rerun(new_domain, key)
+        (key, domain) = sorted_domains.popitem()
+
+        for element in domain:
+                new_domains = domaincopy(self.domains)
+                new_domains[key] = [element]
+
                 successor = NonogramState(self.state,
-                                          self.gac,
-                                          new_domain,
-                                          self._solution_length + 1)
+                                            self.gac,
+                                            new_domains,
+                                            self._solution_length + 1)
+                result = self.gac.rerun(new_domains, key)
 
-                successors.append(successor)
+                if successor.is_solution():
+                    return [successor]
+
+                if result:
+                    successors.append(successor)
 
         return successors
 
