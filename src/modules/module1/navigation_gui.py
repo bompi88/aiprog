@@ -23,6 +23,7 @@ class NavigationGUI(QtGui.QFrame):
         self.graph_width_px = self.graph_height_px = 600
 
         self.delay = 50
+        self.diagonal = False
         self.mode = C.search_mode.A_STAR
 
         self.node = None
@@ -202,4 +203,9 @@ class NavigationGUI(QtGui.QFrame):
     def set_delay(self, delay):
         """ Change delay """
         self.delay = delay
+        return True
+
+    def set_diagonal(self, is_diagonal):
+        """ Set diagonal mode """
+        self.diagonal = is_diagonal
         return True

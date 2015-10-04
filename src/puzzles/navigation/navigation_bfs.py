@@ -9,10 +9,11 @@ class Navigation(BestFirstSearch):
     """ Map navigation version of A* """
 
     def __init__(self, start, gui=None):
+        self.diagonal = gui.diagonal
         BestFirstSearch.__init__(self, start, gui, True)
 
     def create_root_node(self):
-        return NavigationState(self.start)
+        return NavigationState(self.start, self.diagonal)
 
     def arc_cost(self, a, b):
         return 0.5

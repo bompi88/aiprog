@@ -70,6 +70,18 @@ class MainWindow(QtGui.QMainWindow):
                      self.mode_changed(C.search_mode.BFS))
         )
 
+        diagonal_on = QtGui.QAction('&On', self)
+        diagonal_on.triggered.connect(
+            lambda: (self.nav_gui.set_diagonal(True) and
+                     self.diagonal_changed(True))
+        )
+
+        diagonal_off = QtGui.QAction('&Off', self)
+        diagonal_off.triggered.connect(
+            lambda: (self.nav_gui.set_diagonal(False) and
+                     self.diagonal_changed(False))
+        )
+
         menu = self.menuBar()
         menu.setNativeMenuBar(False)
         file_menu = menu.addMenu('&File')
@@ -81,6 +93,10 @@ class MainWindow(QtGui.QMainWindow):
         mode_menu.addAction(a_star_action)
         mode_menu.addAction(dfs_action)
         mode_menu.addAction(bfs_action)
+
+        diagonal_menu = menu.addMenu('&Diagonal')
+        diagonal_menu.addAction(diagonal_on)
+        diagonal_menu.addAction(diagonal_off)
 
     def init_toolbar(self):
         """ Initializes a toolbar, with a run button and delay controls """
@@ -144,6 +160,9 @@ class MainWindow(QtGui.QMainWindow):
         """ Writes to status bar when delay is changed """
         self.statusBar().showMessage('Delay: ' + str(delay))
 
+    def diagonal_changed(self, is_diagonal):
+        """ Writes to status bar when delay is changed """
+        self.statusBar().showMessage('Diagonal mode: ' + str(is_diagonal))
 
 def main():
     """ Creates Qt app and loads default level """

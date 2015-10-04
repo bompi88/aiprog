@@ -8,6 +8,10 @@ from src.utils.id_generator import ID_GENERATOR
 class NavigationState(SearchState):
     """ A navigation, containing the state of the map as a NavigationGrid """
 
+    def __init__(self, navigation, diagonal=False):
+        self.diagonal = diagonal
+        SearchState.__init__(self, navigation)
+
     def create_state_identifier(self):
         return ID_GENERATOR.get_id(self.state.position_string())
 
@@ -21,7 +25,13 @@ class NavigationState(SearchState):
         return self.state.visited_len()
 
     def generate_all_successors(self):
-        viable_movements = [[-1, 0], [1, 0], [0, -1], [0, 1]]
+
+        if self.diagonal:
+            viable_movements = [[-1, -1], [1, 1], [1, -1], [-1, 1],
+                                [-1, 0], [1, 0], [0, -1], [0, 1]]
+        else:
+            viable_movements = [[-1, 0], [1, 0], [0, -1], [0, 1]]
+
         successors = []
 
         for move in viable_movements:
@@ -48,7 +58,8 @@ class NavigationState(SearchState):
             visited = self.state.visited_copy() + [next_pos]
 
             successor = NavigationState(
-                NavigationGrid(self.state.map, visited, next_pos)
+                NavigationGrid(self.state.map, visited, next_pos),
+                self.diagonal
             )
 
             successors.append(successor)
