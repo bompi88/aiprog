@@ -2,7 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[margin=1in]{geometry}
-\usepackage{../tikz-uml}
+\usepackage{../packages/tikz-uml}
 
 %% For å lime in kode
 \usepackage{listings}
@@ -11,6 +11,8 @@
 \definecolor{graa}{RGB}{245,245,245}
 \definecolor{blaa}{RGB}{0,0,255}
 \definecolor{sienna}{RGB}{255,130,71}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+\definecolor{deepskyblue}{RGB}{0,191,255}
 
 \author{Kristian Våge and Bjørn Bråthen}
 \title{A*-GAC, A General Constraint-Satisfaction Problem Solver}
@@ -19,20 +21,23 @@
 \maketitle
 \lstset{
 	language=python,
-	numberstyle=\tiny,
+	basicstyle=\small,
+	numberstyle=\small,
 	numbers=left,
-	numbersep=15pt,
+	numbersep=8pt,
 	frame=single,
 	framerule=0pt,
 	showstringspaces=false,
-	otherkeywords={self},
+	otherkeywords={},
+	emph=[2]{self},
 	emphstyle=\color{blaa},
-	emphstyle={[2]\color{sienna}},
+	emphstyle=[2]{\color{sienna}},
 	backgroundcolor=\color{graa},
-	keywordstyle=\color{purple}
+	keywordstyle=\color{purple},
+	morecomment=[s]{"""}{"""},
+	commentstyle=\color{deepskyblue},
+	stringstyle=\color{deepgreen}
 }
-
-\newpage
 %###
 \input{module_2/answers}
 %###
