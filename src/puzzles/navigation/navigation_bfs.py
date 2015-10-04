@@ -9,8 +9,8 @@ class Navigation(BestFirstSearch):
     """ Map navigation version of A* """
 
     def __init__(self, start, gui=None):
-        self.diagonal = gui.diagonal
-        self.heuristics_type = gui.heuristics_type
+        self.diagonal = False if not gui else gui.diagonal
+        self.heuristics_type = 'euclidean' if not gui else gui.heuristics_type
         BestFirstSearch.__init__(self, start, gui, True)
 
     def create_root_node(self):
