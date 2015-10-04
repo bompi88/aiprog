@@ -1,6 +1,7 @@
 """ GAC constraint superclass """
-from src.algorithms.gac.func import make_function
 from copy import deepcopy
+
+from src.utils.func import make_function
 
 
 class Constraint(object):
@@ -17,24 +18,30 @@ class Constraint(object):
         self.create_func()
 
     def create_func(self):
-
+        """ Creates functions for variables and expression.
+        Handles one and two variables. """
         self.function = {
             self.variables[0]: make_function(self.variables, self.expression[0])
         }
 
         if len(self.variables) > 1:
-            self.function[self.variables[1]] = make_function(self.variables, self.expression[1])
+            function = make_function(self.variables, self.expression[1])
+            self.function[self.variables[1]] = function
 
-    def revise(self, v, c, domains):
+    def revise(self, v, domains):
+        """ Implements revise(). Works for one and two variables """
         if v == self.variables[0]:
             if len(self.variables) > 1:
-                return self.reduce(self.variables[0], self.variables[1], domains)
+                return self.reduce(self.variables[0],
+                                   self.variables[1],
+                                   domains)
             else:
                 return self.reduce(self.variables[0], None, domains)
         elif v == self.variables[1]:
             return self.reduce(self.variables[1], self.variables[0], domains)
 
     def reduce(self, v1, v2, domains):
+        """ Helper method for revise in pruning domains. """
         revised = False
         want_new = True
 

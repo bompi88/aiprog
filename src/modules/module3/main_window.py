@@ -2,6 +2,7 @@
 from PyQt4 import QtGui
 
 import res.imgs
+from src.utils.func import make_function
 from src.modules.module3.nonogram_gui import NonogramGUI
 
 class MainWindow(QtGui.QMainWindow):
@@ -60,36 +61,15 @@ class MainWindow(QtGui.QMainWindow):
         run_action.setStatusTip('Run search')
         run_action.triggered.connect(self.nonogram_gui.start_search)
 
-        delay_action_0 = QtGui.QAction('Delay 0', self)
-        delay_action_0.triggered.connect(lambda: self.nonogram_gui.set_delay(0))
-
-        delay_action_50 = QtGui.QAction('Delay 50', self)
-        delay_action_50.triggered.connect(
-            lambda: self.nonogram_gui.set_delay(50)
-        )
-
-        delay_action_150 = QtGui.QAction('Delay 150', self)
-        delay_action_150.triggered.connect(
-            lambda: self.nonogram_gui.set_delay(150)
-        )
-
-        delay_action_500 = QtGui.QAction('Delay 500', self)
-        delay_action_500.triggered.connect(
-            lambda: self.nonogram_gui.set_delay(500)
-        )
-
-        delay_action_1000 = QtGui.QAction('Delay 1000', self)
-        delay_action_1000.triggered.connect(
-            lambda: self.nonogram_gui.set_delay(1000)
-        )
-
         toolbar = self.addToolBar('Run')
         toolbar.addAction(run_action)
-        toolbar.addAction(delay_action_0)
-        toolbar.addAction(delay_action_50)
-        toolbar.addAction(delay_action_150)
-        toolbar.addAction(delay_action_500)
-        toolbar.addAction(delay_action_1000)
+
+        delays = [0, 50, 150, 500, 1000]
+        for delay in delays:
+            delay_action = QtGui.QAction('&Delay: ' + str(delay) + ' ms', self)
+            expr = 'self.nonogram_gui.set_delay({})'.format(delay)
+            delay_action.triggered.connect(make_function([], expr, locals()))
+            toolbar.addAction(delay_action)
 
 
 def main():

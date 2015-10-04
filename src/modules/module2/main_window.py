@@ -3,6 +3,7 @@ from PyQt4 import QtGui
 
 import res.imgs
 from src.modules.module2.graph_gui import GraphGUI
+from src.utils.func import make_function
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -35,6 +36,7 @@ class MainWindow(QtGui.QMainWindow):
         """ Initializes a menubar with the following items:
          File -> [ Load, Kill, Exit ]
          Vertex Numbers -> [Yes, No]
+         Delay -> [0 ms, 50 ms, 150 ms, 500 ms, 1000 ms]
         """
         load_action = QtGui.QAction('&Load graph', self)
         load_action.setShortcut('Ctrl+L')
@@ -50,39 +52,12 @@ class MainWindow(QtGui.QMainWindow):
 
         yes_action = QtGui.QAction('&Yes', self)
         yes_action.triggered.connect(
-            lambda: (self.graph_gui.set_vertex_numbering(True)
-                     and self.numbering_changed(True))
+            lambda: self.graph_gui.set_vertex_numbering(True)
         )
 
         no_action = QtGui.QAction('&No', self)
         no_action.triggered.connect(
-            lambda: (self.graph_gui.set_vertex_numbering(False)
-                     and self.numbering_changed(False))
-        )
-
-        delay_action_0 = QtGui.QAction('&Delay 0', self)
-        delay_action_0.triggered.connect(
-            lambda: self.graph_gui.set_delay(0) and self.delay_changed(0)
-        )
-
-        delay_action_50 = QtGui.QAction('&Delay 50', self)
-        delay_action_50.triggered.connect(
-            lambda: self.graph_gui.set_delay(50) and self.delay_changed(50)
-        )
-
-        delay_action_150 = QtGui.QAction('&Delay 150', self)
-        delay_action_150.triggered.connect(
-            lambda: self.graph_gui.set_delay(150) and self.delay_changed(150)
-        )
-
-        delay_action_500 = QtGui.QAction('&Delay 500', self)
-        delay_action_500.triggered.connect(
-            lambda: self.graph_gui.set_delay(500) and self.delay_changed(500)
-        )
-
-        delay_action_1000 = QtGui.QAction('&Delay 1000', self)
-        delay_action_1000.triggered.connect(
-            lambda: self.graph_gui.set_delay(1000) and self.delay_changed(1000)
+            lambda: self.graph_gui.set_vertex_numbering(False)
         )
 
         menu = self.menuBar()
@@ -97,11 +72,12 @@ class MainWindow(QtGui.QMainWindow):
         numbering_menu.addAction(no_action)
 
         delay_menu = menu.addMenu('&Delay')
-        delay_menu.addAction(delay_action_0)
-        delay_menu.addAction(delay_action_50)
-        delay_menu.addAction(delay_action_150)
-        delay_menu.addAction(delay_action_500)
-        delay_menu.addAction(delay_action_1000)
+        delays = [0, 50, 150, 500, 1000]
+        for delay in delays:
+            delay_action = QtGui.QAction('&' + str(delay) + ' ms', self)
+            expr = 'self.graph_gui.set_delay({})'.format(delay)
+            delay_action.triggered.connect(make_function([], expr, locals()))
+            delay_menu.addAction(delay_action)
 
     def init_toolbar(self):
         """ Initializes a toolbar, with a run button and delay controls """
@@ -111,44 +87,13 @@ class MainWindow(QtGui.QMainWindow):
         run_action.setStatusTip('Run search')
         run_action.triggered.connect(self.graph_gui.start_search)
 
-        color_action_3 = QtGui.QAction('Colors 3', self)
-        color_action_3.triggered.connect(
-            lambda: self.graph_gui.set_color(3) and self.color_changed(3)
-        )
-
-        color_action_4 = QtGui.QAction('Colors 4', self)
-        color_action_4.triggered.connect(
-            lambda: self.graph_gui.set_color(4) and self.color_changed(4)
-        )
-
-        color_action_5 = QtGui.QAction('Colors 5', self)
-        color_action_5.triggered.connect(
-            lambda: self.graph_gui.set_color(5) and self.color_changed(5)
-        )
-
-        color_action_6 = QtGui.QAction('Colors 6', self)
-        color_action_6.triggered.connect(
-            lambda: self.graph_gui.set_color(6) and self.color_changed(6)
-        )
-
-        color_action_7 = QtGui.QAction('Colors 7', self)
-        color_action_7.triggered.connect(
-            lambda: self.graph_gui.set_color(7) and self.color_changed(7)
-        )
-
-        color_action_8 = QtGui.QAction('Colors 8', self)
-        color_action_8.triggered.connect(
-            lambda: self.graph_gui.set_color(8) and self.color_changed(8)
-        )
-
         toolbar = self.addToolBar('Run')
         toolbar.addAction(run_action)
-        toolbar.addAction(color_action_3)
-        toolbar.addAction(color_action_4)
-        toolbar.addAction(color_action_5)
-        toolbar.addAction(color_action_6)
-        toolbar.addAction(color_action_7)
-        toolbar.addAction(color_action_8)
+        for i in range(3, 11):
+            color_action = QtGui.QAction('Colors ' + str(i), self)
+            expr = 'self.graph_gui.set_color({})'.format(i)
+            color_action.triggered.connect(make_function([], expr, locals()))
+            toolbar.addAction(color_action)
 
     def center(self):
         """ Center window  [http://zetcode.com/gui/pyqt4/firstprograms/] """
@@ -156,21 +101,6 @@ class MainWindow(QtGui.QMainWindow):
         desktop_center = QtGui.QDesktopWidget().availableGeometry().center()
         geometry.moveCenter(desktop_center)
         self.move(geometry.topLeft())
-
-    def color_changed(self, c):
-        """ Writes to status bar when color is changed """
-        self.statusBar().showMessage('Amount of colors available: ' + str(c))
-
-    def numbering_changed(self, numbering):
-        """ Sets status message based on numbering """
-        if numbering:
-            self.graph_gui.status_message.emit('Showing vertex numbers')
-        else:
-            self.graph_gui.status_message.emit('Hiding vertex numbers')
-
-    def delay_changed(self, delay):
-        """ Writes to status bar when delay is changed """
-        self.graph_gui.status_message.emit('Delay: ' + str(delay))
 
 
 def main():

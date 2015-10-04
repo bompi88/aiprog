@@ -19,10 +19,10 @@ class GraphGUI(QtGui.QFrame):
     def __init__(self, parent):
         QtGui.QFrame.__init__(self, parent)
 
-        self.dx = self.dy = -1
-        self.graph_width_px = self.graph_height_px = 600
-        self.nc_adjust_x = 0 # Adjustment for negative coordinates
-        self.nc_adjust_y = 0
+        self.dx = self.dy = 1
+        self.widget_width_px = self.widget_height_px = 600
+        self.nc_adjust_x = self.nc_adjust_y = 0 # Adjustments for negative
+                                                # coordinates in graphs.
         self.total_height = 0
         self.vertex_radii = 5
 
@@ -38,7 +38,7 @@ class GraphGUI(QtGui.QFrame):
     def init_ui(self):
         """ Initialize the UI """
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
-        size = QtCore.QSize(self.graph_width_px, self.graph_height_px)
+        size = QtCore.QSize(self.widget_width_px, self.widget_height_px)
         self.setMinimumSize(size)
         self.parent().adjustSize()
 
@@ -46,13 +46,18 @@ class GraphGUI(QtGui.QFrame):
         """ Called whenever a level is loaded, adjust Widget size """
         self.node = VertexColoringState(graph, None, self.num_colors)
 
+        self.compute_tile_size()
+
+    def compute_tile_size(self):
+        """ Computes tile size based on widget size and graph """
         self.nc_adjust_x = self.nc_adjust_y = 0
 
         width_orig = self.node.state.width
         height_orig = self.node.state.height
 
-        self.dx = self.graph_width_px / float(width_orig)
-        self.dy = self.graph_height_px / float(height_orig)
+        self.dx = self.dy = 1
+        self.dx = self.widget_width_px / float(width_orig)
+        self.dy = self.widget_height_px / float(height_orig)
 
         self.nc_adjust_x = self.node.state.min_x * self.dx
         self.nc_adjust_y = self.node.state.min_y * self.dy
@@ -85,13 +90,19 @@ class GraphGUI(QtGui.QFrame):
         painter = QtGui.QPainter(self)
         self.paint_graph(painter)
 
+    def resizeEvent(self, e): # pylint: disable=invalid-name
+        """ Handles widget resize and scales Graph """
+        self.widget_width_px = e.size().width()
+        self.widget_height_px = e.size().height()
+        self.compute_tile_size()
+
     def draw_vertex(self, vertex, painter, whites=False):
         """ Draws a vertex, either all the white nodes (with a domain length
         larger than 1) or all the colored nodes. Also draws optional
         vertex numbers. """
         x = (vertex[1] * self.dx) - self.nc_adjust_x
         y = (vertex[2] * self.dy) - self.nc_adjust_y
-        y = self.graph_height_px - y
+        y = self.widget_height_px - y
         point = QtCore.QPoint(x, y)
 
         colors = {
@@ -99,12 +110,14 @@ class GraphGUI(QtGui.QFrame):
             C.graph_colors.GREEN: QtGui.QColor(0, 200, 0),
             C.graph_colors.BLUE: QtGui.QColor(0, 0, 255),
             C.graph_colors.ORANGE: QtGui.QColor(175, 0, 100),
-            C.graph_colors.WHITE: QtGui.QColor(255, 255, 255),
-            C.graph_colors.BLACK: QtGui.QColor(0, 0, 0),
             C.graph_colors.PINK: QtGui.QColor(255, 20, 147),
             C.graph_colors.YELLOW: QtGui.QColor(255, 255, 0),
             C.graph_colors.PURPLE: QtGui.QColor(238, 130, 238),
-            C.graph_colors.BROWN: QtGui.QColor(222, 184, 135)
+            C.graph_colors.BROWN: QtGui.QColor(222, 184, 135),
+            C.graph_colors.CYAN: QtGui.QColor(0, 255, 255),
+            C.graph_colors.DARK_BROWN: QtGui.QColor(120, 60, 0),
+            C.graph_colors.WHITE: QtGui.QColor(255, 255, 255),
+            C.graph_colors.BLACK: QtGui.QColor(0, 0, 0),
         }
         vertex_color = self.node.vertex_color(vertex[0])
         color = colors[vertex_color]
@@ -131,7 +144,7 @@ class GraphGUI(QtGui.QFrame):
         x2 = (v2[1] * self.dx) - self.nc_adjust_x
         y2 = (v2[2] * self.dy) - self.nc_adjust_y
 
-        y1, y2 = self.graph_height_px - y1, self.graph_height_px - y2
+        y1, y2 = self.widget_height_px - y1, self.widget_height_px - y2
 
         p1, p2 = QtCore.QPoint(x1, y1), QtCore.QPoint(x2, y2)
 
@@ -172,20 +185,23 @@ class GraphGUI(QtGui.QFrame):
         self.update()
 
     def set_color(self, colors):
-        """ Change color """
+        """ Change color and notify user """
         self.num_colors = colors
-        return True
+        self.status_message.emit('Amount of colors available: ' + str(colors))
 
     def set_vertex_numbering(self, numbering):
         """ Boolean numbering decides if we show vertex numbers. """
         self.vertex_numbering = numbering
+        if numbering:
+            self.status_message.emit('Showing vertex numbers')
+        else:
+            self.status_message.emit('Hiding vertex numbers')
         self.update()
-        return True
 
     def set_delay(self, delay):
         """ Change delay """
         self.delay = delay
-        return True
+        self.status_message.emit('Delay: ' + str(delay))
 
     def set_opened_closed(self, opened, closed):
         """ No nice way of showing this in the GraphGUI """

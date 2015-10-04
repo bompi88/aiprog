@@ -37,7 +37,7 @@ class GAC(object):
 
     def revise(self, v, c):
         """ Delegates the revise call to the constraint implementation. """
-        return c.revise(v, c, self.domains)
+        return c.revise(v, self.domains)
 
     def rerun(self, domains, assumption):
         """ Reruns domain filtering with a new domain and a given assumption """

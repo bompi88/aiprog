@@ -29,11 +29,10 @@ class SearchWorker(QThread):
 
     def end_search(self):
         """ Terminates thread """
-        self.gui.status_message.emit('Killing search...')
         self.setTerminationEnabled(True)
         self.terminate()
+        self.gui.status_message.emit('Search killed')
 
     def __del__(self):
         self.exiting = True
         self.wait()
-        self.gui.status_message.emit('Search killed')

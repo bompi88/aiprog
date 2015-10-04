@@ -1,15 +1,18 @@
+""" Vertex specialization of Constraint """
 from src.algorithms.gac.constraint import Constraint
 
 
 class VertexConstraint(Constraint):
-
+    """ Handles vertex constraints of the type v1 != v2 """
     def __init__(self, expression=None):
         Constraint.__init__(self, expression)
 
     def parse_vars(self):
         self.variables = [i for i in self.expression[0].split() if self.var(i)]
 
-    def var(self, i):
+    @staticmethod
+    def var(i):
+        """ All expression contain !=, which is the only invalid variable. """
         return i != '!='
 
     def gen_expressions(self, expression):

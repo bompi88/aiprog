@@ -29,8 +29,8 @@ Colors = namedtuple(
 
 GraphColors = namedtuple(
     'GraphColors',
-    ['RED', 'GREEN', 'BLUE', 'ORANGE', 'WHITE',
-     'BLACK', 'PINK', 'YELLOW', 'PURPLE', 'BROWN']
+    ['RED', 'GREEN', 'BLUE', 'ORANGE', 'PINK', 'YELLOW', 'PURPLE',
+     'BROWN', 'CYAN', 'DARK_BROWN', 'WHITE', 'BLACK', ]
 )
 
 Constants = namedtuple(
@@ -44,5 +44,5 @@ C = Constants(
     Verbosity(1, 2, 3, 4),
     NavTile(1, 2, 3, 4, '#'),
     Colors(0, 1, 2, 3),
-    GraphColors(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+    GraphColors(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
 )

@@ -4,6 +4,7 @@ from src.puzzles.vertex_coloring.vertex_constraint import VertexConstraint
 
 class Graph(object):
     # pylint: disable=too-many-instance-attributes
+    """ Contains variables for describing a complete graph. """
 
     def __init__(self, lines):
         self.nv, self.ne, self.vertices, self.edges = self.parse(lines)
@@ -25,6 +26,7 @@ class Graph(object):
 
     @staticmethod
     def parse(lines):
+        """ Parses graph-file lines and returns dims, vertices and edges """
         nv, ne = [int(s) for s in lines.pop(0).split(' ')]
 
         vertices = [[s for s in lines.pop(0).split(' ')] for _ in range(nv)]

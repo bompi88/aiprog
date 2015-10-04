@@ -20,7 +20,7 @@ class NavigationGUI(QtGui.QFrame):
         QtGui.QFrame.__init__(self, parent)
 
         self.dx = self.dy = 0
-        self.graph_width_px = self.graph_height_px = 600
+        self.widget_width_px = self.widget_height_px = 600
 
         self.delay = 50
         self.diagonal = False
@@ -37,7 +37,7 @@ class NavigationGUI(QtGui.QFrame):
     def init_ui(self):
         """ Initialize the UI """
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
-        minimum_size = QtCore.QSize(self.graph_width_px, self.graph_height_px)
+        minimum_size = QtCore.QSize(self.widget_width_px, self.widget_height_px)
         self.setMinimumSize(minimum_size)
         self.parent().adjustSize()
 
@@ -45,9 +45,12 @@ class NavigationGUI(QtGui.QFrame):
         """ Called whenever a level is loaded, adjust Widget size """
         self.node = NavigationState(NavigationGrid(grid))
         self.opened, self.closed = None, None
+        self.compute_tile_size()
 
-        self.dx = self.graph_width_px / float(self.node.state.map.x_dim())
-        self.dy = self.graph_height_px / float(self.node.state.map.y_dim())
+    def compute_tile_size(self):
+        """ Computes tile size based on widget size and map """
+        self.dx = self.widget_width_px / float(self.node.state.map.x_dim())
+        self.dy = self.widget_height_px / float(self.node.state.map.y_dim())
 
     def start_search(self):
         """ Start the search in the worker thread """
@@ -85,6 +88,12 @@ class NavigationGUI(QtGui.QFrame):
 
         painter = QtGui.QPainter(self)
         self.paint_map(painter)
+
+    def resizeEvent(self, e): # pylint: disable=invalid-name
+        """ Handles widget resize and scales Navigation """
+        self.widget_width_px = e.size().width()
+        self.widget_height_px = e.size().height()
+        self.compute_tile_size()
 
     def is_visited(self, x, y):
         """ Checks whether (x,y) is visited in the current state """
@@ -204,7 +213,7 @@ class NavigationGUI(QtGui.QFrame):
     def set_delay(self, delay):
         """ Change delay """
         self.delay = delay
-        return True
+        self.status_message.emit('Delay: ' + str(delay))
 
     def set_diagonal(self, is_diagonal):
         """ Set diagonal mode """

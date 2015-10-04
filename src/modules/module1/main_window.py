@@ -3,6 +3,7 @@ from PyQt4 import QtGui
 
 import res.imgs
 from src.utils.const import C
+from src.utils.func import make_function
 from src.modules.module1.navigation_gui import NavigationGUI
 
 
@@ -43,7 +44,7 @@ class MainWindow(QtGui.QMainWindow):
 
         kill_action = QtGui.QAction('&Kill search', self)
         kill_action.setShortcut('Ctrl+K')
-        kill_action.triggered.connect(self.nav_gui.thread.terminate)
+        kill_action.triggered.connect(self.nav_gui.thread.end_search)
 
         exit_action = QtGui.QAction('&Exit', self)
         exit_action.setShortcut('Ctrl+Q')
@@ -122,38 +123,15 @@ class MainWindow(QtGui.QMainWindow):
         run_action.setStatusTip('Run search')
         run_action.triggered.connect(self.nav_gui.start_search)
 
-        delay_action_0 = QtGui.QAction('Delay 0', self)
-        delay_action_0.triggered.connect(
-            lambda: self.nav_gui.set_delay(0) and self.delay_changed(0)
-        )
-
-        delay_action_50 = QtGui.QAction('Delay 50', self)
-        delay_action_50.triggered.connect(
-            lambda: self.nav_gui.set_delay(50) and self.delay_changed(50)
-        )
-
-        delay_action_150 = QtGui.QAction('Delay 150', self)
-        delay_action_150.triggered.connect(
-            lambda: self.nav_gui.set_delay(150) and self.delay_changed(150)
-        )
-
-        delay_action_500 = QtGui.QAction('Delay 500', self)
-        delay_action_500.triggered.connect(
-            lambda: self.nav_gui.set_delay(500) and self.delay_changed(500)
-        )
-
-        delay_action_1000 = QtGui.QAction('Delay 1000', self)
-        delay_action_1000.triggered.connect(
-            lambda: self.nav_gui.set_delay(1000) and self.delay_changed(1000)
-        )
-
         toolbar = self.addToolBar('Run')
         toolbar.addAction(run_action)
-        toolbar.addAction(delay_action_0)
-        toolbar.addAction(delay_action_50)
-        toolbar.addAction(delay_action_150)
-        toolbar.addAction(delay_action_500)
-        toolbar.addAction(delay_action_1000)
+
+        delays = [0, 50, 150, 500, 1000]
+        for delay in delays:
+            delay_action = QtGui.QAction('&Delay: ' + str(delay) + ' ms', self)
+            expr = 'self.nav_gui.set_delay({})'.format(delay)
+            delay_action.triggered.connect(make_function([], expr, locals()))
+            toolbar.addAction(delay_action)
 
     def center(self):
         """ Center window  [http://zetcode.com/gui/pyqt4/firstprograms/] """
@@ -170,11 +148,7 @@ class MainWindow(QtGui.QMainWindow):
             C.search_mode.DFS: 'DFS'
         }[mode]
 
-        self.statusBar().showMessage('Mode: ' + mode_s)
-
-    def delay_changed(self, delay):
-        """ Writes to status bar when delay is changed """
-        self.statusBar().showMessage('Delay: ' + str(delay))
+        self.nav_gui.status_message.emit('Mode: ' + mode_s)
 
     def diagonal_changed(self, is_diagonal):
         """ Writes to status bar when diagonal option has changed """

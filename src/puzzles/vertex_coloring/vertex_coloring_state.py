@@ -8,15 +8,17 @@ from src.utils.const import C
 
 
 class VertexColoringState(SearchState):
-    """  """
+    """ State of a vertex coloring search """
 
-    def __init__(self, graph, gac, num_colors, domains=None,
-                 solution_length=0, new_variable=None, last_variable=None):
+    def __init__(self, graph, gac, num_colors, domains=None, solution_length=0):
+        # pylint: disable=too-many-arguments
 
         viable_values = [
             C.graph_colors.RED, C.graph_colors.GREEN, C.graph_colors.BLUE,
             C.graph_colors.ORANGE, C.graph_colors.PINK, C.graph_colors.YELLOW,
-            C.graph_colors.PURPLE, C.graph_colors.BROWN]
+            C.graph_colors.PURPLE, C.graph_colors.BROWN, C.graph_colors.CYAN,
+            C.graph_colors.DARK_BROWN
+        ]
 
         if domains:
             self.domains = domains
@@ -27,8 +29,6 @@ class VertexColoringState(SearchState):
 
         self.gac = gac
         self._solution_length = solution_length
-        self.new_variable = new_variable
-        self.last_variable = last_variable
         self.num_colors = num_colors
 
         SearchState.__init__(self, graph)
@@ -58,6 +58,9 @@ class VertexColoringState(SearchState):
         return self._solution_length
 
     def vertex_color(self, sid):
+        """ Returns the color of vertex. Either the correct color, white
+        if there are still several valid domains, and black if the domain
+        list has become empty. Black should be treated as an error. """
         domain = self.domains['v' + str(sid)]
 
         if len(domain) > 1:
@@ -86,7 +89,7 @@ class VertexColoringState(SearchState):
 
             successor = VertexColoringState(
                 self.state, self.gac, self.num_colors, new_domains,
-                self._solution_length + 1, key, self.new_variable
+                self._solution_length + 1
             )
             result = self.gac.rerun(new_domains, key)
 
@@ -99,6 +102,7 @@ class VertexColoringState(SearchState):
         return successors
 
     def print_level(self):
+        """ Prints a state to the terminal, for aid in debugging. """
         print '\nVC State'
         print [self.state.nv, self.state.ne]
         print self.state.vertices

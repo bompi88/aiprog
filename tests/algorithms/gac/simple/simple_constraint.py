@@ -13,7 +13,8 @@ class SimpleConstraint(Constraint):
         Constraint.__init__(self, expression)
 
     def parse_vars(self):
-        self.variables = [i for i in self.expression[0].split() if i in self.valid]
+        expression_list = self.expression[0].split()
+        self.variables = [i for i in expression_list if i in self.valid]
 
     def gen_expressions(self, expression):
         parts = expression.split()
