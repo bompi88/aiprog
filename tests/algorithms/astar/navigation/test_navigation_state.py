@@ -3,13 +3,16 @@ import unittest
 from src.puzzles.navigation.navigation_bfs import Navigation
 from src.puzzles.navigation.navigation_state import NavigationState
 from src.puzzles.navigation.navigation_grid import NavigationGrid
-from src.puzzles.navigation.map import MapReader
+from src.puzzles.navigation.map import Map
+from src.utils.const import C
+import res.maps
 
 
 class TestNavigationState(unittest.TestCase):
 
     def setUp(self):
-        self.task = NavigationGrid(MapReader(MapReader.read_map('ex_simple.txt')))
+        path = res.maps.__path__[0] + '/ex_simple.txt'
+        self.task = NavigationGrid(Map(open(path, 'r').read().splitlines()))
 
         self.test_state = NavigationState(self.task)
 
@@ -38,7 +41,9 @@ class TestNavigationState(unittest.TestCase):
 
         self.assertFalse(self.test_state.is_solution())
 
-        solution_state = Navigation(self.task).best_first_search()
+        search = Navigation(self.task)
+        search.verbosity = C.verbosity.TEST
+        solution_state = search.best_first_search()
 
         self.assertTrue(solution_state.is_solution())
 
