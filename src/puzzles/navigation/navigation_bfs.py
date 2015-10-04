@@ -17,6 +17,8 @@ class Navigation(BestFirstSearch):
         return NavigationState(self.start, self.diagonal, self.heuristics_type)
 
     def arc_cost(self, a, b):
+        if self.diagonal:
+            return 1.1
         return 0.5
 
 

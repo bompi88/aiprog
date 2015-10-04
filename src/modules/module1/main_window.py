@@ -34,6 +34,7 @@ class MainWindow(QtGui.QMainWindow):
         self.raise_()
 
     def init_menubar(self):
+        # pylint: disable=too-many-locals
         """ Initializes a menubar with the following items:
          File -> [ Load, Kill, Exit ]
          Mode -> [ A*, DFS, BFS ]
@@ -73,26 +74,22 @@ class MainWindow(QtGui.QMainWindow):
 
         diagonal_on = QtGui.QAction('&On', self)
         diagonal_on.triggered.connect(
-            lambda: (self.nav_gui.set_diagonal(True) and
-                     self.diagonal_changed(True))
+            lambda: (self.nav_gui.set_diagonal(True))
         )
 
         diagonal_off = QtGui.QAction('&Off', self)
         diagonal_off.triggered.connect(
-            lambda: (self.nav_gui.set_diagonal(False) and
-                     self.diagonal_changed(False))
+            lambda: (self.nav_gui.set_diagonal(False))
         )
 
         euclidean_option = QtGui.QAction('&Euclidean distance', self)
         euclidean_option.triggered.connect(
-            lambda: (self.nav_gui.set_heuristics_type('euclidean') and
-                     self.heuristics_changed('Euclidean distance'))
+            lambda: (self.nav_gui.set_heuristics_type('euclidean'))
         )
 
         manhattan_option = QtGui.QAction('&Manhattan distance', self)
         manhattan_option.triggered.connect(
-            lambda: (self.nav_gui.set_heuristics_type('manhattan') and
-                     self.heuristics_changed('Manhattan distance'))
+            lambda: (self.nav_gui.set_heuristics_type('manhattan'))
         )
 
         menu = self.menuBar()
@@ -149,14 +146,6 @@ class MainWindow(QtGui.QMainWindow):
         }[mode]
 
         self.nav_gui.status_message.emit('Mode: ' + mode_s)
-
-    def diagonal_changed(self, is_diagonal):
-        """ Writes to status bar when diagonal option has changed """
-        self.statusBar().showMessage('Diagonal mode: ' + str(is_diagonal))
-
-    def heuristics_changed(self, heuristics_type):
-        """ Writes to status bar when heuristics option has changed """
-        self.statusBar().showMessage('Heuristics: ' + str(heuristics_type))
 
 
 def main():

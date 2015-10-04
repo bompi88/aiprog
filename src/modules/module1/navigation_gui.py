@@ -218,9 +218,10 @@ class NavigationGUI(QtGui.QFrame):
     def set_diagonal(self, is_diagonal):
         """ Set diagonal mode """
         self.diagonal = is_diagonal
-        return True
+        self.status_message.emit('Diagonal mode: ' + str(is_diagonal))
 
     def set_heuristics_type(self, heuristics_type):
         """ Set heuristics """
         self.heuristics_type = heuristics_type
-        return True
+        message = 'Heuristics: ' + str(heuristics_type) + ' distance'
+        self.status_message.emit(message)

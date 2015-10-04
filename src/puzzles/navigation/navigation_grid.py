@@ -61,7 +61,4 @@ class NavigationGrid(object):
     @classmethod
     def manhattan_distance(cls, a, b):
         """ x + y """
-        x = b[0] - a[0]
-        y = b[1] - a[1]
-
-        return x + y
+        return abs(b[0] - a[0]) + abs(b[1] - a[1])
