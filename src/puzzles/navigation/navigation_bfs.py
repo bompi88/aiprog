@@ -19,7 +19,10 @@ class Navigation(BestFirstSearch):
     def arc_cost(self, a, b):
         if self.diagonal:
             return 1.1
-        return 0.5
+        if self.heuristics_type == 'manhattan':
+            return 0.9
+        else:
+            return 0.5
 
 
 def main():
