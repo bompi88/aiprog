@@ -4,7 +4,7 @@ import math
 
 from src.utils.domaincopy import domaincopy
 from src.algorithms.astar.search_state import SearchState
-from src.puzzles.vertex_coloring.utils.const import C
+from src.utils.const import C
 
 
 class VertexColoringState(SearchState):
@@ -13,8 +13,10 @@ class VertexColoringState(SearchState):
     def __init__(self, graph, gac, num_colors, domains=None,
                  solution_length=0, new_variable=None, last_variable=None):
 
-        viable_values = [C.RED, C.GREEN, C.BLUE, C.ORANGE, C.PINK,
-                         C.YELLOW, C.PURPLE, C.BROWN]
+        viable_values = [
+            C.graph_colors.RED, C.graph_colors.GREEN, C.graph_colors.BLUE,
+            C.graph_colors.ORANGE, C.graph_colors.PINK, C.graph_colors.YELLOW,
+            C.graph_colors.PURPLE, C.graph_colors.BROWN]
 
         if domains:
             self.domains = domains
@@ -59,11 +61,11 @@ class VertexColoringState(SearchState):
         domain = self.domains['v' + str(sid)]
 
         if len(domain) > 1:
-            return C.WHITE
+            return C.graph_colors.WHITE
         elif len(domain) == 1:
             return domain[0]
         else:
-            return C.BLACK
+            return C.graph_colors.BLACK
 
     def generate_all_successors(self):
         successors = []

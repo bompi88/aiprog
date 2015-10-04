@@ -3,21 +3,29 @@ from src.puzzles.nonogram.nono_constraint import NonoConstraint
 
 
 class Nonogram(object):
-    # pylint: disable=too-many-instance-attributes
-
+    """ Parses lines from a Nonogram file and creates constraints. """
     def __init__(self, lines):
         self.x, self.y = [int(e) for e in lines[0].split(' ')]
+        self.rows, self.columns = None, None
 
-        s, e = 1, 1+self.y
-        self.rows = [[int(n) for n in row.split(' ')] for row in lines[s:e]]
-        s, e = e, e+self.x
-        self.columns = [[int(n) for n in col.split(' ')] for col in lines[s:e]]
+        self.init_rows_and_columns(lines)
 
         self.constraints = []
         self.variables = set([])
-        self.init_constraints_and_variables()
+        self.init_variables_and_constraints()
 
-    def init_constraints_and_variables(self):
+    def init_rows_and_columns(self, lines):
+        """ Sets rows and columns based on lines """
+        start, end = 1, 1+self.y
+        rows = lines[start:end]
+        start, end = end, end+self.x
+        cols = lines[start:end]
+
+        self.rows = [[int(n) for n in row.split(' ')] for row in rows]
+        self.columns = [[int(n) for n in col.split(' ')] for col in cols]
+
+    def init_variables_and_constraints(self):
+        """ Adds variables and constraints to self """
         for i in range(self.y):
             self.variables.add('r' + str(i))
 

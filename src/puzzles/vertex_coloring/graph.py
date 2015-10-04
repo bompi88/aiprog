@@ -23,7 +23,8 @@ class Graph(object):
         self.variables = set([])
         self.init_constraints_and_variables()
 
-    def parse(self, lines):
+    @staticmethod
+    def parse(lines):
         nv, ne = [int(s) for s in lines.pop(0).split(' ')]
 
         vertices = [[s for s in lines.pop(0).split(' ')] for _ in range(nv)]
@@ -36,6 +37,7 @@ class Graph(object):
         return [nv, ne, vertices, edges]
 
     def init_constraints_and_variables(self):
+        """ Sets vertices as variables and edges as constraints """
         for v in range(self.nv):
             self.variables.add('v' + str(v))
 

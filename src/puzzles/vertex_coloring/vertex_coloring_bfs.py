@@ -33,7 +33,7 @@ def main():
     from src.puzzles.vertex_coloring.graph import Graph
 
     colors = 4
-    path = res.graphs.__path__[0] + '/graph-color-1.txt'
+    path = res.graphs.__path__[0] + '/graph-color-2.txt'
     search = VertexColoringBfs(
         Graph(open(path, 'r').read().splitlines()),
         None, colors
