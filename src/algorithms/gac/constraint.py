@@ -17,14 +17,20 @@ class Constraint(object):
         self.create_func()
 
     def create_func(self):
+
         self.function = {
-            self.variables[0]: make_function(self.variables, self.expression[0]),
-            self.variables[1]: make_function(self.variables, self.expression[1])
+            self.variables[0]: make_function(self.variables, self.expression[0])
         }
+
+        if len(self.variables) > 1:
+            self.function[self.variables[1]] = make_function(self.variables, self.expression[1])
 
     def revise(self, v, c, domains):
         if v == self.variables[0]:
-            return self.reduce(self.variables[0], self.variables[1], domains)
+            if len(self.variables) > 1:
+                return self.reduce(self.variables[0], self.variables[1], domains)
+            else:
+                return self.reduce(self.variables[0], None, domains)
         elif v == self.variables[1]:
             return self.reduce(self.variables[1], self.variables[0], domains)
 
@@ -34,10 +40,14 @@ class Constraint(object):
 
         for d1 in domains[v1]:
             satisfied = False
-            for d2 in domains[v2]:
-                if self.function[v1](d1, d2):
+            if v2:
+                for d2 in domains[v2]:
+                    if self.function[v1](d1, d2):
+                        satisfied = True
+                        break
+            else:
+                if self.function[v1](d1):
                     satisfied = True
-                    break
             if not satisfied:
                 if want_new:
                     domains[v1] = deepcopy(domains[v1])
