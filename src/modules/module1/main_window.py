@@ -29,7 +29,6 @@ class MainWindow(QtGui.QMainWindow):
             status_bar.showMessage
         )
 
-        self.center()
         self.show()
         self.raise_()
 
@@ -129,13 +128,6 @@ class MainWindow(QtGui.QMainWindow):
             expr = 'self.nav_gui.set_delay({})'.format(delay)
             delay_action.triggered.connect(make_function([], expr, locals()))
             toolbar.addAction(delay_action)
-
-    def center(self):
-        """ Center window  [http://zetcode.com/gui/pyqt4/firstprograms/] """
-        geometry = self.frameGeometry()
-        desktop_center = QtGui.QDesktopWidget().availableGeometry().center()
-        geometry.moveCenter(desktop_center)
-        self.move(geometry.topLeft())
 
     def mode_changed(self, mode):
         """ Writes to status bar when mode is changed """

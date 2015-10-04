@@ -28,7 +28,6 @@ class MainWindow(QtGui.QMainWindow):
             status_bar.showMessage
         )
 
-        self.center()
         self.show()
         self.raise_()
 
@@ -94,13 +93,6 @@ class MainWindow(QtGui.QMainWindow):
             expr = 'self.graph_gui.set_color({})'.format(i)
             color_action.triggered.connect(make_function([], expr, locals()))
             toolbar.addAction(color_action)
-
-    def center(self):
-        """ Center window  [http://zetcode.com/gui/pyqt4/firstprograms/] """
-        geometry = self.frameGeometry()
-        desktop_center = QtGui.QDesktopWidget().availableGeometry().center()
-        geometry.moveCenter(desktop_center)
-        self.move(geometry.topLeft())
 
 
 def main():
