@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 mkdir -p tmp
+mkdir -p pdfs
+
 echo "Making module 1"
 pdflatex -output-directory=tmp module_1 > /dev/null
 echo "Moving module 1"
