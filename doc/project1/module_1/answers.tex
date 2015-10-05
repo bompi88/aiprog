@@ -11,7 +11,7 @@ This report describes our implementation of the A* algorithm and our solution to
 
 \subsection{The agenda and how it is managed}
 
-Three search routines had to be supported out of the same base algorithm with a flick of a notch. This is quite easy when you know that substituting the heap with either a queue or a stack, you get respectively a breadth-first- and a depth-first-algorithm that is suitable to solve the same problems, though with different performance measures.
+Three search routines had to be supported out of the same base algorithm with a flick of a notch. This is quite easy when you know that substituting the heap with either a queue or a stack, you get respectively a breadth-first- and a depth-first-algorithm that is suitable to solve the same problems, though with different performance and optimality measures.
 
 Substituting the heap is done easily in python, and you can then define some common pop and push methods that modify the agenda, whether its a heap, stack or a queue (see figure \ref{code:manage_agenda}). In the code snippet, `opened` is the datastructure of your choice.
 
@@ -24,14 +24,14 @@ Substituting the heap is done easily in python, and you can then define some com
 Figure \ref{run:examples} shows the class diagram for the navigation problem. As seen, each new problem needs to define two classes that inherit from `search\_state' and `best\_first\_search', respectively. Two methods, `create\_root\_node' and `arc\_cost', has to be overidden in the subclass of `best\_first\_search' for it to work. Likewise, the subclass of `search\_state' has to implement `heuristic\_evaluation', `create\_state\_identifier', `generate\_all\_successors', `is\_solution' and `solution\_length'. Most of these methods can be reused in similar problems, and this makes almost no effort to have a new type of problem solver up and running in no time.
 
 To ensure generality we started by implementing the basic checkers example in
-the "Essentials of A*"" document, and then implemented the navigation specialization
+the \emph{Essentials of A*} document, and then implemented the navigation specialization
 of the exercise. Having two implementations in Module 1 forced us to keep the
-structure outlined in the document throughout optimization attempts.
+structure outlined in the document throughout our optimization attempts.
 
 \subsection{Heuristics}
-Both the \emph{Manhattan distance} and \emph{Euclidean distance} has been tested on the navigation problem. Each adjusted the behaviour of the agent. Using the manhattan distance the agent seem preferring to minimize the amount of \(90 deg\) turns before reaching the final goal. The euclidean distance seems to do the quite opposite, and the agent goes straight towards the target even though the agent cannot move diagonally. It tries to emulate the behaviour of walking diagonally and follows a diagonal line between the current position and the goal. In the example board number two (Figure \ref{run:examples}), the manhattan distance wins by generating least amount of nodes, because it can just move right and then up without encounter an obstacle. 
+Both the \emph{Manhattan distance} and \emph{Euclidean distance} has been tested on the navigation problem. Each adjusted the behaviour of the agent. Using the manhattan distance the agent seems to prefer minimizing the amount of \(90 deg\) turns before reaching the final goal. The euclidean distance seems to do the quite opposite, and the agent goes straight towards the target even though the agent cannot move diagonally. It tries to emulate the behaviour of walking diagonally and follows a diagonal line between the current position and the goal. In the example board number two (Figure \ref{run:examples}), the manhattan distance wins by generating least amount of nodes, because it moves right and then up without encounter an obstacle. 
 
-The euclidean agent has to avoid an obstacle and therefore is generating a few more nodes. On the other hand, in example 5 (Figure \ref{run:examples}), the euclidean agent slips through the opening between the two last obstacles, while the manhattan agent needs to explore the area before the right-most obstacle. The performance of the agent depends on the heuristics compared with the structure of the board. Switching the euclidean and manhattan when using diagonal moves, seem to result in similar end results, though either of the two may visit more states than the other.
+The euclidean agent has to avoid an obstacle and therefore is generating a few more nodes. On the other hand, in example 5 (Figure \ref{run:examples}), the euclidean agent slips through the opening between the two last obstacles, while the manhattan agent needs to explore the area before the right-most obstacle. The performance of the agent depends on the heuristics and arc-cost compared with the structure of the board. Switching the euclidean and manhattan when using diagonal moves, seem to result in similar end results, though either of the two may visit more states than the other.
 
 The arc-cost has to be changed whether the agent can move diagonal or not. A arc-cost below 1 is suitable for strict axis-movements and a arc-cost above 1 for diagonal movement. If the arc-cost is below 1 for diagonal movement, the agent would do unnecessary and dramatic turns which result in wierd behavior.
 
@@ -46,7 +46,7 @@ The arc-cost has to be changed whether the agent can move diagonal or not. A arc
 \end{figure}
 
 \subsection{Generating successor states}
-From each viable state, a maximum of eight possible successor states can be created, each by moving in each direction from its currently held position; NORTH, SOUTH, EAST, WEST, NORTH-EAST, NORTH-WEST, SOUTH-EAST, SOUTH-WEST. If the diagonal variable is set, eight states are generates, else only four is generated, as seen in figure \ref{code:succesor-generation}.
+From each viable state, a maximum of eight possible successor states can be created, each by moving in each direction from its currently held position; NORTH, SOUTH, EAST, WEST, NORTH-EAST, NORTH-WEST, SOUTH-EAST, SOUTH-WEST. If the diagonal variable is set, eight states are generated, else only four is generated, as seen in figure \ref{code:succesor-generation}.
 
 Other considered limitations are that the new position should be inside the given dimensions of the board, and that obstacles are not walkable, together with unnecessity to visit positions that previously have been visited. Every state that is within the scope of those limitations, is created and added to the heap. 
 
