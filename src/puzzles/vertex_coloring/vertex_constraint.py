@@ -8,12 +8,7 @@ class VertexConstraint(Constraint):
         Constraint.__init__(self, expression)
 
     def parse_vars(self):
-        self.variables = [i for i in self.expression[0].split() if self.var(i)]
-
-    @staticmethod
-    def var(i):
-        """ All expression contain !=, which is the only invalid variable. """
-        return i != '!='
+        self.variables = [i for i in self.expression[0].split() if i != '!=']
 
     def gen_expressions(self, expression):
         parts = expression.split()

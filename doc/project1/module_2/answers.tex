@@ -21,9 +21,12 @@ Two classes must be subclassed to solve new problems; the BestFirstSearch class 
 
 \lstinputlisting[emph={create_root},label={code:create_root},caption={Generation of root node.}]{module_2/code_snippets/create_root.py}
 
-Further, the GAC has to be rerun on each generated successor in the overidden method `generate\_all\_successors', before it gets added to the open heap. Only successors which either got solved by the GAC, or did not get one or more of their domains reduced to an empty domain \( D = \{ \emptyset \}\), is considered as a valid child and should be expanded. The `gac.rerun()' returns \(True\) if the successor is still a viable state after the GAC-reduction. If the state is viable, it gets added to the heap.
+Further, the GAC has to be rerun on each generated successor in the overidden method `generate\_all\_successors', before it gets added to the open heap. Only successors which either got solved by the GAC, or did not get one or more of their domains reduced to an empty domain \( D = \{ \emptyset \}\), is considered as a valid child and should be expanded. The `gac.rerun()' returns \(True\) if the successor is still a viable state after the GAC-reduction. If the state is viable, it gets added to the opened heap in the A* agenda.
 
 \lstinputlisting[emph={GAC},label={code:successor_generation},caption={Generation of vertex successor states.}]{module_2/code_snippets/successor_generation.py}
+
+The A*-GAC-program uses directly the generalized GAC class we have written, that contain the initialize, domain_filtering and rerun methods. However, when a graph is
+read and we create the constrains, we do so with a specialized VertexConstraint class which inherits a generalized Constraint class. The generalized constraint class implements the revise algorithm. The specialized VertexConstraint can parse the type of expressions used by the VertexColoring search, and implements a method for reversing an expression. The constraints we have used in module 2 are of the form 'vx != vy'. VertexColoring contains a method that parses variables from these expressions by excluding '!=', and a method for generating the expression 'vy != vx' as our GAC class uses both forms of the expression. This becomes important in module 3.
 
 \subsection{CNET, VIs and CIs}
 The domains, constraints and variables are only generated once and shared between the different classes. A dictionary in the GAC maps the variables to the constraints, so the constraints can easily be looked up by a variable.
