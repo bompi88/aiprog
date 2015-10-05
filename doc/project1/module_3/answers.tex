@@ -19,13 +19,13 @@ of all the possible permutations of strings where 1 represents
 marked and 0 represents unmarked in the final Nonogram.
 
 If the amount of columns is 5, and a row has the set of segment
-sizes {1 2} our generated domains for this row rn will be
+sizes \({1 2}\) our generated domains for this row rn will be
 $ ['10110', '01011', '10011'] $.
 
-As is visible in the code below, we will do lookup in these strings
+As shown in the code below, we will do lookup in these strings
 crosschecked with a column in cell c, to check whether the constraint
 is satisfied. This is similiar to what the module text describes in
-2.2 Using an Aggregate Representation and shows in Figure 3.
+\emph{2.2 Using an Aggregate Representation} and shows in Figure 3.
 
 As an example if rn above was r1 (zero-indexed), and we had a column
 c3, we can clearly see from the example that c3[1] must be 1, as all the
@@ -36,8 +36,8 @@ would limit the domain of c3 to ['1100'].
 \lstinputlisting[emph={Nonogram}]{module_3/code_snippets/nonogram.py}
 
 \subsection{Heuristics}
-* H\-function
-* Selection of next focus variable
+- H\-function\\
+- Selection of next focus variable
 
 \subsection*{The implementation}
 
