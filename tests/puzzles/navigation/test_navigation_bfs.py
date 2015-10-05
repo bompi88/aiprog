@@ -1,8 +1,7 @@
 """ Tests navigation search with correct solutions """
 import unittest
 
-from src.puzzles.navigation.navigation_bfs import Navigation
-from src.puzzles.navigation.navigation_grid import NavigationGrid
+from src.puzzles.navigation.navigation_bfs import NavigationBfs
 from src.puzzles.navigation.map import Map
 from src.utils.const import C
 import res.maps
@@ -23,12 +22,11 @@ class TestNavigation(unittest.TestCase):
         self.tasks = []
         for _map in maps:
             path = base_path + _map
-            grid = NavigationGrid(Map(open(path, 'r').read().splitlines()))
-            self.tasks.append(grid)
+            self.tasks.append(Map(open(path, 'r').read().splitlines()))
 
         self.navigations = []
         for task in self.tasks:
-            self.navigations.append(Navigation(task))
+            self.navigations.append(NavigationBfs(task))
 
     def tearDown(self):
         from src.utils.id_generator import ID_GENERATOR

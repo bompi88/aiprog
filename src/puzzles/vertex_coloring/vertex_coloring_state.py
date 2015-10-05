@@ -43,11 +43,7 @@ class VertexColoringState(SearchState):
         return sum([math.log(len(domain)) for domain in self.domains.values()])
 
     def is_solution(self):
-        for domain in self.domains.values():
-            if len(domain) != 1:
-                return False
-
-        return True
+        return self.h == 0
 
     def solution_length(self):
         return self._solution_length

@@ -1,29 +1,53 @@
 """ Specialization of SearchState """
 from src.algorithms.astar.search_state import SearchState
-from src.puzzles.navigation.navigation_grid import NavigationGrid
 from src.utils.const import C
 from src.utils.id_generator import ID_GENERATOR
+from copy import deepcopy
 
 
 class NavigationState(SearchState):
     """ A navigation, containing the state of the map as a NavigationGrid """
 
-    def __init__(self, navigation, diagonal=False, heuristics_type=None):
+    def __init__(self, navigation, visited=None, current_pos=None,
+                 diagonal=False, heuristics_type=None):
+        # pylint: disable=too-many-arguments
+        self.visited = visited or [navigation.start]
+        self.current_pos = current_pos or navigation.start
         self.diagonal = diagonal
         self.heuristics_type = heuristics_type
         SearchState.__init__(self, navigation)
 
     def create_state_identifier(self):
-        return ID_GENERATOR.get_id(self.state.position_string())
+        current_pos_str = ','.join([str(el) for el in self.current_pos])
+        return ID_GENERATOR.get_id(current_pos_str)
 
     def heuristic_evaluation(self):
-        return self.state.distance_from_goal(self.heuristics_type)
+        """ Returns the euclidean distance from the goal to current tile.
+         Euclidean distance gave better results on some boards vs. manhattan
+        """
+        if self.heuristics_type == 'euclidean':
+            return self.euclidean_distance(self.state.goal, self.current_pos)
+        elif self.heuristics_type == 'manhattan':
+            return self.manhattan_distance(self.state.goal, self.current_pos)
+
+        return self.euclidean_distance(self.state.goal, self.current_pos)
+
+    @staticmethod
+    def euclidean_distance(a, b):
+        """ sqrt(x^2 + y^2) """
+        x, y = (b[0] - a[0]) ** 2, (b[1] - a[1]) ** 2
+        return (x + y) ** 0.5
+
+    @staticmethod
+    def manhattan_distance(a, b):
+        """ x + y """
+        return abs(b[0] - a[0]) + abs(b[1] - a[1])
 
     def is_solution(self):
-        return self.state.is_on_goal()
+        return self.h == 0.0
 
     def solution_length(self):
-        return self.state.visited_len()
+        return len(self.visited)
 
     def generate_all_successors(self):
         if self.diagonal:
@@ -35,9 +59,9 @@ class NavigationState(SearchState):
         successors = []
 
         for move in viable_movements:
-            pos = self.state.current_pos
-            x_dim = self.state.map.x_dim()
-            y_dim = self.state.map.y_dim()
+            pos = self.current_pos
+            x_dim = self.state.x_dim()
+            y_dim = self.state.y_dim()
 
             next_pos = [pos[0] - move[0], pos[1] - move[1]]
             x = next_pos[0]
@@ -49,17 +73,16 @@ class NavigationState(SearchState):
             if y < 0 or y > (y_dim - 1):
                 continue
 
-            if self.state.map.grid[y][x] == C.nav_tile.OBSTACLE:
+            if self.state.grid[y][x] == C.nav_tile.OBSTACLE:
                 continue
 
-            if self.state.is_visited(next_pos):
+            if next_pos in self.visited:
                 continue
 
-            visited = self.state.visited_copy() + [next_pos]
+            visited = deepcopy(self.visited) + [next_pos]
 
             successor = NavigationState(
-                NavigationGrid(self.state.map, visited, next_pos),
-                self.diagonal,
+                self.state, visited, next_pos, self.diagonal,
                 self.heuristics_type
             )
 

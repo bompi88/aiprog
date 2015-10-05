@@ -1,11 +1,10 @@
 """ Navigation specialization of A* """
 from src.algorithms.astar.best_first_search import BestFirstSearch
 from src.puzzles.navigation.navigation_state import NavigationState
-from src.puzzles.navigation.navigation_grid import NavigationGrid
 from src.puzzles.navigation.map import Map
 
 
-class Navigation(BestFirstSearch):
+class NavigationBfs(BestFirstSearch):
     """ Map navigation version of A* """
 
     def __init__(self, start, gui=None):
@@ -14,7 +13,9 @@ class Navigation(BestFirstSearch):
         BestFirstSearch.__init__(self, start, gui, True)
 
     def create_root_node(self):
-        return NavigationState(self.start, self.diagonal, self.heuristics_type)
+        return NavigationState(
+            self.start, None, None, self.diagonal, self.heuristics_type
+        )
 
     def arc_cost(self, a, b):
         if self.diagonal:
@@ -29,8 +30,8 @@ def main():
     """ Text-based test of Navigation """
     import res.maps
     path = res.maps.__path__[0] + '/ex0.txt'
-    grid = NavigationGrid(Map(open(path, 'r').read().splitlines()))
-    solution = Navigation(grid).best_first_search()
+    map_ = Map(open(path, 'r').read().splitlines())
+    solution = NavigationBfs(map_).best_first_search()
 
     solution.print_level()
     if not solution:

@@ -1,9 +1,8 @@
 """ Tests methods on NavigationState """
 import unittest
 
-from src.puzzles.navigation.navigation_bfs import Navigation
+from src.puzzles.navigation.navigation_bfs import NavigationBfs
 from src.puzzles.navigation.navigation_state import NavigationState
-from src.puzzles.navigation.navigation_grid import NavigationGrid
 from src.puzzles.navigation.map import Map
 from src.utils.const import C
 import res.maps.extras
@@ -13,7 +12,7 @@ class TestNavigationState(unittest.TestCase):
     """ Performs tests on NavigationState """
     def setUp(self):
         path = res.maps.extras.__path__[0] + '/ex_simple.txt'
-        self.task = NavigationGrid(Map(open(path, 'r').read().splitlines()))
+        self.task = Map(open(path, 'r').read().splitlines())
 
         self.test_state = NavigationState(self.task)
 
@@ -46,7 +45,7 @@ class TestNavigationState(unittest.TestCase):
 
         self.assertFalse(self.test_state.is_solution())
 
-        search = Navigation(self.task)
+        search = NavigationBfs(self.task)
         search.verbosity = C.verbosity.TEST
         solution_state = search.best_first_search()
 
