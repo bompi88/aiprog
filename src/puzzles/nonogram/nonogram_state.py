@@ -3,6 +3,7 @@ from src.algorithms.astar.search_state import SearchState
 
 from src.utils.domaincopy import domaincopy
 from collections import OrderedDict
+import math
 
 
 class NonogramState(SearchState):
@@ -76,9 +77,9 @@ class NonogramState(SearchState):
 
         for domain in self.domains.values():
             if len(domain) == 0:
-                sum_h += 1000
+                sum_h += math.log(1000)
             else:
-                sum_h += len(domain) - 1
+                sum_h += math.log(len(domain))
 
         return sum_h
 
