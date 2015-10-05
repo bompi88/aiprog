@@ -36,8 +36,20 @@ would limit the domain of c3 to ['1100'].
 \lstinputlisting[emph={Nonogram}]{module_3/code_snippets/nonogram.py}
 
 \subsection{Heuristics}
-- H\-function\\
-- Selection of next focus variable
+The heuristics is equal to the heuristics of module 2, but since the reports is independent of each other, we have chosen to include the same description of the heuristics here as well.
+
+Here, as in module 2, it's two heuristics at play, one that selects the successors and one that determines which node to get expanded first. For the selection of successors, we simply select the variable that has the smallest domain and create states for all cells in this variables' (row or column) domain; one assumption for each cell in each row or column.
+
+If the A* has to pop a node from the heap, it looks at the solution domain, which equals the amount of nodes available, and picks the node that result in the smallest solution domain. This means we have cut off the domain of possible combinations of colored graphs. If we look at an example:
+
+\begin{align*}
+	&r1: [[0,0],[0,1],[1,0],[1,1]]\\
+	&c1: [[0,0],[0,1],[1,0]]\\
+	&r2: [[1,0],[1,1]]\\
+	&c2: [[0,0],[1,1]]
+\end{align*}
+
+Here we have \(4 \cdot 3 \cdot 2 \cdot 2 = 48\) possible combinations of the given rows and columns, some of the states are not viable though, but it is still a good measure and the nonviable states can - with no loss in performance - be neglected. The catch, though, is that while multiplying a lot of these values, you get a heavily incrementing value, and can give a negative boost on the performance of the solver. To solve this, we chose to take the logarithmic value of the length of the domains and add all those together. As most know, adding values in the logarithmic scale, is equal multiplying the original values. Another property of this heuristic is that when all domain lengths equal 1, the heuristics equals 0. Our heuristics function is provided in code snippet \ref{code:heuristics}.
 
 \subsection{The implementation}
 
