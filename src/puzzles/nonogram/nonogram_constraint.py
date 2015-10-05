@@ -2,7 +2,7 @@
 from src.algorithms.gac.constraint import Constraint
 
 
-class NonoConstraint(Constraint):
+class NonogramConstraint(Constraint):
     """ Takes care of properly inversing Nonogram expressions """
     def __init__(self, expression=None):
         Constraint.__init__(self, expression)

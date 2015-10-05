@@ -2,7 +2,7 @@
 import unittest
 
 from src.algorithms.gac.gac import GAC
-from src.puzzles.nonogram.nono_constraint import NonoConstraint
+from src.puzzles.nonogram.nonogram_constraint import NonogramConstraint
 
 
 class TestGACOnNonogram(unittest.TestCase):
@@ -12,10 +12,10 @@ class TestGACOnNonogram(unittest.TestCase):
         self.variables = ['a', 'b', 'c', 'd']
 
         self.constraints = [
-            NonoConstraint('a [0] == c [0]'),
-            NonoConstraint('a [1] == d [0]'),
-            NonoConstraint('b [0] == c [1]'),
-            NonoConstraint('b [1] == d [1]')
+            NonogramConstraint('a [0] == c [0]'),
+            NonogramConstraint('a [1] == d [0]'),
+            NonogramConstraint('b [0] == c [1]'),
+            NonogramConstraint('b [1] == d [1]')
         ]
 
         self.domains = {

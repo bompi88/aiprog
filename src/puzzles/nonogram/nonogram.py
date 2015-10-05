@@ -1,5 +1,5 @@
 """ Represent a nonogram """
-from src.puzzles.nonogram.nono_constraint import NonoConstraint
+from src.puzzles.nonogram.nonogram_constraint import NonogramConstraint
 
 
 class Nonogram(object):
@@ -36,5 +36,5 @@ class Nonogram(object):
         for y in range(self.y):
             for x in range(self.x):
                 self.constraints.append(
-                    NonoConstraint(constraint_template.format(r=y, c=x))
+                    NonogramConstraint(constraint_template.format(r=y, c=x))
                 )
