@@ -54,5 +54,14 @@ Here we have \(4 \cdot 3 \cdot 2 \cdot 2 = 48\) possible combinations of the giv
 \lstinputlisting[label={code:heuristics},caption={A* Heuristics used for the nonogram problem.}]{module_3/code_snippets/heuristics.py}
 
 \subsection{The implementation}
+To create a Nonogram solver, basically was the same procedure as creating a vertex coloring solver as in module 2. The following steps had to be applied:
+\begin{enumerate}
+	\item{Creating a parser/file reader that imported the text representation of the problem, which can be used to create a start state.}
+	\item{Subclass the BestFirstSearch and implement `create\_root\_node' and `arc\_cost' method to support the GAC-initialization as described thoroughly in report 1.}
+	\item{Subclass the SearchState and implement the abstract methods; `heuristic\_evaluation', `create\_state\_identifier', `generate\_all\_successors', `is\_solution' and `solution\_length' }
+\end{enumerate}
+
+This verified the generality of your A*-GAC algorithm, because of the small amount of implementation and adjustments needed to get it to work properly.
 
 \subsection{Other aspects}
+
