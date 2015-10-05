@@ -21,6 +21,11 @@ Substituting the heap is done easily in python, and you can then define some com
 
 Figure \ref{run:examples} shows the class diagram for the navigation problem. As seen, each new problem needs to define two classes that inherit from `search\_state' and `best\_first\_search', respectively. Two methods, `create\_root\_node' and `arc\_cost', has to be overidden in the subclass of `best\_first\_search' for it to work. Likewise, the subclass of `search\_state' has to implement `heuristic\_evaluation', `create\_state\_identifier', `generate\_all\_successors', `is\_solution' and `solution\_length'. Most of these methods can be reused in similar problems, and this makes almost no effort to have a new type of problem solver up and running in no time.
 
+To ensure generality we started by implementing the basic checkers example in
+the "Essentials of A*"" document, and then implemented the navigation specialization
+of the exercise. Having two implementations in Module 1 forced us to keep the
+structure outlined in the document throughout optimization attempts.
+
 \subsection{Heuristics}
 Both the \emph{Manhattan distance} and \emph{Euclidean distance} has been tested on the navigation problem. Each adjusted the behaviour of the agent. Using the manhattan distance the agent seem preferring to minimize the amount of \(90 deg\) turns before reaching the final goal. The euclidean distance seems to do the quite opposite, and the agent goes straight towards the target even though the agent cannot move diagonally. It tries to emulate the behaviour of walking diagonally and follows a diagonal line between the current position and the goal. In the example board number two (Figure \ref{run:examples}), the manhattan distance wins by generating least amount of nodes, because it can just move right and then up without encounter an obstacle. 
 

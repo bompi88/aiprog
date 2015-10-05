@@ -83,7 +83,6 @@ class BestFirstSearch(object):
                         self.propagate_path_improvements(s)
 
         self.status_message(x, t_0, generated, closed, closed_counter)
-        return x
 
     def arc_cost(self, a, b):
         """ An estimate of the cost of moving from a to b """
