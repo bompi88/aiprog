@@ -21,7 +21,7 @@ of all the possible permutations of strings where 1 represents
 \emph{marked} and 0 represents \emph{unmarked} in the final Nonogram.
 
 If the amount of columns is 5, and a row has the set of segment
-sizes \({1 2}\) our generated domains for this row, \(rn\), will be
+sizes \(\{1, 2\}\) our generated domains for this row, \(rn\), will be
 \([`10110', `01011', `10011']\).
 
 As shown in the code below, we will do lookup in these strings
@@ -35,7 +35,7 @@ valid domains for \(r1\) contain 1 at the fourth position. So given domains
 for \(domains[c3] = [`1010', `1100', `0011']\), our implementation of revise
 would limit the domain of \(c3\) to \([`1100']\).
 
-\lstinputlisting[emph={Nonogram}]{module_3/code_snippets/nonogram.py}
+\lstinputlisting[emph={Nonogram},label={code:nonogram},caption={Generating the variables and constraints.}]{module_3/code_snippets/nonogram.py}
 
 \subsection{Heuristics}
 The heuristics is equal to the heuristics of module 2, but since the reports is independent of each other, we have chosen to include the same description of the heuristics here as well.
@@ -66,6 +66,6 @@ To create a Nonogram solver, basically was the same procedure as creating a vert
 
 This verified the generality of your A*-GAC algorithm, because of the small amount of implementation and adjustments needed to get it to work properly.
 
-\subsection{Other aspects}
-In most of the problems given, the A* do not need to pop nodes from the agenda, the GAC solves most of them by itself. The A* is still needed for harder problems where you must guess states to get to a viable solution.
+\subsection{Other considerations}
+In most of the problems given, the A* do not need to pop nodes from the agenda, the GAC solves most of them by itself. The A* is unnecessary for the easy problems, but is still needed for harder problems where you must guess states to get to a viable solution.
 
