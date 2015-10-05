@@ -24,8 +24,6 @@ class SearchWorker(QThread):
 
         if solution:
             self.gui.set_solution(solution)
-        else:
-            self.gui.status_message.emit('Failed')
 
     def end_search(self):
         """ Terminates thread """

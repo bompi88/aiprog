@@ -16,6 +16,7 @@ class BestFirstSearch(object):
         self.delay = 50 if not gui else gui.delay # milliseconds
         self.verbosity = C.verbosity.VERBOSE
         self.retain = retain
+        self.gac = None
 
     def attach_and_eval(self, child, parent):
         """ Attach parent to child and find calculate the child costs """
@@ -38,7 +39,7 @@ class BestFirstSearch(object):
          or until we no longer find new successor nodes.
         """
         opened, generated, t_0 = [], {}, time.time()
-        closed, closed_counter = None, None
+        x, closed, closed_counter = None, None, None
         if self.retain:
             closed = []
         else:
@@ -81,8 +82,8 @@ class BestFirstSearch(object):
                     if s.status is C.status.CLOSED:
                         self.propagate_path_improvements(s)
 
-            if not self.retain:
-                del x
+        self.status_message(x, t_0, generated, closed, closed_counter)
+        return x
 
     def arc_cost(self, a, b):
         """ An estimate of the cost of moving from a to b """
@@ -143,13 +144,27 @@ class BestFirstSearch(object):
         else:
             closed_length = cnt
 
-        message = 'Nodes generated: {}, Nodes expanded: {}, '\
-                  'Path length: {}, Time elapsed: {:.5f} sec'.format(
-                        len(generated),
-                        closed_length,
-                        solution.solution_length(),
-                        t_1 - t_0
-        )
+        if self.gac:
+            num_unsatisfied_constraints = len([c for c in self.gac.constraints if not c.satisfied])
+            num_without_colors = len([v for v in solution.domains.values() if len(v) != 1])
+
+            message = 'Nodes generated: {}, Nodes expanded: {}, '\
+                      'Path length: {}, Unsatisfied constraints: {}, Unassigned variables: {}, Time elapsed: {:.5f} sec'.format(
+                            len(generated),
+                            closed_length,
+                            solution.solution_length(),
+                            num_unsatisfied_constraints,
+                            num_without_colors,
+                            t_1 - t_0
+            )
+        else:
+            message = 'Nodes generated: {}, Nodes expanded: {}, '\
+                      'Path length: {}, Time elapsed: {:.5f} sec'.format(
+                            len(generated),
+                            closed_length,
+                            solution.solution_length(),
+                            t_1 - t_0
+            )
 
         if self.verbosity in [C.verbosity.TEST, C.verbosity.SILENT]:
             return

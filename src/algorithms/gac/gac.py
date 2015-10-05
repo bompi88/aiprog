@@ -10,10 +10,12 @@ class GAC(object):
         self.variable_map = defaultdict(list)  # variable => list of constraints
         self.queue = []  # tuples (variable, constraint)
         self.domains = {}  # variable => list of domains
+        self.constraints = None
 
     def initialize(self, domains, constraints):
         """ GAC initialize, set domains and populate variable_map and queue """
         self.domains = domains
+        self.constraints = constraints
 
         for c in constraints:
             for v in c.variables:

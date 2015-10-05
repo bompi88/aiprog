@@ -12,6 +12,7 @@ class Constraint(object):
         self.variables = []
         self.expression = None
         self.function = None
+        self.satisfied = False
 
         self.gen_expressions(expression)
         self.parse_vars()
@@ -46,16 +47,16 @@ class Constraint(object):
         want_new = True
 
         for d1 in domains[v1]:
-            satisfied = False
+            self.satisfied = False
             if v2:
                 for d2 in domains[v2]:
                     if apply(self.function[v1], [d1, d2]):
-                        satisfied = True
+                        self.satisfied = True
                         break
             else:
                 if apply(self.function[v1], [d1]):
-                    satisfied = True
-            if not satisfied:
+                    self.satisfied = True
+            if not self.satisfied:
                 if want_new:
                     domains[v1] = deepcopy(domains[v1])
                     want_new = False
