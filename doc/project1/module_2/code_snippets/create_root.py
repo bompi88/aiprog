@@ -1,5 +1,5 @@
-def create_root_node(self):
-  root = VertexColoringState(self.start, self.gac, self.num_colors)
-  self.gac.initialize(root.domains, root.state.constraints)
-  self.gac.domain_filtering()
+def create_root_node():
+  root = VertexColoringState(self.start)
+  gac.initialize(root.domains, root.constraints)
+  gac.domain_filtering()
   return root

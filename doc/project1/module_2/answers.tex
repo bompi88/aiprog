@@ -15,22 +15,18 @@
 
 \section{Central aspects of your A*-GAC program}
 \subsection{Generality of the A* and the A*-GAC}
-Two classes has to be subclassed to solve new problems; the BestFirstSearch class and the SearchState class. 
-
-To utilize the power of the GAC, it has to be run on every generated node, even the root node. So in the subclass of BestFirstSearch, the `create\_root\_node' method has to be overidden to run gac.initialize() and gac.domain\_filtering(), as seen in code snippet \ref{code:create_root}. 
+Two classes has to be subclassed to solve new problems; the BestFirstSearch class and the SearchState class. To utilize the power of the GAC, it has to be run on every generated node, even the root node. So in the subclass of BestFirstSearch, the `create\_root\_node' method has to be overidden to run gac.initialize() and gac.domain\_filtering(), as seen in code snippet \ref{code:create_root}.
 
 \lstinputlisting[emph={create_root},label={code:create_root},caption={Generation of root node.}]{module_2/code_snippets/create_root.py}
 
 Futher, the GAC has to be rerun on each generated successor in the overidden method `generate\_all\_successors', before it gets added to the open heap. Only successors which either got solved by the GAC, or did not get one or more of their domains reduced to an empty domain, is considered as a valid child and should be expanded. The `gac.rerun()' returns \(True\) if the successor is still a viable state after the GAC-reduction. If the state is viable, it gets added to the heap.
 
-\lstinputlisting[label={code:successor_generation},caption={Generation of vertex successor states.}]{module_2/code_snippets/successor_generation.py}
+\lstinputlisting[emph={GAC},label={code:successor_generation},caption={Generation of vertex successor states.}]{module_2/code_snippets/successor_generation.py}
 
 \subsection{CNET, VIs and CIs}
-- Constraint Network (CNET)\\
-- constraint instances (VI)\\
-Generates runnable expressions, as in this problem: \( v1 \neq v3 \), where \(v1\) and \(v2\) represent the vertices. In previous example, vertex \(v1\) and \(v2\) should not have the same color. The variable instances (CI) is being stored as list of strings in each constraint, as involved variables. These variables are used to retrieve the domains from a dictionary that is initialized at `gac.initialize()'.
+The domains, constraints and variables are only generated once and shared between the different classes. A dictionary in the GAC maps the variables to the constraints, so the constraints can easily be looked up by a variable.
 
-
+The constraints is generated as runnable expressions, as in this problem: \( v1 \neq v3 \), where \(v1\) and \(v2\) represent the vertices. In previous example, vertex \(v1\) and \(v2\) should not have the same color. The variable instances (CI) is being stored as list of strings in each constraint, as involved variables. These variables are used to retrieve the domains from a dictionary that is initialized at `gac.initialize()'. Each node has its own dictionary with references to variable domains. If a domain is being altered, a copy of this domain is being made and the reference is updated in the corresponding state.
 
 \subsection*{Heuristics}
 It's two heuristics at play, one that selects the successors and one that determines which node to get expanded first. For the selection of successors, we simply select the variable that has the smallest domain and create states for all colors in this variables' domain; one assumption for each color.

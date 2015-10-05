@@ -1,4 +1,4 @@
-def generate_all_successors(self):
+def generate_all_successors():
   successors = []
 
   viable_domains = get_domains_not_empty()
@@ -10,7 +10,7 @@ def generate_all_successors(self):
     new_domains[variable] = [color]
 
     successor = VertexColoringState(new_domains)
-    result = self.gac.rerun(new_domains, variable)
+    result = GAC.rerun(new_domains, variable)
 
     if successor.is_solution():
       return [successor]
