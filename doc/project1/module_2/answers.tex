@@ -14,12 +14,22 @@
 % your work-around for avoiding both code chunks and a hand-built interpreter.
 
 \section{Central aspects of your A*-GAC program}
-\subsection{The agenda and how it is managed}
-The agenda is awesome. list and Heapq\ldots
+\subsection{Generality of the A*}
+- Subclassing the BestFirstSearch class
+- Subclassing the SearchState class
+- 
+% \lstinputlisting[emph={make_function}]{module_2/code_snippets/make_functions.py}
 
-\subsection{Generality of the program}
+\subsection{Generality of the A*-GAC}
+in the subclasses, overriding the create\_root\_node method to run gac.initialize() and gac.domain\_filtering(), as seen in code snippet \ref{code:create_root}.
+
+\lstinputlisting[emph={create_root},label={code:create_root},caption={Generation of root node.}]{module_2/code_snippets/create_root.py}
+
+To utilize the power of the GAC, the GAC has to be rerun on each generated successor in the overidden method `generate\_all\_successors', before it gets added to the open heap. Only successors which either got solved by the GAC, or did not get one or more of their domains reduced to an empty domain, is considered as a valid child and should be expanded. The `gac.rerun()' returns True if the successor is still a viable state after the GAC-reduction.
+
+\lstinputlisting[label={code:successor_generation},caption={Generation of vertex successor states.}]{module_2/code_snippets/successor_generation.py}
 
 \subsection{Constraint Network, VIs and CIs}
 
 \subsection{Evaluation procedure of the GAC}
-\lstinputlisting[emph={make_function}]{module_2/code_snippets/make_functions.py}
+\lstinputlisting[label={code:make_function},caption={Generation of lambda expressions to evaluate the constraints.}]{module_2/code_snippets/make_functions.py}
