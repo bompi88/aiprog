@@ -29,7 +29,16 @@ To utilize the power of the GAC, the GAC has to be rerun on each generated succe
 
 \lstinputlisting[label={code:successor_generation},caption={Generation of vertex successor states.}]{module_2/code_snippets/successor_generation.py}
 
-\subsection{Constraint Network, VIs and CIs}
+\subsection{CNET, VIs and CIs}
+- Constraint Network (CNET)\\
+- constraint instances (VI)\\
+Generates runnable expressions, as in this problem: \( v1 != v3 \), where \(v1\) and \(v2\) represent the vertices. In previous example, vertex \(v1\) and \(v2\) should not have the same color. The variable instances (CI) is being stored as list of strings in each constraint, as involved variables. These variables are used to retrieve the domains from a dictionary that is initialized at `gac.initialize()'.
+
+
+
+\subsection*{Heuristics}
+- selection of successors\\
+- A*-heuristics
 
 \subsection{Evaluation procedure of the GAC}
 \lstinputlisting[label={code:make_function},caption={Generation of lambda expressions to evaluate the constraints.}]{module_2/code_snippets/make_functions.py}
