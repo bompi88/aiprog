@@ -73,15 +73,7 @@ class NonogramState(SearchState):
         return ':'.join([','.join(str(e) for e in row) for row in state])
 
     def heuristic_evaluation(self):
-        sum_h = 0
-
-        for domain in self.domains.values():
-            if len(domain) == 0:
-                sum_h += math.log(1000)
-            else:
-                sum_h += math.log(len(domain))
-
-        return sum_h
+        return sum([math.log(len(domain)) for domain in self.domains.values()])
 
     def is_solution(self):
         for domain in self.domains.values():
