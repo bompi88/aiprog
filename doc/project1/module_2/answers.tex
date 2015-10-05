@@ -41,11 +41,15 @@ If the A* has to pop a node from the heap, it looks at the solution domain, whic
 	&v3: [2,3,4]
 \end{align*}
 
-Here we have \(4 \cdot 2 \cdot 3 = 24\) possible combinations of the given colors, some of the states are not viable though, but it is still a good measure and the nonviable states can - with no loss in performance - be neglected. The catch, though, is that while multiplying a lot of these values, you get a heavily incrementing value, and can give a negative boost on the performance of the solver. To solve this, we chose to take the logarithmic value of the length of the domains and add all those together. As most know, adding values in the logarithmic scale, is equal multiplying the original values. Another property of this heuristic is that when all domain lengths equal 1, the heuristics equals 0.
+Here we have \(4 \cdot 2 \cdot 3 = 24\) possible combinations of the given colors, some of the states are not viable though, but it is still a good measure and the nonviable states can - with no loss in performance - be neglected. The catch, though, is that while multiplying a lot of these values, you get a heavily incrementing value, and can give a negative boost on the performance of the solver. To solve this, we chose to take the logarithmic value of the length of the domains and add all those together. As most know, adding values in the logarithmic scale, is equal multiplying the original values. Another property of this heuristic is that when all domain lengths equal 1, the heuristics equals 0. Our heuristics function is provided in code snippet \ref{code:heuristics}.
+
+\lstinputlisting[label={code:heuristics},caption={A* Heuristics used for the vertex coloring problem.}]{module_2/code_snippets/heuristics.py}
 
 \subsection{Evaluation procedure of the GAC}
 The REVISE method is a regular REVISE, and not a REVISE* as described in the problem description. This is because REVISE* is not necessary to solve the modules provided in the course this year. We chose to focus on optimizing the problem at hand.
 
-Two functions are produced for each constraint, e.g. \( v1 \neq v2 \) produces both \(v1 \neq v2 \) and \(v2 \neq v1 \). The revise chooses which function to use based on the focus variable given. This avoids expressions that look up values in lists to return falsy values, e.g. \( v1[0] \neq v2[1] \) should not return \( v2[0] \neq v1[1] \). The latter is especially important in the next module. To create runnable functions, we use Python's lambda function, as seen in code snippet \ref{code:make_function}.
-
 \lstinputlisting[label={code:make_function},caption={Generation of lambda expressions to evaluate the constraints.}]{module_2/code_snippets/make_functions.py}
+
+Two functions are produced for each constraint, e.g. \( v1 \neq v2 \) produces both \(v1 \neq v2 \) and \(v2 \neq v1 \). The revise chooses which function to use based on the focus variable given. This avoids expressions that look up values in lists to return falsy values, e.g. \( v1[0] \neq v2[1] \) should not return \( v2[0] \neq v1[1] \). The latter is especially important in the next module. To create runnable functions, we use Python's lambda function, as seen in code snippet \ref{code:make_function}. To run the function you simply do as in shown in the code snippet \ref{code:apply_function}. \(v1\) is the focus variable, \(d1\) is its value and \(d2\) is the other variables' value.
+
+\lstinputlisting[label={code:apply_function},caption={Applying a lambda function.}]{module_2/code_snippets/apply_function.py}
