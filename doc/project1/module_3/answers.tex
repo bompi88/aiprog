@@ -16,22 +16,22 @@ For our representation of a Nonogram we have chosen to
 use the rows and columns as variables. An idealized pseudocode
 version can be seen below. The domain of each variable consists
 of all the possible permutations of strings where 1 represents
-marked and 0 represents unmarked in the final Nonogram.
+\emph{marked} and 0 represents \emph{unmarked} in the final Nonogram.
 
 If the amount of columns is 5, and a row has the set of segment
-sizes \({1 2}\) our generated domains for this row rn will be
-$ ['10110', '01011', '10011'] $.
+sizes \({1 2}\) our generated domains for this row, \(rn\), will be
+\([`10110', `01011', `10011']\).
 
 As shown in the code below, we will do lookup in these strings
 crosschecked with a column in cell c, to check whether the constraint
 is satisfied. This is similiar to what the module text describes in
 \emph{2.2 Using an Aggregate Representation} and shows in Figure 3.
 
-As an example if rn above was r1 (zero-indexed), and we had a column
-c3, we can clearly see from the example that c3[1] must be 1, as all the
-valid domains for r1 contain 1 at the fourth position. So given domains
-for domains[c3] = ['1010', '1100', '0011'], our implementation of revise
-would limit the domain of c3 to ['1100'].
+As an example if \(rn\) above was \(r1\) (zero-indexed), and we had a column
+\(c3\), we can clearly see from the example that \(c3[1]\) must be 1, as all the
+valid domains for \(r1\) contain 1 at the fourth position. So given domains
+for \(domains[c3] = [`1010', `1100', `0011']\), our implementation of revise
+would limit the domain of \(c3\) to \([`1100']\).
 
 \lstinputlisting[emph={Nonogram}]{module_3/code_snippets/nonogram.py}
 
@@ -43,13 +43,15 @@ Here, as in module 2, it's two heuristics at play, one that selects the successo
 If the A* has to pop a node from the heap, it looks at the solution domain, which equals the amount of nodes available, and picks the node that result in the smallest solution domain. This means we have cut off the domain of possible combinations of colored graphs. If we look at an example:
 
 \begin{align*}
-	&r1: [[0,0],[0,1],[1,0],[1,1]]\\
-	&c1: [[0,0],[0,1],[1,0]]\\
-	&r2: [[1,0],[1,1]]\\
-	&c2: [[0,0],[1,1]]
+	&r1: [`00',`01',`10',`11']\\
+	&c1: [`00',`01',`10']\\
+	&r2: [`10',`11']\\
+	&c2: [`00',`11']
 \end{align*}
 
-Here we have \(4 \cdot 3 \cdot 2 \cdot 2 = 48\) possible combinations of the given rows and columns, some of the states are not viable though, but it is still a good measure and the nonviable states can - with no loss in performance - be neglected. The catch, though, is that while multiplying a lot of these values, you get a heavily incrementing value, and can give a negative boost on the performance of the solver. To solve this, we chose to take the logarithmic value of the length of the domains and add all those together. As most know, adding values in the logarithmic scale, is equal multiplying the original values. Another property of this heuristic is that when all domain lengths equal 1, the heuristics equals 0. Our heuristics function is provided in code snippet \ref{code:heuristics}.
+Here we have \(4 \cdot 3 \cdot 2 \cdot 2 = 48\) possible combinations of the given rows and columns, some of the states are not viable though, but it is still a good measure and the nonviable states can - with no loss in performance - be neglected. The catch, though, is that while multiplying a lot of these values, you get a heavily incrementing value, and can give a negative boost on the performance of the solver. To solve this, we chose to take the logarithmic value of the length of the domains and add all those together. As most know, adding values in the logarithmic scale, is equal multiplying the original values. So we'll get the correct measurement, but in another representation. Another property of this heuristic is that when all domain lengths equal 1, the heuristics equals 0. Our heuristics function is provided in code snippet \ref{code:heuristics}.
+
+\lstinputlisting[label={code:heuristics},caption={A* Heuristics used for the nonogram problem.}]{module_3/code_snippets/heuristics.py}
 
 \subsection{The implementation}
 
