@@ -1,6 +1,7 @@
 """ Module for tracking unique str => int """
 
-class IDGenerator(object): # pylint: disable=too-few-public-methods
+
+class IdGenerator(object): # pylint: disable=too-few-public-methods
     """ Utility class for mapping unique strings to int ids """
 
     def __init__(self):
@@ -19,4 +20,4 @@ class IDGenerator(object): # pylint: disable=too-few-public-methods
 
             return sid
 
-ID_GENERATOR = IDGenerator()
+ID_GENERATOR = IdGenerator()

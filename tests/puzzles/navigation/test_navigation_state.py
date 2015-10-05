@@ -6,13 +6,13 @@ from src.puzzles.navigation.navigation_state import NavigationState
 from src.puzzles.navigation.navigation_grid import NavigationGrid
 from src.puzzles.navigation.map import Map
 from src.utils.const import C
-import res.maps
+import res.maps.extras
 
 
 class TestNavigationState(unittest.TestCase):
     """ Performs tests on NavigationState """
     def setUp(self):
-        path = res.maps.__path__[0] + '/ex_simple.txt'
+        path = res.maps.extras.__path__[0] + '/ex_simple.txt'
         self.task = NavigationGrid(Map(open(path, 'r').read().splitlines()))
 
         self.test_state = NavigationState(self.task)
@@ -22,6 +22,10 @@ class TestNavigationState(unittest.TestCase):
         correct_id = 1
 
         self.assertEqual(correct_id, self.test_state.sid)
+
+        next_id = 2
+        for i, x in enumerate(self.test_state.generate_all_successors()):
+            self.assertEqual(next_id + i, x.sid)
 
     def test_heuristic_evaluation(self):
         """ Test that heuristic evaluation for the default task is correct"""

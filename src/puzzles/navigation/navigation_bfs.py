@@ -28,7 +28,7 @@ class Navigation(BestFirstSearch):
 def main():
     """ Text-based test of Navigation """
     import res.maps
-    path = res.maps.__path__[0] + '/ex7.txt'
+    path = res.maps.__path__[0] + '/ex0.txt'
     grid = NavigationGrid(Map(open(path, 'r').read().splitlines()))
     solution = Navigation(grid).best_first_search()
 

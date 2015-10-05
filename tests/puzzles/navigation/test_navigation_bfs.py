@@ -13,12 +13,12 @@ class TestNavigation(unittest.TestCase):
     # pylint: disable=too-many-instance-attributes
 
     def setUp(self):
-        self.solutions = [10, 19, 33, 39, 19, 23, 59, 38, 54]
+        self.solutions = [19, 33, 39, 19, 23, 59]
 
         base_path = res.maps.__path__[0]
 
-        maps = ['/ex_simple.txt', '/ex0.txt', '/ex1.txt', '/ex2.txt',
-                '/ex3.txt', '/ex4.txt', '/ex5.txt', '/ex6.txt', '/ex7.txt']
+        maps = ['/ex0.txt', '/ex1.txt', '/ex2.txt',
+                '/ex3.txt', '/ex4.txt', '/ex5.txt']
 
         self.tasks = []
         for _map in maps:
@@ -29,6 +29,11 @@ class TestNavigation(unittest.TestCase):
         self.navigations = []
         for task in self.tasks:
             self.navigations.append(Navigation(task))
+
+    def tearDown(self):
+        from src.utils.id_generator import ID_GENERATOR
+        ID_GENERATOR.ids = {}
+        ID_GENERATOR.next_id = 1
 
     def test_solve(self):
         """ Runs searches and asserts expected results """
