@@ -17,11 +17,11 @@
 This report describes our implementation of the A*-GAC and our solution to the vertex coloring problem.
 
 \subsection{Generality of the A* and the A*-GAC}
-Two classes has to be subclassed to solve new problems; the BestFirstSearch class and the SearchState class. To utilize the power of the GAC, it has to be run on every generated node, even the root node. So in the subclass of BestFirstSearch, the `create\_root\_node' method has to be overidden to run gac.initialize() and gac.domain\_filtering(), as seen in code snippet \ref{code:create_root}.
+Two classes must be subclassed to solve new problems; the BestFirstSearch class and the SearchState class. To utilize the power of the GAC, it has to be run on every generated node, even the root node. So in the subclass of BestFirstSearch, the `create\_root\_node' method must be overidden to perform both gac.initialize() and gac.domain\_filtering(), as seen in code snippet \ref{code:create_root}.
 
 \lstinputlisting[emph={create_root},label={code:create_root},caption={Generation of root node.}]{module_2/code_snippets/create_root.py}
 
-Futher, the GAC has to be rerun on each generated successor in the overidden method `generate\_all\_successors', before it gets added to the open heap. Only successors which either got solved by the GAC, or did not get one or more of their domains reduced to an empty domain, is considered as a valid child and should be expanded. The `gac.rerun()' returns \(True\) if the successor is still a viable state after the GAC-reduction. If the state is viable, it gets added to the heap.
+Further, the GAC has to be rerun on each generated successor in the overidden method `generate\_all\_successors', before it gets added to the open heap. Only successors which either got solved by the GAC, or did not get one or more of their domains reduced to an empty domain \( D = \{ \emptyset \}\), is considered as a valid child and should be expanded. The `gac.rerun()' returns \(True\) if the successor is still a viable state after the GAC-reduction. If the state is viable, it gets added to the heap.
 
 \lstinputlisting[emph={GAC},label={code:successor_generation},caption={Generation of vertex successor states.}]{module_2/code_snippets/successor_generation.py}
 
@@ -44,8 +44,8 @@ If the A* has to pop a node from the heap, it looks at the solution domain, whic
 Here we have \(4 \cdot 2 \cdot 3 = 24\) possible combinations of the given colors, some of the states are not viable though, but it is still a good measure and the nonviable states can - with no loss in performance - be neglected. The catch, though, is that while multiplying a lot of these values, you get a heavily incrementing value, and can give a negative boost on the performance of the solver. To solve this, we chose to take the logarithmic value of the length of the domains and add all those together. As most know, adding values in the logarithmic scale, is equal multiplying the original values. Another property of this heuristic is that when all domain lengths equal 1, the heuristics equals 0.
 
 \subsection{Evaluation procedure of the GAC}
-The REVISE method is a regular REVISE, and not a REVISE* as described in the report. This is because REVISE* is not necessary to solve the modules provided in this course this year. We chose to focus on optimizing the problem at hand.
+The REVISE method is a regular REVISE, and not a REVISE* as described in the problem description. This is because REVISE* is not necessary to solve the modules provided in the course this year. We chose to focus on optimizing the problem at hand.
 
-Two functions are produced for each constraint, e.g. \( v1 \neq v2 \) produces both \(v1 \neq v2 \) and \(v2 \neq v1 \). The revise choses which function to use based on the focus variable given. This avoids expressions that look up values in lists to retur falsy values, e.g. \( v1[0] \neq v2[1] \). The latter is especially important in the next module. To create runnable functions, we use Python's lambda function, as seen in code snippet \ref{code:make_function}.
+Two functions are produced for each constraint, e.g. \( v1 \neq v2 \) produces both \(v1 \neq v2 \) and \(v2 \neq v1 \). The revise chooses which function to use based on the focus variable given. This avoids expressions that look up values in lists to return falsy values, e.g. \( v1[0] \neq v2[1] \) should not return \( v2[0] \neq v1[1] \). The latter is especially important in the next module. To create runnable functions, we use Python's lambda function, as seen in code snippet \ref{code:make_function}.
 
 \lstinputlisting[label={code:make_function},caption={Generation of lambda expressions to evaluate the constraints.}]{module_2/code_snippets/make_functions.py}
