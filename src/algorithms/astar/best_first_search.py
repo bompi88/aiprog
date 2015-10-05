@@ -130,6 +130,7 @@ class BestFirstSearch(object):
         self.status_message(node, t_0, generated, closed, closed_cnt, False)
 
     def status_message(self, solution, t_0, generated, closed, cnt, paint=True):
+        # pylint: disable=too-many-arguments
         """ Based on GUI and verbosity, shows the status of the search """
         if self.gui and paint:
             self.gui.paint(solution)
@@ -145,26 +146,27 @@ class BestFirstSearch(object):
             closed_length = cnt
 
         if self.gac:
-            num_unsatisfied_constraints = len([c for c in self.gac.constraints if not c.satisfied])
-            num_without_colors = len([v for v in solution.domains.values() if len(v) != 1])
+            num_unsatisfied_constraints = len(
+                [c for c in self.gac.constraints if not c.satisfied]
+            )
+            num_without_colors = len(
+                [v for v in solution.domains.values() if len(v) != 1]
+            )
 
             message = 'Nodes generated: {}, Nodes expanded: {}, '\
-                      'Path length: {}, Unsatisfied constraints: {}, Unassigned variables: {}, Time elapsed: {:.5f} sec'.format(
-                            len(generated),
-                            closed_length,
-                            solution.solution_length(),
-                            num_unsatisfied_constraints,
-                            num_without_colors,
-                            t_1 - t_0
-            )
+                      'Path length: {}\nUnsatisfied constraints: {}, '\
+                      'Unassigned variables: {}, Time elapsed: {:.5f} sec'\
+                .format(
+                    len(generated), closed_length, solution.solution_length(),
+                    num_unsatisfied_constraints, num_without_colors, t_1 - t_0
+                )
         else:
             message = 'Nodes generated: {}, Nodes expanded: {}, '\
-                      'Path length: {}, Time elapsed: {:.5f} sec'.format(
-                            len(generated),
-                            closed_length,
-                            solution.solution_length(),
-                            t_1 - t_0
-            )
+                      'Path length: {}, Time elapsed: {:.5f} sec'\
+                .format(
+                    len(generated), closed_length, solution.solution_length(),
+                    t_1 - t_0
+                )
 
         if self.verbosity in [C.verbosity.TEST, C.verbosity.SILENT]:
             return

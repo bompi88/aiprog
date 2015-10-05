@@ -24,10 +24,12 @@ class MainWindow(QtGui.QMainWindow):
         self.init_menubar()
         self.init_toolbar()
 
-        status_bar = self.statusBar()
-        self.nav_gui.status_message[str].connect(
-            status_bar.showMessage
-        )
+        status_bar_label = QtGui.QLabel()
+        status_bar_label.setWordWrap(True)
+        status_bar_label.setFixedWidth(600)
+
+        self.statusBar().addWidget(status_bar_label)
+        self.nav_gui.status_message[str].connect(status_bar_label.setText)
 
         self.show()
         self.raise_()
@@ -115,7 +117,6 @@ class MainWindow(QtGui.QMainWindow):
         play_icon = QtGui.QIcon(res.imgs.__path__[0] + '/play.png')
         run_action = QtGui.QAction(play_icon, 'Run search', self)
         run_action.setShortcut('Ctrl+R')
-        run_action.setStatusTip('Run search')
         run_action.triggered.connect(self.nav_gui.start_search)
 
         toolbar = self.addToolBar('Run')
