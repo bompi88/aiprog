@@ -14,6 +14,8 @@
 % your work-around for avoiding both code chunks and a hand-built interpreter.
 
 \section{Central aspects of your A*-GAC program}
+This report describes our implementation of the A*-GAC and our solution to the vertex coloring problem.
+
 \subsection{Generality of the A* and the A*-GAC}
 Two classes has to be subclassed to solve new problems; the BestFirstSearch class and the SearchState class. To utilize the power of the GAC, it has to be run on every generated node, even the root node. So in the subclass of BestFirstSearch, the `create\_root\_node' method has to be overidden to run gac.initialize() and gac.domain\_filtering(), as seen in code snippet \ref{code:create_root}.
 
@@ -26,12 +28,12 @@ Futher, the GAC has to be rerun on each generated successor in the overidden met
 \subsection{CNET, VIs and CIs}
 The domains, constraints and variables are only generated once and shared between the different classes. A dictionary in the GAC maps the variables to the constraints, so the constraints can easily be looked up by a variable.
 
-The constraints is generated as runnable expressions, as in this problem: \( v1 \neq v3 \), where \(v1\) and \(v2\) represent the vertices. In previous example, vertex \(v1\) and \(v2\) should not have the same color. The variable instances (CI) is being stored as list of strings in each constraint, as involved variables. These variables are used to retrieve the domains from a dictionary that is initialized at `gac.initialize()'. Each node has its own dictionary with references to variable domains. If a domain is being altered, a copy of this domain is being made and the reference is updated in the corresponding state.
+The constraints (CIs) is generated as runnable expressions, as in this problem: \( v1 \neq v3 \), where \(v1\) and \(v2\) represent the vertices. In previous example, vertex \(v1\) and \(v2\) should not have the same color. The variable instances (VIs) is being stored as list of strings in each constraint, as involved variables. These variables are used to retrieve the domains from a dictionary that is initialized at `gac.initialize()'. Each node has its own dictionary with references to variable domains. If a domain is being altered, a copy of this domain is being made and the reference is updated in the corresponding state.
 
 \subsection*{Heuristics}
 It's two heuristics at play, one that selects the successors and one that determines which node to get expanded first. For the selection of successors, we simply select the variable that has the smallest domain and create states for all colors in this variables' domain; one assumption for each color.
 
-If the A* has to pop a node from the heap, it looks at the solution domain, which equals the amount of nodes available, and picks the node that has smallest value. This means we have cut off the domain of possible combinations of colored graphs. If we look at an example:
+If the A* has to pop a node from the heap, it looks at the solution domain, which equals the amount of nodes available, and picks the node that result in the smallest solution domain. This means we have cut off the domain of possible combinations of colored graphs. If we look at an example:
 
 \begin{align*}
 	&v1: [0,1,2,3]\\
