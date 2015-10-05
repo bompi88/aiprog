@@ -1,25 +1,16 @@
 def generate_all_successors(self):
   successors = []
 
-  viable_domains = {
-    k: domain for k, domain in self.domains.items() if len(domain) > 1
-  }
-
-  sorted_domains = OrderedDict(
-    sorted(viable_domains.items(), key=lambda x: -len(x[1]))
-  )
-
-  (key, domain) = sorted_domains.popitem()
+  viable_domains = get_domains_not_empty()
+  sorted_domains = sort_by_domain_length_asc()
+  (variable, domain) = sorted_domains.pop(0)
 
   for color in domain:
-    new_domains = domaincopy(self.domains)
-    new_domains[key] = [color]
+    new_domains = new_domain_dict_with_old_references(domains)
+    new_domains[variable] = [color]
 
-    successor = VertexColoringState(
-      self.state, self.gac, self.num_colors, new_domains,
-      self._solution_length + 1
-    )
-    result = self.gac.rerun(new_domains, key)
+    successor = VertexColoringState(new_domains)
+    result = self.gac.rerun(new_domains, variable)
 
     if successor.is_solution():
       return [successor]
