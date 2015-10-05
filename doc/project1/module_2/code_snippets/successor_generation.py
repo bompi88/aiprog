@@ -6,7 +6,7 @@ def generate_all_successors():
   (variable, domain) = sorted_domains.pop(0)
 
   for color in domain:
-    new_domains = new_domain_dict_with_old_references(domains)
+    new_domains = new_domain_dict_instance_with_old_references(domains)
     new_domains[variable] = [color]
 
     successor = VertexColoringState(new_domains)

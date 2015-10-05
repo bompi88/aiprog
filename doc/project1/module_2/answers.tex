@@ -33,7 +33,7 @@ The constraints (CIs) is generated as runnable expressions, as in this problem: 
 \subsection*{Heuristics}
 It's two heuristics at play, one that selects the successors and one that determines which node to get expanded first. For the selection of successors, we simply select the variable that has the smallest domain and create states for all colors in this variables' domain; one assumption for each color.
 
-If the A* has to pop a node from the heap, it looks at the solution domain, which equals the amount of nodes available, and picks the node that result in the smallest solution domain. This means we have cut off the domain of possible combinations of colored graphs. If we look at an example:
+If the A* has to pop a node from the heap, it looks at the solution domain, which equals the amount of nodes available, and picks the node that result in the smallest solution domain. This means we have cut off the domain of possible combinations of colored graphs. Let's look at an example of computing the size of the solution domain:
 
 \begin{align*}
 	&v1: [0,1,2,3]\\
@@ -50,6 +50,6 @@ The REVISE method is a regular REVISE, and not a REVISE* as described in the pro
 
 \lstinputlisting[label={code:make_function},caption={Generation of lambda expressions to evaluate the constraints.}]{module_2/code_snippets/make_functions.py}
 
-Two functions are produced for each constraint, e.g. \( v1 \neq v2 \) produces both \(v1 \neq v2 \) and \(v2 \neq v1 \). The revise chooses which function to use based on the focus variable given. This avoids expressions that look up values in lists to return falsy values, e.g. \( v1[0] \neq v2[1] \) should not return \( v2[0] \neq v1[1] \). The latter is especially important in the next module. To create runnable functions, we use Python's lambda function, as seen in code snippet \ref{code:make_function}. To run the function you simply do as in shown in the code snippet \ref{code:apply_function}. \(v1\) is the focus variable, \(d1\) is its value and \(d2\) is the other variables' value.
+Two functions are produced for each constraint, e.g. \( v1 \neq v2 \) produces both \(v1 \neq v2 \) and \(v2 \neq v1 \). The revise chooses which function to use based on the focus variable given. This avoids expressions that look up values in lists to return falsy values, e.g. \( v1[0] \neq v2[1] \) should not return the result of \( v2[0] \neq v1[1] \). The latter is especially important in the next module. To create runnable functions, we use Python's lambda function, as seen in code snippet \ref{code:make_function}. To run the function you simply do as shown in the code snippet \ref{code:apply_function}. In the code snippet, \(v1\) is the focus variable, \(d1\) is its value and \(d2\) is the other variables' value.
 
 \lstinputlisting[label={code:apply_function},caption={Applying a lambda function.}]{module_2/code_snippets/apply_function.py}

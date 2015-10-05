@@ -42,7 +42,7 @@ The heuristics is equal to the heuristics of module 2, but since the reports is 
 
 Here, as in module 2, it's two heuristics at play, one that selects the successors and one that determines which node to get expanded first. For the selection of successors, we simply select the variable that has the smallest domain and create states for all cells in this variables' (row or column) domain; one assumption for each cell in each row or column.
 
-If the A* has to pop a node from the heap, it looks at the solution domain, which equals the amount of nodes available, and picks the node that result in the smallest solution domain. This means we have cut off the domain of possible combinations of colored graphs. If we look at an example:
+If the A* has to pop a node from the heap, it looks at the solution domain, which equals the amount of nodes available, and picks the node that result in the smallest solution domain. This means we have cut off the domain of possible combinations of colored graphs. Let's look at an example of computing the size of the solution domain:
 
 \begin{align*}
 	&r1: [`00',`01',`10',`11']\\
