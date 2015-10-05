@@ -13,7 +13,7 @@ This report describes our implementation of the A* algorithm and our solution to
 
 Three search routines had to be supported out of the same base algorithm with a flick of a notch. This is quite easy when you know that substituting the heap with either a queue or a stack, you get respectively a breadth-first- and a depth-first-algorithm that is suitable to solve the same problems, though with different performance and optimality measures.
 
-Substituting the heap is done easily in python, and you can then define some common pop and push methods that modify the agenda, whether its a heap, stack or a queue (see figure \ref{code:manage_agenda}). In the code snippet, `opened` is the datastructure of your choice.
+Substituting the heap is done easily in python, and you can then define some common pop and push methods that modify the agenda, whether its a heap, stack or a queue (see code snippet \ref{code:manage_agenda}). In the code snippet, `opened` is the datastructure of your choice.
 
 \lstinputlisting[emph={open_push,open_pop,OPEN,A_STAR,BFS,DFS},label={code:manage_agenda},caption={Management of the agenda.}]{module_1/code_snippets/manage_agenda.py}
 
@@ -21,7 +21,7 @@ Substituting the heap is done easily in python, and you can then define some com
 
 \input{module_1/class_diagram}
 
-Figure \ref{run:examples} shows the class diagram for the navigation problem. As seen, each new problem needs to define two classes that inherit from `search\_state' and `best\_first\_search', respectively. Two methods, `create\_root\_node' and `arc\_cost', has to be overidden in the subclass of `best\_first\_search' for it to work. Likewise, the subclass of `search\_state' has to implement `heuristic\_evaluation', `create\_state\_identifier', `generate\_all\_successors', `is\_solution' and `solution\_length'. Most of these methods can be reused in similar problems, and this makes almost no effort to have a new type of problem solver up and running in no time.
+Figure \ref{run:examples} shows the class diagram for the navigation problem. As seen, each new problem needs to define two classes that inherit from SearchState and BestFirstSearch, respectively. Two methods, `create\_root\_node' and `arc\_cost', has to be overidden in the subclass of BestFirstSearch for it to work. Likewise, the subclass of SearchState has to implement `heuristic\_evaluation', `create\_state\_identifier', `generate\_all\_successors', `is\_solution' and `solution\_length'. Most of these methods can be reused in similar problems, and this makes almost no effort to have a new type of problem solver up and running in no time.
 
 To ensure generality we started by implementing the basic checkers example in
 the \emph{Essentials of A*} document, and then implemented the navigation specialization
@@ -46,7 +46,7 @@ The arc-cost has to be changed whether the agent can move diagonal or not. A arc
 \end{figure}
 
 \subsection{Generating successor states}
-From each viable state, a maximum of eight possible successor states can be created, each by moving in each direction from its currently held position; NORTH, SOUTH, EAST, WEST, NORTH-EAST, NORTH-WEST, SOUTH-EAST, SOUTH-WEST. If the diagonal variable is set, eight states are generated, else only four is generated, as seen in figure \ref{code:succesor-generation}.
+From each viable state, a maximum of eight possible successor states can be created, each by moving in each direction from its currently held position; NORTH, SOUTH, EAST, WEST, NORTH-EAST, NORTH-WEST, SOUTH-EAST, SOUTH-WEST. If the diagonal variable is set, eight states are generated, else only four is generated, as seen in code snippet \ref{code:succesor-generation}.
 
 Other considered limitations are that the new position should be inside the given dimensions of the board, and that obstacles are not walkable, together with unnecessity to visit positions that previously have been visited. Every state that is within the scope of those limitations, is created and added to the heap. 
 
