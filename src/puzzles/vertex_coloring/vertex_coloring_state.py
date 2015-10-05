@@ -38,14 +38,9 @@ class VertexColoringState(SearchState):
                          for domain in self.domains.values()])
 
     def heuristic_evaluation(self):
-        sum_h = 0
-
         # Look at the solution domain, and use log to transform
         # it to simple additions in the solution space
-        for domain in self.domains.values():
-            sum_h += math.log(len(domain))
-
-        return sum_h
+        return sum([math.log(len(domain)) for domain in self.domains.values()])
 
     def is_solution(self):
         for domain in self.domains.values():
