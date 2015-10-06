@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 cd doc/project1
 
 ./report_builder.sh
