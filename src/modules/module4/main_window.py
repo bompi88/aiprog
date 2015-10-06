@@ -24,11 +24,13 @@ class MainWindow(QtGui.QMainWindow):
         self.init_toolbar()
 
         status_bar_label = QtGui.QLabel()
-        status_bar_label.setWordWrap(True)
-        status_bar_label.setFixedWidth(self.gui.widget_size_px)
 
         self.statusBar().addWidget(status_bar_label)
         self.gui.status_message[str].connect(status_bar_label.setText)
+
+        score_label = QtGui.QLabel()
+        self.statusBar().addPermanentWidget(score_label)
+        self.gui.score_message[str].connect(score_label.setText)
 
         self.show()
         self.raise_()
