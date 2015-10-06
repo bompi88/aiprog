@@ -52,7 +52,7 @@ class TestPlay2048Player(unittest.TestCase):
         self.game.board = [[4, 4, 0, 0],
                            [0, 16, 8, 0],
                            [0, 0, 0, 0],
-                           [0, 0, 0, 0]]
+                           [0, 8, 8, 16]]
 
         self.player.move([1, 0])
 
@@ -60,7 +60,15 @@ class TestPlay2048Player(unittest.TestCase):
                          [[0, 0, 0, 8],
                           [0, 0, 16, 8],
                           [0, 0, 0, 0],
-                          [0, 0, 0, 0]])
+                          [0, 0, 16, 16]])
+
+        self.player.move([0, 1])
+
+        self.assertEqual(self.game.board,
+                         [[0, 0, 0, 0],
+                          [0, 0, 0, 0],
+                          [0, 0, 0, 16],
+                          [0, 0, 32, 16]])
 
         self.player.move([0, 1])
 
@@ -68,7 +76,7 @@ class TestPlay2048Player(unittest.TestCase):
                          [[0, 0, 0, 0],
                           [0, 0, 0, 0],
                           [0, 0, 0, 0],
-                          [0, 0, 16, 16]])
+                          [0, 0, 32, 32]])
 
         self.player.move([1, 0])
 
@@ -76,7 +84,7 @@ class TestPlay2048Player(unittest.TestCase):
                          [[0, 0, 0, 0],
                           [0, 0, 0, 0],
                           [0, 0, 0, 0],
-                          [0, 0, 0, 32]])
+                          [0, 0, 0, 64]])
 
 
 if __name__ == '__main__':
