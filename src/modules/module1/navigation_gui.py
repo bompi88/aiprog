@@ -191,9 +191,10 @@ class NavigationGUI(QtGui.QFrame):
             if not path:
                 return
 
-        map_ = Map(open(path, 'r').read().splitlines())
+        map_file = open(path, 'r')
+        contents = [line.strip() for line in map_file.read().splitlines()]
 
-        self.level_loaded(map_)
+        self.level_loaded(Map(contents))
 
         filename = path.split('/')[-1]
         self.parent().setWindowTitle(

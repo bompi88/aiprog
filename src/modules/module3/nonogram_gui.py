@@ -107,11 +107,9 @@ class NonogramGUI(QtGui.QFrame):
                 return
 
         nonogram_file = open(path, 'r')
-        contents = nonogram_file.read().splitlines()
+        contents = [line.strip() for line in nonogram_file.read().splitlines()]
 
-        graph = Nonogram(contents)
-
-        self.level_loaded(graph)
+        self.level_loaded(Nonogram(contents))
 
         filename = path.split('/')[-1]
         title = 'Module 3 - Nonogram - {}'.format(filename)

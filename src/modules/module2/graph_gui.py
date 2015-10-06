@@ -175,9 +175,10 @@ class GraphGUI(QtGui.QFrame):
             if not path:
                 return
 
-        graph = Graph(open(path, 'r').read().splitlines())
+        graph_file = open(path, 'r')
+        contents = [line.strip() for line in graph_file.read().splitlines()]
 
-        self.level_loaded(graph)
+        self.level_loaded(Graph(contents))
 
         filename = path.split('/')[-1]
         self.parent().setWindowTitle('Module 2 - A*-GAC - {}'.format(filename))
