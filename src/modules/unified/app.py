@@ -4,6 +4,7 @@ from PyQt4 import QtGui
 from src.modules.module1.main_window import MainWindow as Navigation
 from src.modules.module2.main_window import MainWindow as Graph
 from src.modules.module3.main_window import MainWindow as Nonogram
+from src.modules.module4.main_window import MainWindow as Play2048
 
 
 class App(object):
@@ -11,7 +12,7 @@ class App(object):
     all the different modules from the course """
     def __init__(self, qt_app):
         self.qt_app = qt_app
-        self.main_window = Navigation()
+        self.main_window = Play2048()
         self.qt_app.setActiveWindow(self.main_window)
 
         self.add_switcher_menu()
@@ -40,6 +41,14 @@ class App(object):
 
         self.add_switcher_menu()
 
+    def play_2048(self):
+        """ Loads a Nonogram instance into main window """
+        self.main_window.close()
+        self.main_window = Play2048()
+        self.qt_app.setActiveWindow(self.main_window)
+
+        self.add_switcher_menu()
+
     def add_switcher_menu(self):
         """ Adds the following items to the menubar:
          Modules -> [ Navigation, Graphs, Nonograms ]
@@ -53,11 +62,15 @@ class App(object):
         nonogram_action = QtGui.QAction('&Nonograms', self.main_window)
         nonogram_action.triggered.connect(self.nonogram)
 
+        play_2048_action = QtGui.QAction('&2048', self.main_window)
+        play_2048_action.triggered.connect(self.play_2048)
+
         menu = self.main_window.menuBar()
-        file_menu = menu.addMenu('&Modules')
-        file_menu.addAction(navigation_action)
-        file_menu.addAction(graph_action)
-        file_menu.addAction(nonogram_action)
+        module_menu = menu.addMenu('&Modules')
+        module_menu.addAction(navigation_action)
+        module_menu.addAction(graph_action)
+        module_menu.addAction(nonogram_action)
+        module_menu.addAction(play_2048_action)
 
 
 def main():
