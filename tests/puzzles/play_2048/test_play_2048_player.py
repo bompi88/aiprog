@@ -26,7 +26,6 @@ class TestPlay2048Player(unittest.TestCase):
 
         self.player.move([0, 1])
 
-
         self.assertEqual(self.game.board,
                          [[0, 0, 0, 0],
                           [0, 0, 0, 0],

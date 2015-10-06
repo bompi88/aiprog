@@ -65,6 +65,20 @@ class Play2048GUI(QtGui.QFrame):
         self.widget_size_px = size
         self.compute_tile_size()
 
+    def keyReleaseEvent(self, e):
+        key = e.key()
+
+        direction_keys = {16777234: 'Left',
+                          16777235: 'Up',
+                          16777236: 'Right',
+                          16777237: 'Down'}
+
+        if key in direction_keys:
+            moves = {
+                'Left': [-1, 0], 'Up': [0, -1], 'Right': [1, 0], 'Down': [0, 1]
+            }
+            self.do_move(moves[direction_keys[key]])
+
     def draw(self, painter):
         """ Draws a Nonogram, WHITE should be treated as an error. """
 
@@ -131,7 +145,7 @@ class Play2048GUI(QtGui.QFrame):
         painter.drawRect(0, 0, self.widget_size_px - 1,
                          self.widget_size_px - 1)
 
-    def set_game(self, default=False):
+    def set_game(self):
         game = Play2048()
 
         self.level_loaded(game)
@@ -142,3 +156,21 @@ class Play2048GUI(QtGui.QFrame):
         """ Change delay """
         self.delay = delay
         self.status_message.emit('Delay: ' + str(delay))
+
+    def start_manual_game(self):
+        if not self.started:
+            self.started = True
+            self.player.game = self.game_state
+        else:
+            self.level_loaded(Play2048())
+
+        self.update()
+
+    def do_move(self, move):
+        if not self.player.game:
+            self.started = True
+            self.player.game = self.game_state
+        did_move = self.player.move(move)
+        if did_move:
+            self.player.game.next_state()
+        self.update()

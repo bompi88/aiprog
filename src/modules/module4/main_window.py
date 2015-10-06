@@ -50,6 +50,14 @@ class MainWindow(QtGui.QMainWindow):
         file_menu.addAction(kill_action)
         file_menu.addAction(exit_action)
 
+        delay_menu = menu.addMenu('&Delay')
+        delays = [0, 50, 150, 500, 1000]
+        for delay in delays:
+            delay_action = QtGui.QAction('&' + str(delay) + ' ms', self)
+            expr = 'self.gui.set_delay({})'.format(delay)
+            delay_action.triggered.connect(make_function([], expr, locals()))
+            delay_menu.addAction(delay_action)
+
     def init_toolbar(self):
         """ Initializes a toolbar, with a run button and delay controls """
         play_icon = QtGui.QIcon(res.imgs.__path__[0] + '/play.png')
@@ -60,13 +68,21 @@ class MainWindow(QtGui.QMainWindow):
         toolbar = self.addToolBar('Run')
         toolbar.addAction(run_action)
 
-        delays = [0, 50, 150, 500, 1000]
-        for delay in delays:
-            delay_action = QtGui.QAction('&Delay: ' + str(delay) + ' ms', self)
-            expr = 'self.gui.set_delay({})'.format(delay)
-            delay_action.triggered.connect(make_function([], expr, locals()))
-            toolbar.addAction(delay_action)
+        start_action = QtGui.QAction('&Start Manual', self)
+        start_action.setShortcut('Ctrl+s')
+        start_action.triggered.connect(self.gui.start_manual_game)
+        toolbar.addAction(start_action)
 
+        moves = {
+            'Left': [-1, 0], 'Up': [0, -1], 'Right': [1, 0], 'Down': [0, 1]
+        }
+
+        for name, move in moves.items():
+            move_action = QtGui.QAction('&' + name, self)
+            expr = 'self.gui.do_move({})'.format(move)
+            move_action.setShortcut('Ctrl+' + name)
+            move_action.triggered.connect(make_function([], expr, locals()))
+            toolbar.addAction(move_action)
 
 def main():
     """ Creates Qt app and loads default level """

@@ -20,8 +20,9 @@ class Play2048Player(QThread):
         ended = False
 
         while not ended:
-            self.game.next_state()
-            ended = self.move()
+            did_move = self.move()
+            if did_move:
+                self.game.next_state()
             self.gui.update()
 
         self.gui.status_message.emit('Finished')
@@ -36,20 +37,12 @@ class Play2048Player(QThread):
         self.wait()
 
     def move(self, move=None):
-        sides = [0, 3]
-        impossible = True
-        for x in range(4):
-            for y in range(4):
-                if x not in sides and y not in sides:
-                    continue
-                if self.game.board[y][x] == 0:
-                    impossible = False
-
         if not move:
             moves = [[-1, 0], [1, 0], [0, -1], [0, 1]]
 
             move = moves[randint(0, 3)]
 
+        did_move = False
         board = self.game.board
         for i in range(4):
             for j in range(4):
@@ -73,6 +66,7 @@ class Play2048Player(QThread):
                             if board[move_to[1]][x_new] == 0:
                                 board[move_to[1]][x_new] = board[y][x]
                                 board[y][x] = 0
+                                did_move = True
                                 break
                 elif should_move and move[0] == -1:
                     for x_new in range(4):
@@ -80,6 +74,7 @@ class Play2048Player(QThread):
                             if board[move_to[1]][x_new] == 0:
                                 board[move_to[1]][x_new] = board[y][x]
                                 board[y][x] = 0
+                                did_move = True
                                 break
                 elif should_move and move[1] == 1:
                     for y_new in range(3, move_to[1] - 1, -1):
@@ -87,6 +82,7 @@ class Play2048Player(QThread):
                             if board[y_new][move_to[0]] == 0:
                                 board[y_new][move_to[0]] = board[y][x]
                                 board[y][x] = 0
+                                did_move = True
                                 break
                 elif should_move and move[1] == -1:
                     for y_new in range(4):
@@ -94,6 +90,7 @@ class Play2048Player(QThread):
                             if board[y_new][move_to[0]] == 0:
                                 board[y_new][move_to[0]] = board[y][x]
                                 board[y][x] = 0
+                                did_move = True
                                 break
 
         for i in range(4):
@@ -110,11 +107,18 @@ class Play2048Player(QThread):
 
                 neighbour = (x - move[0], y - move[1])
                 if neighbour[0] in range(4) and neighbour[1] in range(4):
+                    if board[y][x] is 0:
+                        continue
                     if board[neighbour[1]][neighbour[0]] == board[y][x]:
                         board[y][x] *= 2
                         board[neighbour[1]][neighbour[0]] = 0
-
+                        did_move = True
 
         if self.gui:
             sleep(self.gui.delay / 1000.0)
-        return impossible
+        return did_move
+
+    def __str__(self):
+        return '\n'.join(
+            [' - '.join(str(el) for el in row) for row in self.game.board]
+        )
