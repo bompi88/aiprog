@@ -33,7 +33,7 @@ Both the \emph{Manhattan distance} and \emph{Euclidean distance} has been tested
 
 The euclidean agent has to avoid an obstacle and therefore is generating a few more nodes. On the other hand, in example 5 (Figure \ref{run:examples}), the euclidean agent slips through the opening between the two last obstacles, while the manhattan agent needs to explore the area before the right-most obstacle. The performance of the agent depends on the heuristics and arc-cost compared with the structure of the board. Switching the euclidean and manhattan when using diagonal moves, seem to result in similar end results, though either of the two may visit more states than the other.
 
-The arc-cost has to be changed whether the agent can move diagonal or not. A arc-cost below 1 is suitable for strict axis-movements and a arc-cost above 1 for diagonal movement. If the arc-cost is below 1 for diagonal movement, the agent would do unnecessary and dramatic turns which result in wierd behavior.
+The arc-cost has to be changed whether the agent can move diagonal or not. A arc-cost below 1 is suitable for strict axis-movements and a arc-cost above 1 for diagonal movement. If the arc-cost is below 1 for diagonal movement, the agent would do unnecessary and dramatic turns which result in weird behavior.
 
 \begin{figure}[h!]
 	\centering

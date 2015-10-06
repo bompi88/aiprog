@@ -1,4 +1,5 @@
-""" Pseudocode shortened implementation of what our Nonogram  """
+""" Pseudocode shortened implementation of the Nonogram
+representation of variables and constraints """
 class Nonogram(object):
     def __init__(self, lines):
         rows, columns = lines.first()
