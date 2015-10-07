@@ -186,12 +186,12 @@ class Play2048GUI(QtGui.QFrame):
         if not self.player.game:
             self.started = True
             self.player.game = self.game_state
-        did_move = self.player.move(move)
+        did_move = self.player.game.move(move)
         if did_move:
             self.player.game.next_state()
 
-        self.score_message.emit('Score: {}'.format(self.player.score))
+        self.score_message.emit('Score: {}'.format(self.player.game.score))
 
-        if not self.player.is_possible():
+        if not self.player.game.is_possible():
             self.status_message.emit('Finished')
         self.update()
