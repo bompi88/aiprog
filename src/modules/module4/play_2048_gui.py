@@ -14,6 +14,8 @@ class Play2048GUI(QtGui.QFrame):
     def __init__(self, parent):
         QtGui.QFrame.__init__(self, parent)
 
+        self.signal = QtCore.SIGNAL("signal")
+
         self.tile_size = 1
         self.tiles = 4
         self.widget_size_px = 600
@@ -172,6 +174,13 @@ class Play2048GUI(QtGui.QFrame):
         self.delay = delay
         self.status_message.emit('Delay: ' + str(delay))
 
+    def set_screenshots(self, take_screenshots):
+        self.player.take_screenshots = take_screenshots
+        if take_screenshots:
+            self.set_delay(2000)
+        else:
+            self.set_delay(50)
+
     def start_manual_game(self):
         if not self.started:
             self.started = True
@@ -195,3 +204,6 @@ class Play2048GUI(QtGui.QFrame):
         if not self.player.game.is_possible():
             self.status_message.emit('Finished')
         self.update()
+
+    def shoot(self, count):
+        self.emit(self.signal, count)
