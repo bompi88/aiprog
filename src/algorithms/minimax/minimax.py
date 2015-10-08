@@ -26,7 +26,7 @@ class Minimax(object):
 
         v = float('-inf')
 
-        for s in state.successors():
+        for s in state.successors(True):
             v = max(v, self.min_value(s, alpha, beta, depth - 1))
 
             if v >= beta:
@@ -41,7 +41,8 @@ class Minimax(object):
             return state.evaluation_function()
 
         v = float('inf')
-        for s in state.successors():
+
+        for s in state.successors(False):
             v = min(v, self.max_value(s, alpha, beta, depth - 1))
 
             if v >= alpha:

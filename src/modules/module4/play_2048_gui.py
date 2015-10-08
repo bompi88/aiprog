@@ -17,7 +17,7 @@ class Play2048GUI(QtGui.QFrame):
     def __init__(self, parent):
         QtGui.QFrame.__init__(self, parent)
 
-        self.depth = 5
+        self.depth = 4
         self.heuristic = SnakeGradient
 
         self.delay = 50

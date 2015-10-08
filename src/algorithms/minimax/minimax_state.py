@@ -7,7 +7,7 @@ class MinimaxState(object):
         raise NotImplementedError(
             'Implement perform(action) in MinimaxState subclass')
 
-    def successors(self):
+    def successors(self, is_max):
         raise NotImplementedError(
             'Implement successors() in MinimaxState subclass'
         )

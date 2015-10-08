@@ -71,39 +71,34 @@ class Play2048State(MinimaxState):
         # With our heuristics, the start is not important
         return depth is 0 or self.max_tile() < 32
 
-    def successors(self):
+    def successors(self, is_max):
         successors = []
         board = self.board
 
-        for move in self.possible_moves:
-            successor = self.copy_with_board(deepcopy(board))
+        if is_max:
+            for move in self.possible_moves:
+                successor = self.copy_with_board(deepcopy(board))
 
-            did_move = successor.move(move)
+                did_move = successor.move(move)
 
-            if did_move:
-                successors.append(successor)
+                if did_move:
+                    successors.append(successor)
+        else:
+            zero_sides = []
+            for x in range(4):
+                for y in range(4):
+                    if board[y][x] is 0:
+                        zero_sides.append((x, y))
 
-        # zero_sides = []
-        # sides = [0, 3]
-        # for x in range(4):
-        #     for y in range(4):
-        #         if x not in sides and y not in sides:
-        #             continue
-        #
-        #         if board[y][x] is 0:
-        #             zero_sides.append((x, y))
-        #
-        # possibilities = [2, 4]
-        #
-        # for zero_side in zero_sides:
-        #     for possibility in possibilities:
-        #         new_board = deepcopy(board)
-        #
-        #         new_board[zero_side[1]][zero_side[0]] = possibility
-        #
-        #         successor = self.copy_with_board(new_board)
-        #         successors.append(successor)
+            possibilities = [2, 4]
 
+            for zero_side in zero_sides:
+                for possibility in possibilities:
+                    new_board = deepcopy(board)
+                    new_board[zero_side[1]][zero_side[0]] = possibility
+
+                    successor = self.copy_with_board(new_board)
+                    successors.append(successor)
         return successors
 
     def evaluation_function(self):
