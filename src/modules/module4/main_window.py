@@ -4,6 +4,7 @@ from PyQt4.QtGui import QPixmap
 import os
 
 import res.imgs
+import res.play2048s
 from src.utils.func import make_function
 from src.modules.module4.play_2048_gui import Play2048GUI
 
@@ -15,25 +16,25 @@ class MainWindow(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self)
 
         self.gui = Play2048GUI(self)
-
+        self.screenshot_count = 0
         self.init_ui()
 
     def init_ui(self):
         """ Initializes the UI, delegates to init_menubar and init_toolbar """
         self.setCentralWidget(self.gui)
-        self.connect(self.gui, self.gui.signal, self.shoot)
 
         self.init_menubar()
         self.init_toolbar()
 
         status_bar_label = QtGui.QLabel()
-
         self.statusBar().addWidget(status_bar_label)
-        self.gui.status_message[str].connect(status_bar_label.setText)
 
         score_label = QtGui.QLabel()
         self.statusBar().addPermanentWidget(score_label)
+
+        self.gui.status_message[str].connect(status_bar_label.setText)
         self.gui.score_message[str].connect(score_label.setText)
+        self.gui.screenshot.connect(self.shoot)
 
         self.show()
         self.raise_()
@@ -60,7 +61,7 @@ class MainWindow(QtGui.QMainWindow):
         file_menu.addAction(exit_action)
 
         delay_menu = menu.addMenu('&Delay')
-        delays = [0, 50, 150, 500, 1000]
+        delays = [0, 50, 150, 500, 1000, 2000]
         for delay in delays:
             delay_action = QtGui.QAction('&' + str(delay) + ' ms', self)
             expr = 'self.gui.set_delay({})'.format(delay)
@@ -74,7 +75,7 @@ class MainWindow(QtGui.QMainWindow):
 
         screenshots_off = QtGui.QAction('&Off', self)
         screenshots_off.triggered.connect(
-            lambda: (self.gui.set_screenshots(False))
+            lambda: self.gui.set_screenshots(False)
         )
 
         screenshots_menu = menu.addMenu('&Screenshots')
@@ -95,13 +96,13 @@ class MainWindow(QtGui.QMainWindow):
         toolbar.addAction(run_action)
         toolbar.addAction(start_action)
 
+    def shoot(self):
+        path = res.play2048s.__path__[0]
+        filename = '/screenshot-' + str(self.screenshot_count) + '.jpg'
 
-    def shoot(self, count):
-        p = QPixmap.grabWindow(self.winId())
-        path = os.path.expanduser("~") + '/minimax'
-        if not os.path.exists(path):
-            os.makedirs(path)
-        p.save(path + '/screenshot-' + str(count) + '.jpg', 'jpg')
+        window = QPixmap.grabWidget(self.window())
+        window.save(path + filename, 'jpg')
+        self.screenshot_count += 1
 
 
 def main():

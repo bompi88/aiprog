@@ -13,6 +13,9 @@ class Play2048Manual(object):
         if self.game.move(move):
             self.game.next_state()
 
+        if self.gui.take_screenshots:
+            self.gui.screenshot.emit()
+
         self.gui.score_message.emit('Score: {}'.format(self.game.score))
 
         if not self.game.is_possible():

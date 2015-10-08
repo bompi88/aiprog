@@ -12,6 +12,7 @@ class Play2048GUI(QtGui.QFrame):
     """ Implement QFrame, which is a subclass of QWidget """
     status_message = pyqtSignal(str)
     score_message = pyqtSignal(str)
+    screenshot = pyqtSignal()
 
     def __init__(self, parent):
         QtGui.QFrame.__init__(self, parent)
@@ -24,8 +25,6 @@ class Play2048GUI(QtGui.QFrame):
         self.started = False
         self.manual_mode = None
 
-        self.signal = QtCore.SIGNAL("signal")
-
         self.tile_size = 1
         self.border_width = 0
         self.tiles = 4
@@ -35,6 +34,8 @@ class Play2048GUI(QtGui.QFrame):
         self.init_ui()
         self.colors = None
         self.init_colors()
+
+        self.take_screenshots = False
 
         self.move_keys = {0: 'left', 1: 'up', 2: 'right', 3: 'down'}
 
@@ -150,7 +151,7 @@ class Play2048GUI(QtGui.QFrame):
     def keyReleaseEvent(self, e):  # pylint: disable=invalid-name
         key = e.key() - 16777234
 
-        if key in self.move_keys:
+        if key in self.move_keys and self.manual_mode:
             move = self.move_keys[key]
             moves = Play2048Player.actions()
 
@@ -203,11 +204,6 @@ class Play2048GUI(QtGui.QFrame):
         self.status_message.emit('Delay: ' + str(delay))
 
     def set_screenshots(self, take_screenshots):
-        self.player.take_screenshots = take_screenshots
+        self.take_screenshots = take_screenshots
         if take_screenshots:
-            self.set_delay(2000)
-        else:
-            self.set_delay(50)
-
-    def shoot(self, count):
-        self.emit(self.signal, count)
+            self.status_message.emit('Taking screenshots')

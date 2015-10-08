@@ -1,6 +1,5 @@
 from random import randint
 from copy import deepcopy
-import math
 
 from src.algorithms.minimax.minimax_state import MinimaxState
 
