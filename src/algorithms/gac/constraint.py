@@ -1,6 +1,5 @@
 """ GAC constraint superclass """
 from copy import deepcopy
-
 from src.utils.func import make_function
 
 
