@@ -32,15 +32,18 @@ class Play2048Player(QThread):
                 self.game.next_state()
                 self.move_completed()
 
-            if self.gui.take_screenshots:
+            if self.gui and self.gui.take_screenshots:
                 self.gui.screenshot.emit()
 
             if not self.game.is_possible():
                 ended = True
 
-        self.gui.status_message.emit('Game ended')
+        if self.gui:
+            self.gui.status_message.emit('Game ended')
 
     def move_completed(self):
+        if not self.gui:
+            return
         sleep(self.gui.delay / 1000.0)
         self.gui.score_message.emit('Score: {}'.format(self.game.score))
         self.gui.update()

@@ -4,9 +4,10 @@ Inspired by:
 http://folk.ntnu.no/valerijf/NTNU/7/IT3105/Project3/Project3.pdf
 https://github.com/freva/2048-AI/blob/master/src/AI/search/AlphaBeta.java
 """
+from src.puzzles.play_2048.heuristics.heuristic import Heuristic
 
 
-class Gradient(object):
+class Gradient(Heuristic):
     @classmethod
     def evaluation_function(cls, state):
         max_h = float('-inf')

@@ -40,26 +40,33 @@ class MainWindow(QtGui.QMainWindow):
 
     def init_menubar(self):
         """ Initializes a menubar with the following items:
-         File -> [ Kill, Exit ]
+        File -> [ Kill, Reset, Exit ]
+        Delay -> [ 10 ms, 50 ms, 150 ms, 500 ms, 1000 ms, 2000 ms ]
+        Screenshots -> [ On, Off ]
+        Depth -> [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
+        Heuristic -> [ Random, Snake, TopLeft ]
         """
+        menu = self.menuBar()
+        file_menu = menu.addMenu('&File')
+        delay_menu = menu.addMenu('&Delay')
+        screenshots_menu = menu.addMenu('&Screenshots')
+        depth_menu = menu.addMenu('&Depth')
+        heuristic_menu = menu.addMenu('&Heuristic')
+
         kill_action = QtGui.QAction('&Kill game', self)
         kill_action.setShortcut('Ctrl+K')
         kill_action.triggered.connect(self.gui.end_search)
+        file_menu.addAction(kill_action)
 
         reset_size_action = QtGui.QAction('&Reset size', self)
         reset_size_action.triggered.connect(self.gui.reset_size)
+        file_menu.addAction(reset_size_action)
 
         exit_action = QtGui.QAction('&Exit', self)
         exit_action.setShortcut('Ctrl+Q')
         exit_action.triggered.connect(QtGui.qApp.quit)
-
-        menu = self.menuBar()
-        file_menu = menu.addMenu('&File')
-        file_menu.addAction(kill_action)
-        file_menu.addAction(reset_size_action)
         file_menu.addAction(exit_action)
 
-        delay_menu = menu.addMenu('&Delay')
         delays = [0, 50, 150, 500, 1000, 2000]
         for delay in delays:
             delay_action = QtGui.QAction('&' + str(delay) + ' ms', self)
@@ -67,19 +74,27 @@ class MainWindow(QtGui.QMainWindow):
             delay_action.triggered.connect(make_function([], expr, locals()))
             delay_menu.addAction(delay_action)
 
-        screenshots_on = QtGui.QAction('&On', self)
-        screenshots_on.triggered.connect(
-            lambda: (self.gui.set_screenshots(True))
-        )
+        screens_on = QtGui.QAction('&On', self)
+        screens_on.triggered.connect(lambda: self.gui.set_screenshots(True))
+        screenshots_menu.addAction(screens_on)
 
-        screenshots_off = QtGui.QAction('&Off', self)
-        screenshots_off.triggered.connect(
-            lambda: self.gui.set_screenshots(False)
-        )
+        screens_off = QtGui.QAction('&Off', self)
+        screens_off.triggered.connect(lambda: self.gui.set_screenshots(False))
+        screenshots_menu.addAction(screens_off)
 
-        screenshots_menu = menu.addMenu('&Screenshots')
-        screenshots_menu.addAction(screenshots_on)
-        screenshots_menu.addAction(screenshots_off)
+        depths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        for depth in depths:
+            depth_action = QtGui.QAction('&' + str(depth), self)
+            expr = 'self.gui.set_depth({})'.format(depth)
+            depth_action.triggered.connect(make_function([], expr, locals()))
+            depth_menu.addAction(depth_action)
+
+        heuristics = ['Random', 'Snake', 'TopLeft']
+        for heuristic in heuristics:
+            heuristic_action = QtGui.QAction('&' + heuristic, self)
+            exp = 'self.gui.set_heuristic("{}")'.format(heuristic)
+            heuristic_action.triggered.connect(make_function([], exp, locals()))
+            heuristic_menu.addAction(heuristic_action)
 
     def init_toolbar(self):
         """ Initializes a toolbar, with a run button and delay controls """

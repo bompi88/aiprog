@@ -1,7 +1,7 @@
 from src.puzzles.play_2048.heuristics.gradient import Gradient
 
 
-class SnakeGradient(Gradient):
+class TopLeftGradient(Gradient):
     @classmethod
     def mask(cls):
         return [

@@ -5,7 +5,9 @@ from PyQt4.QtCore import pyqtSignal
 from src.puzzles.play_2048.play_2048_player import Play2048Player
 from src.puzzles.play_2048.play_2048_manual import Play2048Manual
 
+from src.puzzles.play_2048.heuristics.random_move import RandomMove
 from src.puzzles.play_2048.heuristics.snake_gradient import SnakeGradient
+from src.puzzles.play_2048.heuristics.top_left_gradient import TopLeftGradient
 
 
 class Play2048GUI(QtGui.QFrame):
@@ -17,8 +19,8 @@ class Play2048GUI(QtGui.QFrame):
     def __init__(self, parent):
         QtGui.QFrame.__init__(self, parent)
 
-        self.depth = 4
-        self.heuristic = SnakeGradient
+        self.depth = 1
+        self.heuristic = RandomMove
 
         self.delay = 50
         self.player = None
@@ -202,6 +204,20 @@ class Play2048GUI(QtGui.QFrame):
         """ Change delay """
         self.delay = delay
         self.status_message.emit('Delay: ' + str(delay))
+
+    def set_depth(self, depth):
+        self.depth = depth
+        self.status_message.emit('Depth: ' + str(depth))
+
+    def set_heuristic(self, heuristic):
+        if heuristic == 'Random':
+            self.heuristic = RandomMove
+        elif heuristic == 'Snake':
+            self.heuristic = SnakeGradient
+        elif heuristic == 'TopLeft':
+            self.heuristic = TopLeftGradient
+
+        self.status_message.emit('Heuristic: ' + self.heuristic.__name__)
 
     def set_screenshots(self, take_screenshots):
         self.take_screenshots = take_screenshots
