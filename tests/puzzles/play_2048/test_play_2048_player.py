@@ -31,7 +31,9 @@ class TestPlay2048Player(unittest.TestCase):
         average = sum(scores) / float(self.plays)
         self.assertGreater(average, 1000)
 
-        print('Random: ' + str(average))
+        print('Runs: ' + str(self.plays))
+        print('Random: ' + str(average) + ' average score')
+        print('Best: {}, worst: {}'.format(max(scores), min(scores)))
 
     def test_snake_gradient(self):
         depths = [1, 2, 3, 4]
@@ -50,10 +52,13 @@ class TestPlay2048Player(unittest.TestCase):
                 timings.append(time() - t0)
                 scores.append(player.game.score)
 
+            tot_t = sum(timings)
             average = sum(scores) / float(self.plays)
-            avg_t = sum(timings) / float(self.plays)
+            avg_t = tot_t / float(self.plays)
 
-            print('Snake - depth {}: {}, in {} s'.format(depth, average, avg_t))
+            print('Snake - depth {}: {} average score'.format(depth, average))
+            print('Average time: {:.2f}, total: {:.2f}'.format(avg_t, tot_t))
+            print('Best: {}, worst: {}'.format(max(scores), min(scores)))
 
 if __name__ == '__main__':
     unittest.main()
