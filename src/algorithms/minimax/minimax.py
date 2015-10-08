@@ -9,8 +9,10 @@ class Minimax(object):
 
         for a in self.actions:
             result = state.perform(a)
+
             if result is None:
                 continue
+
             value = self.max_value(result, float('-inf'),
                                    float('inf'), self.depth)
 
@@ -26,8 +28,8 @@ class Minimax(object):
 
         v = float('-inf')
 
-        for s in state.successors(True):
-            v = max(v, self.min_value(s, alpha, beta, depth - 1))
+        for successor in state.generate_successors(True):
+            v = max(v, self.min_value(successor, alpha, beta, depth - 1))
 
             if v >= beta:
                 return v
@@ -42,8 +44,8 @@ class Minimax(object):
 
         v = float('inf')
 
-        for s in state.successors(False):
-            v = min(v, self.max_value(s, alpha, beta, depth - 1))
+        for successor in state.generate_successors(False):
+            v = min(v, self.max_value(successor, alpha, beta, depth - 1))
 
             if v >= alpha:
                 return v

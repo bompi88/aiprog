@@ -72,7 +72,7 @@ class Play2048State(MinimaxState):
         # With our heuristics, the start is not important
         return depth is 0 or self.max_tile() < 32
 
-    def successors(self, is_max):
+    def generate_successors(self, is_max):
         self.successors = []
 
         if is_max:
@@ -86,9 +86,7 @@ class Play2048State(MinimaxState):
         for move in self.possible_moves:
             successor = self.copy_with_board(deepcopy(self.board))
 
-            did_move = successor.move(move)
-
-            if did_move:
+            if successor.move(move):
                 self.successors.append(successor)
 
     def successor_spawns(self):
