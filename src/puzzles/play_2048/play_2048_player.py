@@ -1,51 +1,53 @@
-from PyQt4.QtCore import QThread
 from time import sleep
+from PyQt4.QtCore import QThread
+from src.algorithms.minimax.minimax import Minimax
 
-from src.puzzles.play_2048.play_2048_minimax import Play2048Minimax
-from src.puzzles.play_2048.play_2048_minimax_state import Play2048MinimaxState
+from src.puzzles.play_2048.play_2048_state import Play2048State
 
 
 class Play2048Player(QThread):
     """ Inherit QThread for easy threading """
 
-    def __init__(self, gui, parent=None):
-        QThread.__init__(self, parent)
+    def __init__(self, gui, heuristic, depth):
+        QThread.__init__(self, None)
         self.exiting = False
-        self.gui, self.game = gui, None
+
+        self.gui = gui
+        self.game = Play2048State(heuristic)
+
         self.take_screenshots = False
-        self.minimax = Play2048Minimax()
 
-    def play(self, game):
-        self.game = game
+        self.minimax = Minimax(self.actions(), depth)
 
-        self.start()
+    @classmethod
+    def actions(cls):
+        return {'left': [-1, 0], 'up': [0, -1], 'right': [1, 0], 'down': [0, 1]}
 
     def run(self):
         ended = False
         count = 0
 
         while not ended:
-            move = self.minimax.minimax_decision(Play2048MinimaxState(self.game))
-            did_move = self.game.move(move)
-            if did_move:
-                self.game.next_state()
+            new_game = self.game.copy_with_board(self.game.board)
+            move = self.minimax.alpha_beta_decision(new_game)
 
-            print self
+            if self.game.move(move):
+                self.game.next_state()
+                self.move_completed()
 
             if self.take_screenshots:
                 self.gui.shoot(count)
-
-            if self.gui:
-                sleep(self.gui.delay / 1000.0)
-
-            self.gui.score_message.emit('Score: {}'.format(self.game.score))
-            self.gui.update()
 
             if not self.game.is_possible():
                 ended = True
             count += 1
 
-        self.gui.status_message.emit('Finished')
+        self.gui.status_message.emit('Game ended')
+
+    def move_completed(self):
+        sleep(self.gui.delay / 1000.0)
+        self.gui.score_message.emit('Score: {}'.format(self.game.score))
+        self.gui.update()
 
     def end_player(self):
         self.setTerminationEnabled(True)
@@ -53,11 +55,8 @@ class Play2048Player(QThread):
         self.gui.status_message.emit('Search killed')
 
     def __del__(self):
-        self.gui.status_message.emit('Search destroyed')
         self.exiting = True
         self.wait()
 
     def __str__(self):
-        return '\n'.join(
-            [' - '.join(str(el) for el in row) for row in self.game.board]
-        )
+        return '\n'.join(['-'.join(str(t) for t in r) for r in self.game.board])
