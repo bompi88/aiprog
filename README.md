@@ -1,4 +1,4 @@
-[![Build Status](https://magnum.travis-ci.com/bompi88/aiprog.svg?token=aptDrbLtsyuRiYndefvn)](https://magnum.travis-ci.com/bompi88/aiprog)
+[![Build Status](https://magnum.travis-ci.com/krisvage/aiprog.svg?token=aptDrbLtsyuRiYndefvn)](https://magnum.travis-ci.com/krisvage/aiprog)
 
 # aiprog
 
