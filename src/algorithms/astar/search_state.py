@@ -10,17 +10,17 @@ class SearchState(object):
     """
 
     def __init__(self, state):
-        self.state = state # An object describing a state of the search process
+        self.state = state  # An object describing a state of the search process
         self.sid = self.create_state_identifier()
 
         self.g = None  # Cost of getting to this node
         self.h = None  # Estimated cost to goal
         self.f = None  # Estimated total cost of a solution path going
-                           # through this node; f = g + h
+        #  through this node; f = g + h
 
-        self.parent = None # Pointer to best parent node
+        self.parent = None  # Pointer to best parent node
         self.kids = []   # list of all successor nodes, whether or not this
-                           # node is currently their best parent.
+        #  node is currently their best parent.
 
         self.status = C.status.NEW # OPEN / CLOSED / NEW
 

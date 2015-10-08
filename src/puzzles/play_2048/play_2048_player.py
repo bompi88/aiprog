@@ -15,6 +15,8 @@ class Play2048Player(QThread):
         self.gui = gui
         self.game = Play2048State(heuristic)
 
+        self.take_screenshots = False
+
         self.minimax = Minimax(self.actions(), depth)
 
     @classmethod
@@ -23,6 +25,7 @@ class Play2048Player(QThread):
 
     def run(self):
         ended = False
+        count = 0
 
         while not ended:
             new_game = self.game.copy_with_board(self.game.board)
@@ -32,8 +35,12 @@ class Play2048Player(QThread):
                 self.game.next_state()
                 self.move_completed()
 
+            if self.take_screenshots:
+                self.gui.shoot(count)
+
             if not self.game.is_possible():
                 ended = True
+            count += 1
 
         self.gui.status_message.emit('Game ended')
 

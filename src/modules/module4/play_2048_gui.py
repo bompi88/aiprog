@@ -24,6 +24,8 @@ class Play2048GUI(QtGui.QFrame):
         self.started = False
         self.manual_mode = None
 
+        self.signal = QtCore.SIGNAL("signal")
+
         self.tile_size = 1
         self.border_width = 0
         self.tiles = 4
@@ -199,3 +201,13 @@ class Play2048GUI(QtGui.QFrame):
         """ Change delay """
         self.delay = delay
         self.status_message.emit('Delay: ' + str(delay))
+
+    def set_screenshots(self, take_screenshots):
+        self.player.take_screenshots = take_screenshots
+        if take_screenshots:
+            self.set_delay(2000)
+        else:
+            self.set_delay(50)
+
+    def shoot(self, count):
+        self.emit(self.signal, count)

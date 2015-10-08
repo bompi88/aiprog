@@ -45,8 +45,8 @@ class NonogramGUI(QtGui.QFrame):
         self.dx = self.dy = 1
         x, y = self.nonogram_state.state.x, self.nonogram_state.state.y
 
-        self.dx = self.dx * (self.widget_width_px / float(x))
-        self.dy = self.dy * (self.widget_height_px / float(y))
+        self.dx *= (self.widget_width_px / float(x))
+        self.dy *= (self.widget_height_px / float(y))
 
     def start_search(self):
         """ Start the search in the worker thread """
@@ -121,7 +121,3 @@ class NonogramGUI(QtGui.QFrame):
         """ Change delay """
         self.delay = delay
         self.status_message.emit('Delay: ' + str(delay))
-
-    def set_opened_closed(self, opened, closed):
-        """ No nice way of showing this in the NonogramGUI """
-        pass
