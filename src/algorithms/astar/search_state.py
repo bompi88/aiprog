@@ -22,7 +22,7 @@ class SearchState(object):
         self.kids = []   # list of all successor nodes, whether or not this
         #  node is currently their best parent.
 
-        self.status = C.status.NEW # OPEN / CLOSED / NEW
+        self.status = C.status.NEW  # OPEN / CLOSED / NEW
 
     def heuristic_evaluation(self):
         """ Returns an estimate of distance to goal """

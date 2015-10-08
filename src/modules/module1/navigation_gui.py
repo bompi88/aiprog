@@ -77,7 +77,7 @@ class NavigationGUI(QtGui.QFrame):
 
         self.update()
 
-    def paintEvent(self, _): # pylint: disable=invalid-name
+    def paintEvent(self, _):  # pylint: disable=invalid-name
         """ Called by the Qt event loop when the widget should be updated """
         if self.node is None:
             return
@@ -85,7 +85,7 @@ class NavigationGUI(QtGui.QFrame):
         painter = QtGui.QPainter(self)
         self.paint_map(painter)
 
-    def resizeEvent(self, e): # pylint: disable=invalid-name
+    def resizeEvent(self, e):  # pylint: disable=invalid-name
         """ Handles widget resize and scales Navigation """
         self.widget_width_px = e.size().width()
         self.widget_height_px = e.size().height()
@@ -106,7 +106,7 @@ class NavigationGUI(QtGui.QFrame):
 
         for node in self.opened:
             if isinstance(node, tuple):
-                node = node[1] # Heapq for astar, normal list for BFS/DFS
+                node = node[1]  # Heapq for astar, normal list for BFS/DFS
 
             if [x, y_dim - y - 1] == node.visited[-1]:
                 return True

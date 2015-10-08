@@ -40,7 +40,7 @@ class TestPlay2048Player(unittest.TestCase):
             print 'round finished ' + str(self.game.evaluation_function())
             # print self.game.evaluation_function()
 
-            # self.assertEqual(preferred, suggested_move)
+            self.assertEqual(preferred, suggested_move)
 
         #    still_possible = self.game.is_possible()
 

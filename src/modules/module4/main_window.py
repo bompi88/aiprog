@@ -1,7 +1,6 @@
 """ A GUI application for showing vertex coloring on graphs """
 from PyQt4 import QtGui
 from PyQt4.QtGui import QPixmap
-import os
 
 import res.imgs
 import res.play2048s

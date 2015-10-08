@@ -69,12 +69,12 @@ class NonogramGUI(QtGui.QFrame):
 
         self.update()
 
-    def paintEvent(self, _): # pylint: disable=invalid-name
+    def paintEvent(self, _):  # pylint: disable=invalid-name
         """ Called by the Qt event loop when the widget should be updated """
         painter = QtGui.QPainter(self)
         self.draw_nonogram(painter)
 
-    def resizeEvent(self, e): # pylint: disable=invalid-name
+    def resizeEvent(self, e):  # pylint: disable=invalid-name
         """ Handles widget resize and scales Nonogram """
         self.widget_width_px = e.size().width()
         self.widget_height_px = e.size().height()
@@ -83,10 +83,10 @@ class NonogramGUI(QtGui.QFrame):
     def draw_nonogram(self, painter):
         """ Draws a Nonogram, WHITE should be treated as an error. """
         colors = {
-            C.colors.GREY: QtGui.QColor(130, 130, 130), # Unset
-            C.colors.PINK: QtGui.QColor(255, 255, 150), # Drawn
-            C.colors.YELLOW: QtGui.QColor(255, 0, 150), # Space
-            C.colors.WHITE: QtGui.QColor(255, 255, 255) # No domains
+            C.colors.GREY: QtGui.QColor(130, 130, 130),  # Unset
+            C.colors.PINK: QtGui.QColor(255, 255, 150),  # Drawn
+            C.colors.YELLOW: QtGui.QColor(255, 0, 150),  # Space
+            C.colors.WHITE: QtGui.QColor(255, 255, 255)  # No domains
         }
 
         for y, row in enumerate(self.nonogram_state.representation()):

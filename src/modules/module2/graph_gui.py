@@ -21,8 +21,8 @@ class GraphGUI(QtGui.QFrame):
 
         self.dx = self.dy = 1
         self.widget_width_px = self.widget_height_px = 600
-        self.nc_adjust_x = self.nc_adjust_y = 0 # Adjustments for negative
-                                                # coordinates in graphs.
+        # Adjustments for negative coordinates in graphs.
+        self.nc_adjust_x = self.nc_adjust_y = 0
         self.total_height = 0
         self.vertex_radii = 5
 
@@ -127,7 +127,7 @@ class GraphGUI(QtGui.QFrame):
 
         if whites and vertex_color is C.graph_colors.WHITE:
             painter.drawEllipse(point, self.vertex_radii, self.vertex_radii)
-        elif not whites and not vertex_color is C.graph_colors.WHITE:
+        elif not whites and vertex_color is not C.graph_colors.WHITE:
             painter.drawEllipse(point, self.vertex_radii, self.vertex_radii)
 
         if whites and self.vertex_numbering:
@@ -203,7 +203,3 @@ class GraphGUI(QtGui.QFrame):
         """ Change delay """
         self.delay = delay
         self.status_message.emit('Delay: ' + str(delay))
-
-    def set_opened_closed(self, opened, closed):
-        """ No nice way of showing this in the GraphGUI """
-        pass
