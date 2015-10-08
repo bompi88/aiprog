@@ -89,7 +89,7 @@ class MainWindow(QtGui.QMainWindow):
             depth_action.triggered.connect(make_function([], expr, locals()))
             depth_menu.addAction(depth_action)
 
-        heuristics = ['Random', 'Snake', 'TopLeft']
+        heuristics = ['Random', 'Snake', 'TopLeft', 'LogGradient']
         for heuristic in heuristics:
             heuristic_action = QtGui.QAction('&' + heuristic, self)
             exp = 'self.gui.set_heuristic("{}")'.format(heuristic)

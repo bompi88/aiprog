@@ -8,6 +8,7 @@ from src.puzzles.play_2048.play_2048_manual import Play2048Manual
 from src.puzzles.play_2048.heuristics.random_move import RandomMove
 from src.puzzles.play_2048.heuristics.snake_gradient import SnakeGradient
 from src.puzzles.play_2048.heuristics.top_left_gradient import TopLeftGradient
+from src.puzzles.play_2048.heuristics.log_gradient import LogGradient
 
 
 class Play2048GUI(QtGui.QFrame):
@@ -217,6 +218,8 @@ class Play2048GUI(QtGui.QFrame):
             self.heuristic = SnakeGradient
         elif heuristic == 'TopLeft':
             self.heuristic = TopLeftGradient
+        elif heuristic == 'LogGradient':
+            self.heuristic = LogGradient
 
         self.status_message.emit('Heuristic: ' + self.heuristic.__name__)
 

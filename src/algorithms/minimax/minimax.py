@@ -24,6 +24,7 @@ class Minimax(object):
 
     def max_value(self, state, alpha, beta, depth):
         if state.cutoff_test(depth):
+            # print(state.evaluation_function())
             return state.evaluation_function()
 
         v = float('-inf')
@@ -40,6 +41,7 @@ class Minimax(object):
 
     def min_value(self, state, alpha, beta, depth):
         if state.cutoff_test(depth):
+            # print(state.evaluation_function())
             return state.evaluation_function()
 
         v = float('inf')
