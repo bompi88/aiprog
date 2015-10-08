@@ -88,6 +88,7 @@ class Play2048GUI(QtGui.QFrame):
 
     def start_search(self):
         """ Start the search in the worker thread """
+        self.end_search()
         self.start()
 
     def start_manual_game(self):
