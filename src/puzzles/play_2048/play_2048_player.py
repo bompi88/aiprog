@@ -12,7 +12,7 @@ class Play2048Player(QThread):
         QThread.__init__(self, parent)
         self.exiting = False
         self.gui, self.game = gui, None
-
+        self.take_screenshots = False
         self.minimax = Play2048Minimax()
 
     def play(self, game):
@@ -22,6 +22,7 @@ class Play2048Player(QThread):
 
     def run(self):
         ended = False
+        count = 0
 
         while not ended:
             move = self.minimax.minimax_decision(Play2048MinimaxState(self.game))
@@ -31,6 +32,9 @@ class Play2048Player(QThread):
 
             print self
 
+            if self.take_screenshots:
+                self.gui.shoot(count)
+
             if self.gui:
                 sleep(self.gui.delay / 1000.0)
 
@@ -39,6 +43,7 @@ class Play2048Player(QThread):
 
             if not self.game.is_possible():
                 ended = True
+            count += 1
 
         self.gui.status_message.emit('Finished')
 

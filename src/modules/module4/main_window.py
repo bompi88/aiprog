@@ -1,5 +1,7 @@
 """ A GUI application for showing vertex coloring on graphs """
 from PyQt4 import QtGui
+from PyQt4.QtGui import QPixmap
+import os
 
 import res.imgs
 from src.utils.func import make_function
@@ -19,6 +21,7 @@ class MainWindow(QtGui.QMainWindow):
     def init_ui(self):
         """ Initializes the UI, delegates to init_menubar and init_toolbar """
         self.setCentralWidget(self.gui)
+        self.connect(self.gui, self.gui.signal, self.shoot)
 
         self.init_menubar()
         self.init_toolbar()
@@ -60,6 +63,20 @@ class MainWindow(QtGui.QMainWindow):
             delay_action.triggered.connect(make_function([], expr, locals()))
             delay_menu.addAction(delay_action)
 
+        screenshots_on = QtGui.QAction('&On', self)
+        screenshots_on.triggered.connect(
+            lambda: (self.gui.set_screenshots(True))
+        )
+
+        screenshots_off = QtGui.QAction('&Off', self)
+        screenshots_off.triggered.connect(
+            lambda: (self.gui.set_screenshots(False))
+        )
+
+        screenshots_menu = menu.addMenu('&Screenshots')
+        screenshots_menu.addAction(screenshots_on)
+        screenshots_menu.addAction(screenshots_off)
+
     def init_toolbar(self):
         """ Initializes a toolbar, with a run button and delay controls """
         play_icon = QtGui.QIcon(res.imgs.__path__[0] + '/play.png')
@@ -85,6 +102,14 @@ class MainWindow(QtGui.QMainWindow):
             move_action.setShortcut('Ctrl+' + name)
             move_action.triggered.connect(make_function([], expr, locals()))
             toolbar.addAction(move_action)
+
+    def shoot(self, count):
+        p = QPixmap.grabWindow(self.winId())
+        path = os.path.expanduser("~") + '/minimax'
+        if not os.path.exists(path):
+            os.makedirs(path)
+        p.save(path + '/screenshot-' + str(count) + '.jpg', 'jpg')
+
 
 def main():
     """ Creates Qt app and loads default level """
