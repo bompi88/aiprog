@@ -41,7 +41,10 @@ class MainWindow(QtGui.QMainWindow):
         """
         kill_action = QtGui.QAction('&Kill game', self)
         kill_action.setShortcut('Ctrl+K')
-        kill_action.triggered.connect(self.gui.player.end_player)
+        kill_action.triggered.connect(self.gui.end_search)
+
+        reset_size_action = QtGui.QAction('&Reset size', self)
+        reset_size_action.triggered.connect(self.gui.reset_size)
 
         exit_action = QtGui.QAction('&Exit', self)
         exit_action.setShortcut('Ctrl+Q')
@@ -50,6 +53,7 @@ class MainWindow(QtGui.QMainWindow):
         menu = self.menuBar()
         file_menu = menu.addMenu('&File')
         file_menu.addAction(kill_action)
+        file_menu.addAction(reset_size_action)
         file_menu.addAction(exit_action)
 
         delay_menu = menu.addMenu('&Delay')
@@ -67,24 +71,13 @@ class MainWindow(QtGui.QMainWindow):
         run_action.setShortcut('Ctrl+R')
         run_action.triggered.connect(self.gui.start_search)
 
-        toolbar = self.addToolBar('Run')
-        toolbar.addAction(run_action)
-
-        start_action = QtGui.QAction('&Start Manual', self)
-        start_action.setShortcut('Ctrl+s')
+        start_action = QtGui.QAction('&Play yourself', self)
         start_action.triggered.connect(self.gui.start_manual_game)
+
+        toolbar = self.addToolBar('Toolbar')
+        toolbar.addAction(run_action)
         toolbar.addAction(start_action)
 
-        moves = {
-            'Left': [-1, 0], 'Up': [0, -1], 'Right': [1, 0], 'Down': [0, 1]
-        }
-
-        for name, move in moves.items():
-            move_action = QtGui.QAction('&' + name, self)
-            expr = 'self.gui.do_move({})'.format(move)
-            move_action.setShortcut('Ctrl+' + name)
-            move_action.triggered.connect(make_function([], expr, locals()))
-            toolbar.addAction(move_action)
 
 def main():
     """ Creates Qt app and loads default level """
