@@ -1,3 +1,5 @@
+[![Build Status](https://magnum.travis-ci.com/bompi88/aiprog.svg?token=aptDrbLtsyuRiYndefvn)](https://magnum.travis-ci.com/bompi88/aiprog)
+
 # aiprog
 
 IT3105
