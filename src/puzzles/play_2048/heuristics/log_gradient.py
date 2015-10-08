@@ -14,8 +14,8 @@ class LogGradient(Heuristic):
         ]
 
         h = 0
-        for x, row in enumerate(state.board):
-            for y, element in enumerate(row):
+        for y, row in enumerate(state.board):
+            for x, element in enumerate(row):
                 if element > 0:
                     h += grid[y][x] * log(element, 2)
 

@@ -14,8 +14,8 @@ class Gradient(Heuristic):
 
         for grid in cls.grids():
             h = 0
-            for x, row in enumerate(state.board):
-                for y, element in enumerate(row):
+            for y, row in enumerate(state.board):
+                for x, element in enumerate(row):
                     h += grid[y][x] * element
 
             max_h = max(max_h, h)
