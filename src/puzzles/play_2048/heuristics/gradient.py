@@ -8,12 +8,12 @@ https://github.com/freva/2048-AI/blob/master/src/AI/search/AlphaBeta.java
 
 class Gradient(object):
     @classmethod
-    def evaluation_function(cls, board):
+    def evaluation_function(cls, state):
         max_h = float('-inf')
 
         for grid in cls.grids():
             h = 0
-            for x, row in enumerate(board):
+            for x, row in enumerate(state.board):
                 for y, element in enumerate(row):
                     h += grid[y][x] * element
 

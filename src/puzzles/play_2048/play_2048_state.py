@@ -107,7 +107,7 @@ class Play2048State(MinimaxState):
                 self.successors.append(successor)
 
     def evaluation_function(self):
-        return self.heuristic.evaluation_function(self.board)
+        return self.heuristic.evaluation_function(self)
 
     def next_state(self):
         viable = 0
