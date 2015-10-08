@@ -204,3 +204,4 @@ target/
 *.tdo
 
 delivery.zip
+res/play2048s/*.jpg
