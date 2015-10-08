@@ -30,7 +30,6 @@ class TestPlay2048Player(unittest.TestCase):
 
         average = sum(scores) / float(self.plays)
         self.assertGreater(average, 1000)
-        # self.assertGreater(max(scores), 2000)
 
         print('Random: ' + str(average))
 
