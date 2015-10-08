@@ -59,8 +59,8 @@ class NonogramState(SearchState):
         for i in range(0, max_index):
             part_domain = ('0' * i) + ('1' * first) + '0'
 
-            for i in range(len(domains)):
-                domain = domains[i] + part_domain
+            for j in range(len(domains)):
+                domain = domains[j] + part_domain
                 if len(domain) < total_length + 2:
                     new_domains.append(domain)
 

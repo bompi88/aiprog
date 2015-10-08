@@ -13,7 +13,7 @@ class BestFirstSearch(object):
         self.start = start
         self.gui = gui
         self.mode = C.search_mode.A_STAR if not gui else gui.mode
-        self.delay = 50 if not gui else gui.delay # milliseconds
+        self.delay = 50 if not gui else gui.delay  # milliseconds
         self.verbosity = C.verbosity.VERBOSE
         self.retain = retain
         self.gac = None
@@ -123,7 +123,7 @@ class BestFirstSearch(object):
             self.gui.paint(node)
             time.sleep(self.delay / 1000.0)
 
-        if not self.verbosity is C.verbosity.DEBUG:
+        if self.verbosity is not C.verbosity.DEBUG:
             return
 
         self.status_message(node, t_0, generated, closed, closed_cnt, False)
