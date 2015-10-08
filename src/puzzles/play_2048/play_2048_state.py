@@ -7,6 +7,7 @@ from src.algorithms.minimax.minimax_state import MinimaxState
 class Play2048State(MinimaxState):
     def __init__(self, heuristic):
         self.board = self.start_board()
+        self.successors = None
 
         self.possible_moves = {'left': [-1, 0], 'up': [0, -1],
                                'right': [1, 0], 'down': [0, 1]}
@@ -72,34 +73,40 @@ class Play2048State(MinimaxState):
         return depth is 0 or self.max_tile() < 32
 
     def successors(self, is_max):
-        successors = []
-        board = self.board
+        self.successors = []
 
         if is_max:
-            for move in self.possible_moves:
-                successor = self.copy_with_board(deepcopy(board))
-
-                did_move = successor.move(move)
-
-                if did_move:
-                    successors.append(successor)
+            self.successor_moves()
         else:
-            zero_sides = []
-            for x in range(4):
-                for y in range(4):
-                    if board[y][x] is 0:
-                        zero_sides.append((x, y))
+            self.successor_spawns()
 
-            possibilities = [2, 4]
+        return self.successors
 
-            for zero_side in zero_sides:
-                for possibility in possibilities:
-                    new_board = deepcopy(board)
-                    new_board[zero_side[1]][zero_side[0]] = possibility
+    def successor_moves(self):
+        for move in self.possible_moves:
+            successor = self.copy_with_board(deepcopy(self.board))
 
-                    successor = self.copy_with_board(new_board)
-                    successors.append(successor)
-        return successors
+            did_move = successor.move(move)
+
+            if did_move:
+                self.successors.append(successor)
+
+    def successor_spawns(self):
+        zero_tiles = []
+        for x in range(4):
+            for y in range(4):
+                if self.board[y][x] is 0:
+                    zero_tiles.append((x, y))
+
+        possibilities = [2, 4]
+
+        for tile in zero_tiles:
+            for possibility in possibilities:
+                new_board = deepcopy(self.board)
+                new_board[tile[1]][tile[0]] = possibility
+
+                successor = self.copy_with_board(new_board)
+                self.successors.append(successor)
 
     def evaluation_function(self):
         return self.heuristic.evaluation_function(self.board)
