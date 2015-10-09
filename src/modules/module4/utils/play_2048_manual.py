@@ -21,3 +21,6 @@ class Play2048Manual(object):
         if not self.game.is_possible():
             self.gui.status_message.emit('Finished')
         self.gui.update()
+
+    def board(self):
+        return self.game.board

@@ -2,9 +2,10 @@
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import pyqtSignal
 
-from src.puzzles.play_2048.play_2048_player import Play2048Player
-from src.puzzles.play_2048.play_2048_manual import Play2048Manual
+from src.modules.module4.utils.play_2048_worker import Play2048Worker
+from src.modules.module4.utils.play_2048_manual import Play2048Manual
 
+from src.puzzles.play_2048.play_2048_player import Play2048Player
 from src.puzzles.play_2048.heuristics.random_move import RandomMove
 from src.puzzles.play_2048.heuristics.snake_gradient import SnakeGradient
 from src.puzzles.play_2048.heuristics.top_left_gradient import TopLeftGradient
@@ -25,7 +26,7 @@ class Play2048GUI(QtGui.QFrame):
         self.heuristic = RandomMove
 
         self.delay = 50
-        self.player = None
+        self.worker = None
         self.started = False
         self.manual_mode = None
 
@@ -101,8 +102,8 @@ class Play2048GUI(QtGui.QFrame):
             return
 
         if not self.manual_mode:
-            self.player.end_player()
-        self.player = None
+            self.worker.end_worker()
+        self.worker = None
         self.started = False
 
     def start(self, manual=False):
@@ -112,10 +113,10 @@ class Play2048GUI(QtGui.QFrame):
         self.manual_mode = manual
 
         if manual:
-            self.player = Play2048Manual(self)
+            self.worker = Play2048Manual(self)
         else:
-            self.player = Play2048Player(self, self.heuristic, self.depth)
-            self.player.start()
+            self.worker = Play2048Worker(self, self.heuristic, self.depth)
+            self.worker.start()
 
         self.started = True
         self.update()
@@ -134,7 +135,7 @@ class Play2048GUI(QtGui.QFrame):
         font.setPointSize(self.font_size)
         painter.setFont(font)
 
-        board = self.player.game.board if self.started else self.splash_screen
+        board = self.worker.board() if self.started else self.splash_screen
 
         self.paint_board(painter, board)
         self.paint_outer_border(painter)
@@ -160,7 +161,7 @@ class Play2048GUI(QtGui.QFrame):
             move = self.move_keys[key]
             moves = Play2048Player.actions()
 
-            self.player.do_move(moves[move])
+            self.worker.do_move(moves[move])
 
     def paint_board(self, painter, board):
         """ Draws a Nonogram, WHITE should be treated as an error. """
