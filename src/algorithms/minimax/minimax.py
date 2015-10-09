@@ -32,10 +32,10 @@ class Minimax(object):
         for successor in state.generate_successors(True):
             v = max(v, self.min_value(successor, alpha, beta, depth - 1))
 
-            if v >= beta:
-                return v
-
             alpha = max(alpha, v)
+
+            if v >= beta:
+                break
 
         return v
 
@@ -49,9 +49,9 @@ class Minimax(object):
         for successor in state.generate_successors(False):
             v = min(v, self.max_value(successor, alpha, beta, depth - 1))
 
-            if v >= alpha:
-                return v
+            beta = min(beta, v)
 
-            beta = max(beta, v)
+            if v <= alpha:
+                break
 
         return v
