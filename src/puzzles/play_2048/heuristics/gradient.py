@@ -20,7 +20,7 @@ class Gradient(Heuristic):
 
             max_h = max(max_h, h)
 
-        return max_h
+        return max_h * (state.free_tiles() / 16.0)
 
     @classmethod
     def grids(cls):

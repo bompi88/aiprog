@@ -22,7 +22,7 @@ class TestPlay2048Player(unittest.TestCase):
     def test_random_play(self):
         scores = []
         for _ in range(self.plays):
-            player = Play2048Player(None, RandomMove, 1)
+            player = Play2048Player(RandomMove, 1)
 
             player.play()
 

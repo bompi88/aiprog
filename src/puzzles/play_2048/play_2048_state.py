@@ -54,6 +54,9 @@ class Play2048State(MinimaxState):
 
         return possible
 
+    def free_tiles(self):
+        return 16 - self.set_tiles()
+
     def set_tiles(self):
         return sum([0 if tile is 0 else 1 for r in self.board for tile in r])
 
