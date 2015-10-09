@@ -110,30 +110,21 @@ class Play2048State(MinimaxState):
         return self.heuristic.evaluation_function(self)
 
     def next_state(self):
-        viable = 0
-        sides = [0, 3]
+        viable = []
         for x in range(4):
             for y in range(4):
-                if x not in sides and y not in sides:
-                    continue
-
                 if self.board[y][x] == 0:
-                    viable += 1
+                    viable.append((x, y))
 
-        tile = randint(0, viable - 1)
+        tile_index = randint(0, len(viable) - 1)
+        tile = viable[tile_index]
         tile_value = 4 if randint(1, 10) is 10 else 2
 
-        i = 0
-
         for x in range(4):
             for y in range(4):
-                if x not in sides and y not in sides:
-                    continue
-
                 if self.board[y][x] == 0:
-                    if i == tile:
+                    if tile == (x, y):
                         self.board[y][x] = tile_value
-                    i += 1
 
         return tile_value
 

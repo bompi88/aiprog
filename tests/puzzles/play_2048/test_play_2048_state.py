@@ -52,7 +52,7 @@ class TestPlay2048Player(unittest.TestCase):
         self.assertAlmostEqual(0.1, fours_ratio, delta=0.09)
 
     def test_distribution_of_next_state(self):
-        board = [[0, 0, 0, 0], [0, 16, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+        board = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
 
         self.game.board = deepcopy(board)
 
@@ -76,8 +76,6 @@ class TestPlay2048Player(unittest.TestCase):
             twos += tile_val is 2
             fours += tile_val is 4
 
-        ids = [element for element in ids if element is not 0]
-
         twos_ratio = twos / float(rounds)
         fours_ratio = fours / float(rounds)
 
@@ -85,7 +83,7 @@ class TestPlay2048Player(unittest.TestCase):
         self.assertAlmostEqual(0.1, fours_ratio, delta=0.01)
 
         for i in ids:
-            self.assertAlmostEqual(1 / 12.0, i / float(rounds), delta=0.01)
+            self.assertAlmostEqual(1 / 16.0, i / float(rounds), delta=0.01)
 
     def test_move_slide(self):
         self.game.board = [[2, 4, 0, 0],
