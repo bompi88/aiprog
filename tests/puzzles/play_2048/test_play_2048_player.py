@@ -6,7 +6,7 @@ from src.puzzles.play_2048.play_2048_player import Play2048Player
 
 from src.puzzles.play_2048.heuristics.random_move import RandomMove
 from src.puzzles.play_2048.heuristics.snake_gradient import SnakeGradient
-from src.puzzles.play_2048.heuristics.top_left_gradient import TopLeftGradient
+from src.puzzles.play_2048.heuristics.corner_gradient import CornerGradient
 from src.puzzles.play_2048.heuristics.ov3y import Ov3y
 
 
@@ -14,12 +14,12 @@ class TestPlay2048Player(unittest.TestCase):
     def setUp(self):
         self.heuristics = [
             SnakeGradient,
-            TopLeftGradient,
+            CornerGradient,
             Ov3y
         ]
-        self.plays = 5
+        self.plays = 3
 
-    def test_random_play(self):
+    def test_heuristics(self):
         scores = []
         for _ in range(self.plays):
             player = Play2048Player(RandomMove, 1)
@@ -35,11 +35,11 @@ class TestPlay2048Player(unittest.TestCase):
         print('Random: ' + str(average) + ' average score')
         print('Best: {}, worst: {}'.format(max(scores), min(scores)))
 
-    def test_heuristics(self):
         for heuristic in self.heuristics:
             depths = [1, 2, 3, 4]
 
             for depth in depths:
+                max_tiles = []
                 scores = []
                 timings = []
 
@@ -51,14 +51,18 @@ class TestPlay2048Player(unittest.TestCase):
 
                     timings.append(time() - t0)
                     scores.append(player.game.score)
+                    max_tiles.append(player.game.max_tile())
 
                 tot_t = sum(timings)
                 average = sum(scores) / float(self.plays)
                 avg_t = tot_t / float(self.plays)
 
-                print('{} - depth {}: {} average score'.format(heuristic.__name__ , depth, average))
-                print('Average time: {:.2f}, total: {:.2f}'.format(avg_t, tot_t))
+                print('{} - depth {}'.format(heuristic.__name__, depth))
+                print('Average score: {}'.format(average))
+                print('Avg time: {:.2f} s, tot: {:.2f} s'.format(avg_t, tot_t))
                 print('Best: {}, worst: {}'.format(max(scores), min(scores)))
+                print('All scores: ' + str(scores))
+                print('Max tiles: ' + str(max_tiles))
 
 if __name__ == '__main__':
     unittest.main()

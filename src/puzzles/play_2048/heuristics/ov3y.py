@@ -47,16 +47,18 @@ class Ov3y(object):
 
         mark_after = True
 
-        ##
-
         while len(cell_queue) > 0:
             mark_after -= 1
-            increases, mark_after = cls.mark_and_score(cell_queue.pop(0), mark_list, marked, queued, cell_queue, mark_after, state)
+            increases, mark_after = cls.mark_and_score(cell_queue.pop(0),
+                                                       mark_list, marked,
+                                                       queued, cell_queue,
+                                                       mark_after, state)
 
         return -increases
 
     @classmethod
-    def mark_and_score(cls, cell, mark_list, marked, queued, cell_queue, mark_after, state):
+    def mark_and_score(cls, cell, mark_list, marked, queued, cell_queue,
+                       mark_after, state):
         increases = 0
         mark_list.append(cell)
 
@@ -68,7 +70,10 @@ class Ov3y(object):
         for direction in state.possible_moves.values():
             target = (cell[0] + direction[0], cell[1] + direction[1])
 
-            if target[0] in range(4) and target[1] in range(4) and not marked[target[1]][target[0]]:
+            if not (target[0] in range(4) and target[1] in range(4)):
+                continue
+
+            if not marked[target[1]][target[0]]:
                 if state.board[target[1]][target[0]] > 0:
                     target_value = math.log(state.board[target[1]][target[0]]) / math.log(2)
 
@@ -94,6 +99,8 @@ class Ov3y(object):
             for y in range(4):
                 if state.board[y][x] != 0:
                     value = math.log(state.board[y][x]) / math.log(2)
+                    # TODO Fix usage of value, now unused
+
                     for direction in [(0, -1), (1, 0)]:
                         target = cls.find_farthest((x, y), direction, state)
 

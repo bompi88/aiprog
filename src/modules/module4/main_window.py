@@ -44,7 +44,7 @@ class MainWindow(QtGui.QMainWindow):
         Delay -> [ 10 ms, 50 ms, 150 ms, 500 ms, 1000 ms, 2000 ms ]
         Screenshots -> [ On, Off ]
         Depth -> [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
-        Heuristic -> [ Random, Snake, TopLeft ]
+        Heuristic -> [ Random, Snake, Corner, Log, Ov3y ]
         """
         menu = self.menuBar()
         file_menu = menu.addMenu('&File')
@@ -89,7 +89,7 @@ class MainWindow(QtGui.QMainWindow):
             depth_action.triggered.connect(make_function([], expr, locals()))
             depth_menu.addAction(depth_action)
 
-        heuristics = ['Random', 'Snake', 'TopLeft', 'LogGradient', 'Ov3y']
+        heuristics = ['Random', 'Snake', 'Corner', 'LogGradient', 'Ov3y']
         for heuristic in heuristics:
             heuristic_action = QtGui.QAction('&' + heuristic, self)
             exp = 'self.gui.set_heuristic("{}")'.format(heuristic)
