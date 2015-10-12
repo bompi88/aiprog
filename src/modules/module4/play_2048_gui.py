@@ -218,7 +218,7 @@ class Play2048GUI(QtGui.QFrame):
             self.heuristic = RandomMove
         elif heuristic == 'Snake':
             self.heuristic = SnakeGradient
-        elif heuristic == 'CornerLeft':
+        elif heuristic == 'Corner':
             self.heuristic = CornerGradient
         elif heuristic == 'LogGradient':
             self.heuristic = LogGradient
