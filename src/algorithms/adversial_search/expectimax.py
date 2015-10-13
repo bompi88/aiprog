@@ -1,4 +1,4 @@
-class Minimax(object):
+class Expectimax(object):
     def __init__(self, actions, depth):
         self.actions = actions
         self.depth = depth
@@ -28,17 +28,19 @@ class Minimax(object):
         v = float('-inf')
 
         for successor in state.generate_successors(True):
-            v = max(v, self.min_value(successor, depth - 1))
+            v = max(v, self.chance_value(successor, depth - 1))
 
         return v
 
-    def min_value(self, state, depth):
+    def chance_value(self, state, depth):
         if state.cutoff_test(depth):
             return state.evaluation_function()
 
-        v = float('inf')
+        vs = []
 
-        for successor in state.generate_successors(False):
-            v = min(v, self.max_value(successor, depth - 1))
+        for i, successor in enumerate(state.generate_successors(False)):
+            probability = state.successor_tiles[i]
+            v = probability * self.max_value(successor, depth - 1)
+            vs.append(v)
 
-        return v
+        return sum(vs) / len(vs)

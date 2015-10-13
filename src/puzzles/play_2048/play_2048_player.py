@@ -1,4 +1,4 @@
-from src.algorithms.adversial_search.minimax import Minimax
+from src.algorithms.adversial_search.expectimax import Expectimax
 
 from src.puzzles.play_2048.play_2048_state import Play2048State
 
@@ -7,7 +7,7 @@ class Play2048Player(object):
     def __init__(self, heuristic, depth, gui_worker=None):
         self.game = Play2048State(heuristic)
 
-        self.minimax = Minimax(self.actions(), depth)
+        self.search = Expectimax(self.actions(), depth)
 
         self.gui_worker = gui_worker
 
@@ -20,7 +20,7 @@ class Play2048Player(object):
 
         while not ended:
             new_game = self.game.copy_with_board(self.game.board)
-            move = self.minimax.alpha_beta_decision(new_game)
+            move = self.search.decision(new_game)
 
             if self.game.move(move):
                 self.game.next_state()

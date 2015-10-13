@@ -1,4 +1,4 @@
-class Minimax(object):
+class MinimaxAlphaBeta(object):
     def __init__(self, actions, depth):
         self.actions = actions
         self.depth = depth
@@ -13,7 +13,8 @@ class Minimax(object):
             if result is None:
                 continue
 
-            value = self.max_value(result, self.depth)
+            value = self.max_value(result, float('-inf'),
+                                   float('inf'), self.depth)
 
             if value > max_value:
                 max_value = value
@@ -21,24 +22,34 @@ class Minimax(object):
 
         return max_a
 
-    def max_value(self, state, depth):
+    def max_value(self, state, alpha, beta, depth):
         if state.cutoff_test(depth):
             return state.evaluation_function()
 
         v = float('-inf')
 
         for successor in state.generate_successors(True):
-            v = max(v, self.min_value(successor, depth - 1))
+            v = max(v, self.min_value(successor, alpha, beta, depth - 1))
+
+            alpha = max(alpha, v)
+
+            if v >= beta:
+                break
 
         return v
 
-    def min_value(self, state, depth):
+    def min_value(self, state, alpha, beta, depth):
         if state.cutoff_test(depth):
             return state.evaluation_function()
 
         v = float('inf')
 
         for successor in state.generate_successors(False):
-            v = min(v, self.max_value(successor, depth - 1))
+            v = min(v, self.max_value(successor, alpha, beta, depth - 1))
+
+            beta = min(beta, v)
+
+            if v <= alpha:
+                break
 
         return v

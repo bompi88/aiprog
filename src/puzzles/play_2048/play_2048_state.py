@@ -8,6 +8,7 @@ class Play2048State(SearchState):
     def __init__(self, heuristic):
         self.board = self.start_board()
         self.successors = None
+        self.successor_tiles = None
 
         self.possible_moves = {'left': [-1, 0], 'up': [0, -1],
                                'right': [1, 0], 'down': [0, 1]}
@@ -81,6 +82,7 @@ class Play2048State(SearchState):
         if is_max:
             self.successor_moves()
         else:
+            self.successor_tiles = []
             self.successor_spawns()
 
         return self.successors
@@ -108,6 +110,7 @@ class Play2048State(SearchState):
 
                 successor = self.copy_with_board(new_board)
                 self.successors.append(successor)
+                self.successor_tiles.append(possibility)
 
     def evaluation_function(self):
         if not self.is_possible():
