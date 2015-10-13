@@ -87,7 +87,12 @@ int is_impossible(int* board) {
 }
 
 double evaluation_function(int* board) {
+    if (is_impossible(board)) {
+        return 0
+    }
 
+    return 1
+    // return self.heuristic.evaluation_function(self)
 }
 
 int amount_of_successors(int* board) {
