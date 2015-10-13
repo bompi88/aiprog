@@ -1,10 +1,10 @@
 from random import randint
 from copy import deepcopy
 
-from src.algorithms.adversial_search.search_state import MinimaxState
+from src.algorithms.adversial_search.search_state import SearchState
 
 
-class Play2048State(MinimaxState):
+class Play2048State(SearchState):
     def __init__(self, heuristic):
         self.board = self.start_board()
         self.successors = None
