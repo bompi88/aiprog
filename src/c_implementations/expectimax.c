@@ -60,12 +60,12 @@ double chance_node(int* board, int depth) {
 //
 //        return sum(values) / float(len(values))
 
-int expectimax_decision(int* board, int depth) {
+int decision(int* board, int* actions, int depth) {
   double max_val = -INT_MAX;
   int max_action = -1;
 
   for (int a=0; a < 4; a++) {
-    int* board = perform_action(a, board);
+    int* board = perform_action(actions[a], board);
 
     if (board[16] == -1) {
       continue;
