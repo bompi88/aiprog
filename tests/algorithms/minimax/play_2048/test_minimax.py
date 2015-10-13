@@ -1,6 +1,6 @@
 import unittest
 
-from src.algorithms.minimax.minimax import Minimax
+from src.algorithms.adversial_search.minimax import Minimax
 from src.puzzles.play_2048.play_2048_state import Play2048State
 from src.puzzles.play_2048.play_2048_player import Play2048Player
 

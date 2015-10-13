@@ -1,7 +1,7 @@
 from random import randint
 from copy import deepcopy
 
-from src.algorithms.minimax.minimax_state import MinimaxState
+from src.algorithms.adversial_search.search_state import MinimaxState
 
 
 class Play2048State(MinimaxState):
