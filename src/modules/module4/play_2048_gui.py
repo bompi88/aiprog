@@ -4,6 +4,8 @@ from PyQt4.QtCore import pyqtSignal
 
 from src.modules.module4.utils.play_2048_worker import Play2048Worker
 from src.modules.module4.utils.play_2048_manual import Play2048Manual
+from src.algorithms.adversial_search.minimax import Minimax
+from src.algorithms.adversial_search.expectimax import Expectimax
 
 from src.puzzles.play_2048.play_2048_player import Play2048Player
 from src.puzzles.play_2048.heuristics.random_move import RandomMove
@@ -24,6 +26,7 @@ class Play2048GUI(QtGui.QFrame):
 
         self.depth = 1
         self.heuristic = RandomMove
+        self.search = Minimax
 
         self.delay = 50
         self.worker = None
@@ -115,7 +118,7 @@ class Play2048GUI(QtGui.QFrame):
         if manual:
             self.worker = Play2048Manual(self)
         else:
-            self.worker = Play2048Worker(self, self.heuristic, self.depth)
+            self.worker = Play2048Worker(self, self.heuristic)
             self.worker.start()
 
         self.started = True
@@ -224,6 +227,12 @@ class Play2048GUI(QtGui.QFrame):
             self.heuristic = LogGradient
         elif heuristic == 'Ov3y':
             self.heuristic = Ov3y
+
+    def set_search_type(self, search_type):
+        if search_type == 'Minimax':
+            self.search = Minimax
+        elif search_type == 'Expectimax':
+            self.search = Expectimax
 
         self.status_message.emit('Heuristic: ' + self.heuristic.__name__)
 

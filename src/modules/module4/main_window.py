@@ -52,6 +52,7 @@ class MainWindow(QtGui.QMainWindow):
         screenshots_menu = menu.addMenu('&Screenshots')
         depth_menu = menu.addMenu('&Depth')
         heuristic_menu = menu.addMenu('&Heuristic')
+        search_type_menu = menu.addMenu('&Search type')
 
         kill_action = QtGui.QAction('&Kill game', self)
         kill_action.setShortcut('Ctrl+K')
@@ -95,6 +96,13 @@ class MainWindow(QtGui.QMainWindow):
             exp = 'self.gui.set_heuristic("{}")'.format(heuristic)
             heuristic_action.triggered.connect(make_function([], exp, locals()))
             heuristic_menu.addAction(heuristic_action)
+
+        search_types = ['Minimax', 'Expectimax']
+        for search_type in search_types:
+            search_type_action = QtGui.QAction('&' + search_type, self)
+            exp = 'self.gui.set_search_type("{}")'.format(search_type)
+            search_type_action.triggered.connect(make_function([], exp, locals()))
+            search_type_menu.addAction(search_type_action)
 
     def init_toolbar(self):
         """ Initializes a toolbar, with a run button and delay controls """

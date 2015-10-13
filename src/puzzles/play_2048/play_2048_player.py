@@ -1,13 +1,11 @@
-from src.algorithms.adversial_search.expectimax import Expectimax
-
 from src.puzzles.play_2048.play_2048_state import Play2048State
 
 
 class Play2048Player(object):
-    def __init__(self, heuristic, depth, gui_worker=None):
+    def __init__(self, heuristic, search, depth, gui_worker=None):
         self.game = Play2048State(heuristic)
 
-        self.search = Expectimax(self.actions(), depth)
+        self.search = search(self.actions(), depth)
 
         self.gui_worker = gui_worker
 
