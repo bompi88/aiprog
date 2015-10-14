@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <string.h>
 
 double max_value(int* board, int depth);
 double chance_node(int* board, int depth);
@@ -18,6 +19,15 @@ typedef struct {
     int x;
     int y;
 } Vector;
+
+int LEFT = 0;
+int UP = 1;
+int RIGHT = 2;
+int DOWN = 3;
+int* LEFT_VECTOR[2] = { -1, 0 };
+int* UP_VECTOR[2] = { 0, -1 };
+int* RIGHT_VECTOR[2] = { 1, 0 };
+int* DOWN_VECTOR[2] = { 0, 1 };
 
 double max_value(int* board, int depth) {
   if (depth == 0 || is_impossible(board)) {
@@ -64,29 +74,178 @@ double chance_node(int* board, int depth) {
   return vs / (double)count;
 }
 
-int slides(int action, int* board, int perform) {
+int is_in_range(num, start, end) {
+    if ((num >= start) && (num <= end)) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
 
+int slides(int action, int* board, int perform) {
+    int did_move = 0;
+
+    for (int i=0; i<4; i++) {
+        for (int j=0; j<4; j++) {
+            int x = 0;
+            int y = 0;
+            int* move_modifier;
+            Vector move_to;
+
+            if (action==LEFT) {
+                move_modifier = LEFT_VECTOR;
+            }
+            if (action==UP) {
+                move_modifier = UP_VECTOR;
+            }
+            if (action==RIGHT) {
+                x = 3 - j;
+                move_modifier = RIGHT_VECTOR;
+            } else {
+                x = j;
+            }
+            if (action==DOWN) {
+                y = 3 - i;
+                move_modifier = DOWN_VECTOR;
+            } else {
+                y = i;
+            }
+
+            if (board[x * y]==0) {
+                continue;
+            }
+
+            move_to.x = x + move_modifier[0];
+            move_to.y = y + move_modifier[1];
+
+            if (action==LEFT) {
+                for (int x_new=0; x_new < move_to.x + 1; x_new++) {
+                    if (is_in_range(x_new, 0, 3) && is_in_range(move_to.y, 0, 3)) {
+                        if (board[move_to.y*x_new]==0) {
+                            if (perform) {
+                                board[move_to.y*x_new] = board[x*y];
+                                board[x*y] = 0;
+                            }
+
+                            did_move = 1;
+                            break;
+                        }
+                    }
+                }
+            } else if (action==UP) {
+                for (int y_new=0; y_new < move_to.y + 1; y_new++) {
+                    if (is_in_range(y_new, 0, 3) && is_in_range(move_to.x, 0, 3)) {
+                        if (board[move_to.x*y_new]==0) {
+                            if (perform) {
+                                board[move_to.x*y_new] = board[x*y];
+                                board[x*y] = 0;
+                            }
+
+                            did_move = 1;
+                            break;
+                        }
+                    }
+                }
+            } else if (action==RIGHT) {
+                for (int x_new=3; x_new > move_to.x - 1; x_new--) {
+                    if (is_in_range(x_new, 0, 3) && is_in_range(move_to.y, 0, 3)) {
+                        if (board[move_to.y*x_new]==0) {
+                            if (perform) {
+                                board[move_to.y*x_new] = board[x*y];
+                                board[x*y] = 0;
+                            }
+
+                            did_move = 1;
+                            break;
+                        }
+                    }
+                }
+            } else if (action==DOWN) {
+                for (int y_new=3; y_new > move_to.y - 1; y_new--) {
+                    if (is_in_range(y_new, 0, 3) && is_in_range(move_to.x, 0, 3)) {
+                        if (board[move_to.x*y_new]==0) {
+                            if (perform) {
+                                board[move_to.x*y_new] = board[x*y];
+                                board[x*y] = 0;
+                            }
+
+                            did_move = 1;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return did_move;
 }
 
 int collides(int action, int* board, int perform) {
+    int x = 0;
+    int y = 0;
+    int collision = 0;
+    int* move_modifier;
 
+    for (int i=0; i<4; i++) {
+        for (int j=0; i<4; i++) {
+            if (action==LEFT) {
+                move_modifier = LEFT_VECTOR;
+            }
+            if (action==UP) {
+                move_modifier = UP_VECTOR;
+            }
+            if (action==RIGHT) {
+                x = 3 - j;
+                move_modifier = RIGHT_VECTOR;
+            } else {
+                x = j;
+            }
+            if (action==DOWN) {
+                y = 3 - i;
+                move_modifier = DOWN_VECTOR;
+            } else {
+                y = i;
+            }
+
+            Vector neighbour;
+
+            neighbour.x = x + move_modifier[0];
+            neighbour.y = y + move_modifier[1];
+
+            if (is_in_range(neighbour.x, 0, 3) && is_in_range(neighbour.y, 0, 3)) {
+                if (board[x*y]==0) {
+                    continue;
+                }
+                if (board[neighbour.x*neighbour.y]==board[x*y]) {
+                    if (perform) {
+                        board[x*y] *= 2;
+                        board[neighbour.x*neighbour.y] = 0;
+                    }
+                    collision = 1;
+                }
+            }
+        }
+    }
+
+    return collision;
 }
 
 int is_impossible(int* board) {
-  int possible = 0;
+  int impossible = 1;
 
   for (int m=0; m<4; m++) {
     if (slides(m, board, 0)) {
-      possible = 1;
+      impossible = 0;
       break;
     }
     if (collides(m, board, 0)) {
-      possible = 1;
+      impossible = 0;
       break;
     }
   }
 
-  return possible;
+  return impossible;
 }
 
 double evaluation_function(int* board) {
