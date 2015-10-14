@@ -29,6 +29,23 @@ int* UP_VECTOR[2] = { 0, -1 };
 int* RIGHT_VECTOR[2] = { 1, 0 };
 int* DOWN_VECTOR[2] = { 0, 1 };
 
+long random_num(long max) {
+  unsigned long
+  num_bins = (unsigned long) max + 1,
+  num_rand = (unsigned long) RAND_MAX + 1,
+  bin_size = num_rand / num_bins,
+  defect   = num_rand % num_bins;
+
+  long x;
+  do {
+   x = random();
+  }
+
+  while (num_rand - defect <= (unsigned long)x);
+
+  return x/bin_size;
+}
+
 double max_value(int* board, int depth) {
   if (depth == 0 || is_impossible(board)) {
     return evaluation_function(board);
@@ -74,12 +91,31 @@ double chance_node(int* board, int depth) {
   return vs / (double)count;
 }
 
-int is_in_range(num, start, end) {
+int is_in_range(int num, int start, int end) {
     if ((num >= start) && (num <= end)) {
         return 1;
     } else {
         return 0;
     }
+}
+
+int move(int move, int* board) {
+
+    if (!move) {
+        move = random_num(4);
+    }
+
+    int did_slide = slides(move, board);
+    int did_collide = collides(move, board);
+
+    int did_slides_after_collision = 0;
+
+    if (did_collide==1):
+        did_slides_after_collision = slides(move, board);
+
+    int did_move = did_slide || did_collide || did_slides_after_collision;
+
+    return did_move;
 }
 
 int slides(int action, int* board, int perform) {
@@ -253,8 +289,9 @@ double evaluation_function(int* board) {
         return 0;
     }
 
+    // TODO: Write heuristics
+
     return 1;
-    // return self.heuristic.evaluation_function(self)
 }
 
 int amount_of_successors(int* board) {
@@ -275,6 +312,9 @@ int** generate_successors_max(int* board) {
   for (int m=0; m<4; m++) {
     int *copy = malloc(sizeof(board));
     memcpy(copy, board, sizeof(board));
+
+    if (move(m)):
+
 
     // TODO: check if move is possible and append successor
   }
@@ -331,7 +371,18 @@ int** generate_successors_chance(int* board) {
 }
 
 int* perform_action(int action, int* board) {
+    int *new_game = malloc(sizeof(board));
+    memcpy(new_game, board, sizeof(board));
 
+    int did_move = move(action, board);
+
+    if (did_move) {
+        return new_game;
+    } else {
+        // TODO: What to do here?
+        board[16] = -1;
+        return board;
+    }
 }
 
 int decision(int* board, int* actions, int depth) {
