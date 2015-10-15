@@ -32,7 +32,7 @@ int RIGHT_VECTOR[2] = { 1, 0 };
 int DOWN_VECTOR[2] = { 0, 1 };
 
 int successor_tiles[50];
-int num_successors;
+int num_successors = 0;
 
 int random_num(int max) {
     return rand() % max;
@@ -51,12 +51,12 @@ double max_value(int* board, int depth) {
   }
 
   double v = -INT_MAX;
-
+    print_board(board);
   int successor_amount = 4;
   int** successors = generate_successors_max(board);
 
   for (int i=0; i < successor_amount; i++) {
-    double value = chance_node(successors[i], depth - 1);
+    double value = chance_node(&successors[i], depth - 1);
 
     if (value > v) {
       v = value;
@@ -70,7 +70,7 @@ double chance_node(int* board, int depth) {
   if (depth == 0 || is_impossible(board)) {
     return evaluation_function(board);
   }
-
+    print_board(board);
   int successor_amount = amount_of_successors(board);
   int** successors = generate_successors_chance(board);
 
@@ -79,7 +79,7 @@ double chance_node(int* board, int depth) {
 
   for (int i=0; i < successor_amount; i++) {
     double probability = successor_tiles[i];
-    double value = probability *  max_value(successors[i], depth - 1);
+    double value = probability *  max_value(&successors[i], depth - 1);
 
     vs = vs + value;
     count++;
@@ -307,6 +307,7 @@ int amount_of_successors(int* board) {
 }
 
 int** generate_successors_max(int* board) {
+    num_successors = 0;
   int** successors = (int**) malloc(sizeof(int*)*4);
 
   for (int m=0; m<4; m++) {
@@ -323,7 +324,7 @@ int** generate_successors_max(int* board) {
 }
 
 int** generate_successors_chance(int* board) {
-
+    num_successors = 0;
     Vector zero_tiles[16];
     int count = 0;
 
@@ -358,7 +359,6 @@ int** generate_successors_chance(int* board) {
 }
 
 int* perform_action(int action, int* board) {
-    print_board(board);
     int* new_game = (int*) malloc(sizeof(int)*16);
     memcpy(new_game, board, sizeof(int)*16);
 
@@ -376,7 +376,6 @@ int decision(int* board, int depth) {
   srand(time(0));
   double max_val = -INT_MAX;
   int max_action = -1;
-  num_successors = 0;
 
   for (int a=0; a < 4; a++) {
     print_board(board);
@@ -400,7 +399,5 @@ int decision(int* board, int depth) {
 int main() {
   int arr[16] = {3, 4, 0, 1, 2, 4, 3, 5, 0, 0, 0, 0, 0, 0, 0, 0};
   printf("%d\n", INT_MIN);
-  printf("%d\n", decision(arr, 0));
-
-  return 0;
+  printf("%d\n", decision(arr, 4));
 }
