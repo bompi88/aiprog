@@ -39,53 +39,60 @@ int random_num(int max) {
 }
 
 void print_board(int* board) {
-    for (int i=0; i<16; i++) {
-        printf("%d,", board[i]);
+    for (int i=0; i<4; i++) {
+        for (int j=0; j<4; j++) {
+            printf("%d,", board[4*i+j]);
+        }
+        printf("\n");
     }
     printf("\n");
 }
 
 double max_value(int* board, int depth) {
-  if (depth == 0 || is_impossible(board)) {
-    return evaluation_function(board);
-  }
-
-  double v = -INT_MAX;
-    print_board(board);
-  int successor_amount = 4;
-  int** successors = generate_successors_max(board);
-
-  for (int i=0; i < successor_amount; i++) {
-    double value = chance_node(&successors[i], depth - 1);
-
-    if (value > v) {
-      v = value;
+    if (depth == 0 || is_impossible(board)) {
+        return evaluation_function(board);
     }
-  }
 
-  return v;
+    double v = -INT_MAX;
+    int successor_amount = 4;
+    printf("test\n");
+    print_board(board);
+    int** successors = generate_successors_max(board);
+    printf("hmm\n");
+    print_board(successors[0]);
+
+    for (int i=0; i < successor_amount; i++) {
+        double value = chance_node(successors[i], depth - 1);
+
+        if (value > v) {
+            v = value;
+        }
+        free(successors[i]); // TODO: Is this necessary?
+    }
+
+    return v;
 }
 
 double chance_node(int* board, int depth) {
-  if (depth == 0 || is_impossible(board)) {
-    return evaluation_function(board);
-  }
-    print_board(board);
-  int successor_amount = amount_of_successors(board);
-  int** successors = generate_successors_chance(board);
+    if (depth == 0 || is_impossible(board)) {
+        return evaluation_function(board);
+    }
+    int successor_amount = amount_of_successors(board);
+    int** successors = generate_successors_chance(board);
 
-  double vs = 0;
-  int count = 0;
+    double vs = 0;
+    int count = 0;
 
-  for (int i=0; i < successor_amount; i++) {
-    double probability = successor_tiles[i];
-    double value = probability *  max_value(&successors[i], depth - 1);
+    for (int i=0; i < successor_amount; i++) {
+        double probability = successor_tiles[i];
+        double value = probability *  max_value(successors[i], depth - 1);
 
-    vs = vs + value;
-    count++;
-  }
+        vs = vs + value;
+        count++;
+        free(successors[i]); // TODO: Is this necessary?
+    }
 
-  return vs / (double)count;
+    return vs / (double)count;
 }
 
 int is_in_range(int num, int start, int end) {
@@ -266,20 +273,20 @@ int collides(int action, int* board, int perform) {
 }
 
 int is_impossible(int* board) {
-  int impossible = 1;
+    int impossible = 1;
 
-  for (int m=0; m<4; m++) {
-    if (slides(m, board, 0)) {
-      impossible = 0;
-      break;
+    for (int m=0; m<4; m++) {
+        if (slides(m, board, 0)) {
+            impossible = 0;
+            break;
+        }
+        if (collides(m, board, 0)) {
+            impossible = 0;
+            break;
+        }
     }
-    if (collides(m, board, 0)) {
-      impossible = 0;
-      break;
-    }
-  }
 
-  return impossible;
+    return impossible;
 }
 
 double evaluation_function(int* board) {
@@ -308,19 +315,19 @@ int amount_of_successors(int* board) {
 
 int** generate_successors_max(int* board) {
     num_successors = 0;
-  int** successors = (int**) malloc(sizeof(int*)*4);
+    int** successors = (int**) malloc(sizeof(int*)*4);
 
-  for (int m=0; m<4; m++) {
-    int* successor = (int*) malloc(sizeof(int)*16);
-    memcpy(successor, board, sizeof(int)*16);
+    for (int m=0; m<4; m++) {
+        int* successor = (int*) malloc(sizeof(int)*16);
+        memcpy(successor, board, sizeof(int)*16);
 
-    if (move(m, board)==1) {
-        successors[num_successors] = successor;
-        num_successors++;
+        if (move(m, board)==1) {
+            successors[num_successors] = successor;
+            num_successors++;
+        }
     }
-  }
 
-  return successors;
+    return successors;
 }
 
 int** generate_successors_chance(int* board) {
@@ -373,31 +380,30 @@ int* perform_action(int action, int* board) {
 }
 
 int decision(int* board, int depth) {
-  srand(time(0));
-  double max_val = -INT_MAX;
-  int max_action = -1;
+    srand(time(0));
+    double max_val = -INT_MAX;
+    int max_action = -1;
 
-  for (int a=0; a < 4; a++) {
-    print_board(board);
-    board = perform_action(a, board);
+    for (int a=0; a < 4; a++) {
+        board = perform_action(a, board);
 
-    if (board[15] == -1) {
-      continue;
+        if (board[15] == -1) {
+            continue;
+        }
+
+        double value = max_value(board, depth);
+
+        if (value > max_val) {
+            max_val = value;
+            max_action = a;
+        }
     }
 
-    double value = max_value(board, depth);
-
-    if (value > max_val) {
-      max_val = value;
-      max_action = a;
-    }
-  }
-
-  return max_action;
+    return max_action;
 }
 
 int main() {
-  int arr[16] = {3, 4, 0, 1, 2, 4, 3, 5, 0, 0, 0, 0, 0, 0, 0, 0};
-  printf("%d\n", INT_MIN);
-  printf("%d\n", decision(arr, 4));
+    int arr[16] = {3, 4, 0, 1, 2, 4, 3, 5, 0, 0, 0, 0, 0, 0, 0, 0};
+    printf("%d\n", INT_MIN);
+    printf("%d\n", decision(arr, 4));
 }
