@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
+#include<time.h>
 
 double max_value(int* board, int depth);
 double chance_node(int* board, int depth);
@@ -33,21 +34,8 @@ int DOWN_VECTOR[2] = { 0, 1 };
 int successor_tiles[50];
 int num_successors;
 
-long random_num(long max) {
-  unsigned long
-  num_bins = (unsigned long) max + 1,
-  num_rand = (unsigned long) RAND_MAX + 1,
-  bin_size = num_rand / num_bins,
-  defect   = num_rand % num_bins;
-
-  long x;
-  do {
-   x = random();
-  }
-
-  while (num_rand - defect <= (unsigned long)x);
-
-  return x/bin_size;
+int random_num(int max) {
+    return rand() % max;
 }
 
 void print_board(int* board) {
@@ -385,6 +373,7 @@ int* perform_action(int action, int* board) {
 }
 
 int decision(int* board, int depth) {
+  srand(time(0));
   double max_val = -INT_MAX;
   int max_action = -1;
   num_successors = 0;
@@ -411,7 +400,7 @@ int decision(int* board, int depth) {
 int main() {
   int arr[16] = {3, 4, 0, 1, 2, 4, 3, 5, 0, 0, 0, 0, 0, 0, 0, 0};
   printf("%d\n", INT_MIN);
-  printf("%d\n", decision(arr, 4));
+  printf("%d\n", decision(arr, 0));
 
   return 0;
 }
