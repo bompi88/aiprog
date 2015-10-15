@@ -307,7 +307,7 @@ int amount_of_successors(int* board) {
 }
 
 int** generate_successors_max(int* board) {
-  int* successors[4];
+  int** successors = (int**) malloc(sizeof(int*)*4);
 
   for (int m=0; m<4; m++) {
     int* successor = (int*) malloc(sizeof(int)*16);
@@ -339,7 +339,7 @@ int** generate_successors_chance(int* board) {
         }
     }
 
-    int* successors[count];
+    int** successors = (int**) malloc(sizeof(int*)*count);
     int num_possibilities = 2;
     int possibilities[2] = { 2, 4 };
 
