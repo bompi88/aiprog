@@ -11,9 +11,10 @@ int is_impossible(int* board);
 double evaluation_function(int* board);
 int amount_of_successors(int* board);
 int** generate_successors_max(int* board);
-int** generate_successors_change(int* board);
+int** generate_successors_chance(int* board);
 int* perform_action(int action, int* board);
-int decision(int* board, int* actions, int depth);
+int decision(int* board, int depth);
+void print_board(int* board);
 
 typedef struct {
     int x;
@@ -24,10 +25,13 @@ int LEFT = 0;
 int UP = 1;
 int RIGHT = 2;
 int DOWN = 3;
-int* LEFT_VECTOR[2] = { -1, 0 };
-int* UP_VECTOR[2] = { 0, -1 };
-int* RIGHT_VECTOR[2] = { 1, 0 };
-int* DOWN_VECTOR[2] = { 0, 1 };
+int LEFT_VECTOR[2] = { -1, 0 };
+int UP_VECTOR[2] = { 0, -1 };
+int RIGHT_VECTOR[2] = { 1, 0 };
+int DOWN_VECTOR[2] = { 0, 1 };
+
+int successor_tiles[50];
+int num_successors;
 
 long random_num(long max) {
   unsigned long
@@ -44,6 +48,13 @@ long random_num(long max) {
   while (num_rand - defect <= (unsigned long)x);
 
   return x/bin_size;
+}
+
+void print_board(int* board) {
+    for (int i=0; i<16; i++) {
+        printf("%d,", board[i]);
+    }
+    printf("\n");
 }
 
 double max_value(int* board, int depth) {
@@ -79,9 +90,7 @@ double chance_node(int* board, int depth) {
   int count = 0;
 
   for (int i=0; i < successor_amount; i++) {
-    // TODO: fix this successor_tiles
-    // double probability = state.successor_tiles[i]
-    double probability = 1; // TODO: remove this
+    double probability = successor_tiles[i];
     double value = probability *  max_value(successors[i], depth - 1);
 
     vs = vs + value;
@@ -105,13 +114,14 @@ int move(int move, int* board) {
         move = random_num(4);
     }
 
-    int did_slide = slides(move, board);
-    int did_collide = collides(move, board);
+    int did_slide = slides(move, board, 0);
+    int did_collide = collides(move, board, 0);
 
     int did_slides_after_collision = 0;
 
-    if (did_collide==1):
-        did_slides_after_collision = slides(move, board);
+    if (did_collide==1) {
+        did_slides_after_collision = slides(move, board, 0);
+    }
 
     int did_move = did_slide || did_collide || did_slides_after_collision;
 
@@ -147,7 +157,7 @@ int slides(int action, int* board, int perform) {
                 y = i;
             }
 
-            if (board[x * y]==0) {
+            if (board[4*x+y]==0) {
                 continue;
             }
 
@@ -157,10 +167,10 @@ int slides(int action, int* board, int perform) {
             if (action==LEFT) {
                 for (int x_new=0; x_new < move_to.x + 1; x_new++) {
                     if (is_in_range(x_new, 0, 3) && is_in_range(move_to.y, 0, 3)) {
-                        if (board[move_to.y*x_new]==0) {
-                            if (perform) {
-                                board[move_to.y*x_new] = board[x*y];
-                                board[x*y] = 0;
+                        if (board[4*x_new+move_to.y]==0) {
+                            if (perform==1) {
+                                board[4*x_new+move_to.y] = board[4*x+y];
+                                board[4*x+y] = 0;
                             }
 
                             did_move = 1;
@@ -171,10 +181,10 @@ int slides(int action, int* board, int perform) {
             } else if (action==UP) {
                 for (int y_new=0; y_new < move_to.y + 1; y_new++) {
                     if (is_in_range(y_new, 0, 3) && is_in_range(move_to.x, 0, 3)) {
-                        if (board[move_to.x*y_new]==0) {
-                            if (perform) {
-                                board[move_to.x*y_new] = board[x*y];
-                                board[x*y] = 0;
+                        if (board[4*move_to.x+y_new]==0) {
+                            if (perform==1) {
+                                board[4*move_to.x+y_new] = board[4*x+y];
+                                board[4*x+y] = 0;
                             }
 
                             did_move = 1;
@@ -185,10 +195,10 @@ int slides(int action, int* board, int perform) {
             } else if (action==RIGHT) {
                 for (int x_new=3; x_new > move_to.x - 1; x_new--) {
                     if (is_in_range(x_new, 0, 3) && is_in_range(move_to.y, 0, 3)) {
-                        if (board[move_to.y*x_new]==0) {
-                            if (perform) {
-                                board[move_to.y*x_new] = board[x*y];
-                                board[x*y] = 0;
+                        if (board[4*x_new+move_to.y]==0) {
+                            if (perform==1) {
+                                board[4*x_new+move_to.y] = board[4*x+y];
+                                board[4*x+y] = 0;
                             }
 
                             did_move = 1;
@@ -199,10 +209,10 @@ int slides(int action, int* board, int perform) {
             } else if (action==DOWN) {
                 for (int y_new=3; y_new > move_to.y - 1; y_new--) {
                     if (is_in_range(y_new, 0, 3) && is_in_range(move_to.x, 0, 3)) {
-                        if (board[move_to.x*y_new]==0) {
-                            if (perform) {
-                                board[move_to.x*y_new] = board[x*y];
-                                board[x*y] = 0;
+                        if (board[4*move_to.x+y_new]==0) {
+                            if (perform==1) {
+                                board[4*move_to.x+y_new] = board[4*x+y];
+                                board[4*x+y] = 0;
                             }
 
                             did_move = 1;
@@ -250,13 +260,13 @@ int collides(int action, int* board, int perform) {
             neighbour.y = y + move_modifier[1];
 
             if (is_in_range(neighbour.x, 0, 3) && is_in_range(neighbour.y, 0, 3)) {
-                if (board[x*y]==0) {
+                if (board[4*x+y]==0) {
                     continue;
                 }
-                if (board[neighbour.x*neighbour.y]==board[x*y]) {
-                    if (perform) {
-                        board[x*y] *= 2;
-                        board[neighbour.x*neighbour.y] = 0;
+                if (board[4*neighbour.x+neighbour.y]==board[4*x+y]) {
+                    if (perform==1) {
+                        board[4*x+y] *= 2;
+                        board[4*neighbour.x+neighbour.y] = 0;
                     }
                     collision = 1;
                 }
@@ -285,7 +295,7 @@ int is_impossible(int* board) {
 }
 
 double evaluation_function(int* board) {
-    if (is_impossible(board)) {
+    if (is_impossible(board)==1) {
         return 0;
     }
 
@@ -299,7 +309,7 @@ int amount_of_successors(int* board) {
 
     for (int x=0; x<4; x++) {
         for (int y=0; y<4; y++) {
-            if (board[x*y]==0) {
+            if (board[4*x+y]==0) {
                 count++;
             }
         }
@@ -309,29 +319,29 @@ int amount_of_successors(int* board) {
 }
 
 int** generate_successors_max(int* board) {
+  int* successors[4];
+
   for (int m=0; m<4; m++) {
-    int *copy = malloc(sizeof(board));
-    memcpy(copy, board, sizeof(board));
+    int* successor = (int*) malloc(sizeof(int)*16);
+    memcpy(successor, board, sizeof(int)*16);
 
-    if (move(m)):
-
-
-    // TODO: check if move is possible and append successor
+    if (move(m, board)==1) {
+        successors[num_successors] = successor;
+        num_successors++;
+    }
   }
-//    for move in self.possible_moves:
-//            successor = self.copy_with_board(deepcopy(self.board))
-//
-//            if successor.move(move):
-//                self.successors.append(successor)
+
+  return successors;
 }
 
 int** generate_successors_chance(int* board) {
+
     Vector zero_tiles[16];
     int count = 0;
 
     for (int x=0; x<4; x++) {
         for (int y=0; y<4; y++) {
-            if (board[x*y]==0) {
+            if (board[4*x+y]==0) {
                 Vector xy;
                 xy.x = x;
                 xy.y = y;
@@ -340,59 +350,50 @@ int** generate_successors_chance(int* board) {
             }
         }
     }
+
+    int* successors[count];
     int num_possibilities = 2;
-    int* possibilities[2] = { 2, 4 };
+    int possibilities[2] = { 2, 4 };
 
     for (int i=0; i < count; i++) {
         for (int p=0; p < num_possibilities; p++) {
-            int *copy = malloc(sizeof(board));
-            memcpy(copy, board, sizeof(board));
-            copy[zero_tiles[i].x * zero_tiles[i].x] = possibilities[p];
+            int* successor = (int*) malloc(sizeof(int)*16);
+            memcpy(successor, board, sizeof(int)*16);
+            successor[4*zero_tiles[i].x+zero_tiles[i].y] = possibilities[p];
 
-            // TODO: fix this
+            successors[num_successors] = successor;
+            successor_tiles[num_successors] = possibilities[p];
+            num_successors++;
         }
     }
-//    zero_tiles = []
-//        for x in range(4):
-//            for y in range(4):
-//                if self.board[y][x] is 0:
-//                    zero_tiles.append((x, y))
-//
-//        possibilities = [2, 4]
-//
-//        for tile in zero_tiles:
-//            for possibility in possibilities:
-//                new_board = deepcopy(self.board)
-//                new_board[tile[1]][tile[0]] = possibility
-//
-//                successor = self.copy_with_board(new_board)
-//                self.successors.append(successor)
-//                self.successor_tiles.append(possibility)
+    return successors;
 }
 
 int* perform_action(int action, int* board) {
-    int *new_game = malloc(sizeof(board));
-    memcpy(new_game, board, sizeof(board));
+    print_board(board);
+    int* new_game = (int*) malloc(sizeof(int)*16);
+    memcpy(new_game, board, sizeof(int)*16);
 
     int did_move = move(action, board);
 
-    if (did_move) {
+    if (did_move==1) {
         return new_game;
     } else {
-        // TODO: What to do here?
-        board[16] = -1;
+        board[15] = -1;
         return board;
     }
 }
 
-int decision(int* board, int* actions, int depth) {
+int decision(int* board, int depth) {
   double max_val = -INT_MAX;
   int max_action = -1;
+  num_successors = 0;
 
   for (int a=0; a < 4; a++) {
-    int* board = perform_action(actions[a], board);
+    print_board(board);
+    board = perform_action(a, board);
 
-    if (board[16] == -1) {
+    if (board[15] == -1) {
       continue;
     }
 
@@ -409,9 +410,8 @@ int decision(int* board, int* actions, int depth) {
 
 int main() {
   int arr[16] = {3, 4, 0, 1, 2, 4, 3, 5, 0, 0, 0, 0, 0, 0, 0, 0};
-  int actions[4] = { 0, 1, 2, 3 };
   printf("%d\n", INT_MIN);
-  printf("%d\n", decision(arr, actions, 4));
+  printf("%d\n", decision(arr, 4));
 
   return 0;
 }
