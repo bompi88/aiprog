@@ -5,7 +5,7 @@ class Play2048Player(object):
     def __init__(self, heuristic, search, depth, gui_worker=None):
         self.game = Play2048State(heuristic)
 
-        self.search = search(self.actions(), depth)
+        self.search = search(self.actions().values(), depth)
 
         self.gui_worker = gui_worker
 

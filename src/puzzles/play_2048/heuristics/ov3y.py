@@ -7,7 +7,7 @@ class Ov3y(object):
     @classmethod
     def evaluation_function(cls, state):
 
-        empty_cells = sum([int(el == 0) for row in state.board for el in row])
+        empty_cells = state.free_tiles()
 
         smooth_weight = 0.1
         mono2weight = 1.0

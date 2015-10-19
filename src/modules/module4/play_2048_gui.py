@@ -5,14 +5,17 @@ from PyQt4.QtCore import pyqtSignal
 from src.modules.module4.utils.play_2048_worker import Play2048Worker
 from src.modules.module4.utils.play_2048_manual import Play2048Manual
 from src.algorithms.adversial_search.minimax import Minimax
+from src.algorithms.adversial_search.minimax_alpha_beta import MinimaxAlphaBeta
 from src.algorithms.adversial_search.expectimax import Expectimax
+from src.algorithms.adversial_search.expectimax_c import ExpectimaxC
 
 from src.puzzles.play_2048.play_2048_player import Play2048Player
 from src.puzzles.play_2048.heuristics.random_move import RandomMove
 from src.puzzles.play_2048.heuristics.snake_gradient import SnakeGradient
 from src.puzzles.play_2048.heuristics.corner_gradient import CornerGradient
-from src.puzzles.play_2048.heuristics.log_gradient import LogGradient
 from src.puzzles.play_2048.heuristics.ov3y import Ov3y
+
+from math import log
 
 
 class Play2048GUI(QtGui.QFrame):
@@ -48,11 +51,17 @@ class Play2048GUI(QtGui.QFrame):
         self.move_keys = {0: 'left', 1: 'up', 2: 'right', 3: 'down'}
 
         self.splash_screen = [
-            [4096, 2048, 512, 64],
-            [1024, 256, 32, 0],
-            [128, 16, 2, 0],
-            [8, 4, 0, 8192]
+            4096, 2048, 512, 64,
+            1024, 256, 32, 0,
+            128, 16, 2, 0,
+            8, 4, 0, 8192
         ]
+
+        for i, el in enumerate(self.splash_screen):
+            if el is 0:
+                continue
+
+            self.splash_screen[i] = int(log(el, 2))
 
     def init_ui(self):
         """ Initialize the UI """
@@ -173,13 +182,16 @@ class Play2048GUI(QtGui.QFrame):
         x_char_offset = self.widget_size_px / 40.0
         y_offset = (3 * self.widget_size_px) / 20.0
 
-        for y, row in enumerate(board):
-            for x, element in enumerate(row):
+        for y in range(4):
+            for x in range(4):
+                t = board[4 * y + x]
+                element = 2 ** t if t is not 0 else 0
+
                 pen_brush = QtGui.QBrush(self.colors['grid_color'])
                 painter.setPen(QtGui.QPen(pen_brush, self.border_width))
 
                 if element <= 2048:
-                    painter.setBrush(self.colors[int(element)])
+                    painter.setBrush(self.colors[element])
                 else:
                     painter.setBrush(self.colors['super'])
 
@@ -223,18 +235,22 @@ class Play2048GUI(QtGui.QFrame):
             self.heuristic = SnakeGradient
         elif heuristic == 'Corner':
             self.heuristic = CornerGradient
-        elif heuristic == 'LogGradient':
-            self.heuristic = LogGradient
         elif heuristic == 'Ov3y':
             self.heuristic = Ov3y
+
+        self.status_message.emit('Heuristic: ' + self.heuristic.__name__)
 
     def set_search_type(self, search_type):
         if search_type == 'Minimax':
             self.search = Minimax
+        elif search_type == 'MinimaxAlphaBeta':
+            self.search = MinimaxAlphaBeta
         elif search_type == 'Expectimax':
             self.search = Expectimax
+        elif search_type == 'Expectimax C':
+            self.search = ExpectimaxC
 
-        self.status_message.emit('Heuristic: ' + self.heuristic.__name__)
+        self.status_message.emit('Search: ' + self.search.__name__)
 
     def set_screenshots(self, take_screenshots):
         self.take_screenshots = take_screenshots

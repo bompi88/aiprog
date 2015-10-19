@@ -39,7 +39,7 @@ class Expectimax(object):
         vs = []
 
         for i, successor in enumerate(state.generate_successors(False)):
-            probability = state.successor_tiles[i]
+            probability = 0.9 if state.successor_tiles[i] is 1 else 0.1
             v = probability * self.max_value(successor, depth - 1)
             vs.append(v)
 

@@ -44,7 +44,7 @@ class MainWindow(QtGui.QMainWindow):
         Delay -> [ 10 ms, 50 ms, 150 ms, 500 ms, 1000 ms, 2000 ms ]
         Screenshots -> [ On, Off ]
         Depth -> [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
-        Heuristic -> [ Random, Snake, Corner, Log, Ov3y ]
+        Heuristic -> [ Random, Snake, Corner, Ov3y ]
         """
         menu = self.menuBar()
         file_menu = menu.addMenu('&File')
@@ -90,18 +90,20 @@ class MainWindow(QtGui.QMainWindow):
             depth_action.triggered.connect(make_function([], expr, locals()))
             depth_menu.addAction(depth_action)
 
-        heuristics = ['Random', 'Snake', 'Corner', 'LogGradient', 'Ov3y']
+        heuristics = ['Random', 'Snake', 'Corner', 'Ov3y']
         for heuristic in heuristics:
             heuristic_action = QtGui.QAction('&' + heuristic, self)
             exp = 'self.gui.set_heuristic("{}")'.format(heuristic)
             heuristic_action.triggered.connect(make_function([], exp, locals()))
             heuristic_menu.addAction(heuristic_action)
 
-        search_types = ['Minimax', 'Expectimax']
+        search_types = ['Minimax', 'MinimaxAlphaBeta',
+                        'Expectimax', 'Expectimax C']
         for search_type in search_types:
             search_type_action = QtGui.QAction('&' + search_type, self)
             exp = 'self.gui.set_search_type("{}")'.format(search_type)
-            search_type_action.triggered.connect(make_function([], exp, locals()))
+            lambda_func = make_function([], exp, locals())
+            search_type_action.triggered.connect(lambda_func)
             search_type_menu.addAction(search_type_action)
 
     def init_toolbar(self):
