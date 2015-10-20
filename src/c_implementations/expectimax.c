@@ -67,7 +67,7 @@ double max_value(int* board, int depth) {
         if (value > v) {
             v = value;
         }
-        free(successors[i]); // TODO: Is this necessary?
+        // free(successors[i]); // TODO: Is this necessary?
     }
 
     return v;
@@ -89,7 +89,7 @@ double chance_node(int* board, int depth) {
 
         vs = vs + value;
         count++;
-        free(successors[i]); // TODO: Is this necessary?
+        // free(successors[i]); // TODO: Is this necessary?
     }
 
     return vs / (double)count;
