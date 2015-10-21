@@ -1,3 +1,3 @@
-set(SOURCE_FILES c_implementations/expectimax.c c_implementations/expectimax.h)
-
-add_executable(aiprog ${SOURCE_FILES})
+include_directories(.)
+add_executable(aiprog c_implementations/expectimax.c)
+add_library(source_lib c_implementations/expectimax.c)

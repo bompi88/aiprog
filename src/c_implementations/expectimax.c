@@ -3,7 +3,7 @@
 #include <limits.h>
 #include <string.h>
 #include <time.h>
-#include <expectimax.h>
+#include "expectimax.h"
 
 typedef struct {
     int x;
@@ -43,11 +43,7 @@ double max_value(int* board, int depth) {
 
     double v = -INT_MAX;
     int successor_amount = 4;
-    printf("test\n");
-    print_board(board);
     int** successors = generate_successors_max(board);
-    printf("hmm\n");
-    print_board(successors[0]);
 
     for (int i=0; i < successor_amount; i++) {
         double value = chance_node(successors[i], depth - 1);
@@ -97,8 +93,8 @@ int move(int move, int* board) {
         move = random_num(4);
     }
 
-    int did_slide = slides(move, board, 0);
-    int did_collide = collides(move, board, 0);
+    int did_slide = slides(move, board, 1);
+    int did_collide = collides(move, board, 1);
 
     int did_slides_after_collision = 0;
 
@@ -147,13 +143,33 @@ int slides(int action, int* board, int perform) {
             move_to.x = x + move_modifier[0];
             move_to.y = y + move_modifier[1];
 
+            int tile = 4 * y + x;
+
             if (action==LEFT) {
                 for (int x_new=0; x_new < move_to.x + 1; x_new++) {
-                    if (is_in_range(x_new, 0, 3) && is_in_range(move_to.y, 0, 3)) {
-                        if (board[4*x_new+move_to.y]==0) {
+                    int new_tile = 4*move_to.y+x_new;
+                    if (is_in_range(x_new, 0, 3)) {
+                        if (board[new_tile]==0) {
                             if (perform==1) {
-                                board[4*x_new+move_to.y] = board[4*x+y];
-                                board[4*x+y] = 0;
+                                board[new_tile] = board[tile];
+                                board[tile] = 0;
+                            }
+
+                            did_move = 1;
+                            break;
+                        }
+                    }
+                }
+            } else if (action==RIGHT) {
+
+                for (int x_new=3; x_new > move_to.x - 1; x_new--) {
+                    int new_tile = 4*move_to.y+x_new;
+                    if (is_in_range(x_new, 0, 3)) {
+                        if (board[new_tile]==0) {
+
+                            if (perform==1) {
+                                board[new_tile] = board[tile];
+                                board[tile] = 0;
                             }
 
                             did_move = 1;
@@ -163,25 +179,12 @@ int slides(int action, int* board, int perform) {
                 }
             } else if (action==UP) {
                 for (int y_new=0; y_new < move_to.y + 1; y_new++) {
-                    if (is_in_range(y_new, 0, 3) && is_in_range(move_to.x, 0, 3)) {
-                        if (board[4*move_to.x+y_new]==0) {
+                    int new_tile = 4*y_new+x;
+                    if (is_in_range(y_new, 0, 3)) {
+                        if (board[new_tile]==0) {
                             if (perform==1) {
-                                board[4*move_to.x+y_new] = board[4*x+y];
-                                board[4*x+y] = 0;
-                            }
-
-                            did_move = 1;
-                            break;
-                        }
-                    }
-                }
-            } else if (action==RIGHT) {
-                for (int x_new=3; x_new > move_to.x - 1; x_new--) {
-                    if (is_in_range(x_new, 0, 3) && is_in_range(move_to.y, 0, 3)) {
-                        if (board[4*x_new+move_to.y]==0) {
-                            if (perform==1) {
-                                board[4*x_new+move_to.y] = board[4*x+y];
-                                board[4*x+y] = 0;
+                                board[new_tile] = board[tile];
+                                board[tile] = 0;
                             }
 
                             did_move = 1;
@@ -191,11 +194,12 @@ int slides(int action, int* board, int perform) {
                 }
             } else if (action==DOWN) {
                 for (int y_new=3; y_new > move_to.y - 1; y_new--) {
-                    if (is_in_range(y_new, 0, 3) && is_in_range(move_to.x, 0, 3)) {
-                        if (board[4*move_to.x+y_new]==0) {
+                    int new_tile = 4*y_new+x;
+                    if (is_in_range(y_new, 0, 3)) {
+                        if (board[new_tile]==0) {
                             if (perform==1) {
-                                board[4*move_to.x+y_new] = board[4*x+y];
-                                board[4*x+y] = 0;
+                                board[new_tile] = board[tile];
+                                board[tile] = 0;
                             }
 
                             did_move = 1;
@@ -298,7 +302,7 @@ int amount_of_successors(int* board) {
         }
     }
 
-    return count;
+    return count * 2;
 }
 
 int** generate_successors_max(int* board) {
@@ -309,9 +313,11 @@ int** generate_successors_max(int* board) {
         int* successor = (int*) malloc(sizeof(int)*16);
         memcpy(successor, board, sizeof(int)*16);
 
-        if (move(m, board)==1) {
-            successors[num_successors] = successor;
+        if (move(m, successor)==1) {
+            successors[m] = successor;
             num_successors++;
+        } else {
+            successors[m] = -1;
         }
     }
 
@@ -335,7 +341,7 @@ int** generate_successors_chance(int* board) {
         }
     }
 
-    int** successors = (int**) malloc(sizeof(int*)*count);
+    int** successors = (int**) malloc(sizeof(int*)*count*2);
     int num_possibilities = 2;
     int possibilities[2] = { 2, 4 };
 
@@ -390,8 +396,8 @@ int decision(int* board, int depth) {
     return max_action;
 }
 
-int main() {
-    int arr[16] = {3, 4, 0, 1, 2, 4, 3, 5, 0, 0, 0, 0, 0, 0, 0, 0};
-    printf("%d\n", INT_MIN);
-    printf("%d\n", decision(arr, 4));
-}
+//int main() {
+//    int arr[16] = {3, 4, 0, 1, 2, 4, 3, 5, 0, 0, 0, 0, 0, 0, 0, 0};
+//    printf("%d\n", INT_MIN);
+//    printf("%d\n", decision(arr, 4));
+//}
