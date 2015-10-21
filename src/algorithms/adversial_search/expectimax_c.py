@@ -9,6 +9,7 @@ class ExpectimaxC(object):
 
         args = (ctypes.POINTER(ctypes.c_int), ctypes.c_int)
         expectimax.decision.argtypes = args
+        expectimax.decision.restype = ctypes.c_int
 
         self.search = expectimax
         self.actions = actions
@@ -19,7 +20,6 @@ class ExpectimaxC(object):
         board_length = len(cur_board)
         result = self.search.decision((ctypes.c_int * board_length)(*cur_board),
                                       ctypes.c_int(self.depth))
-
         mapping = ['left', 'up', 'right', 'down']
-        move = board.possible_moves[mapping[int(result)]]
+        move = board.possible_moves[mapping[result]]
         return move

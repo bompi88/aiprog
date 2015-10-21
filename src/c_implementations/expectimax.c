@@ -55,7 +55,6 @@ double max_value(int* board, int depth) {
         if (value > v) {
             v = value;
         }
-        // free(successors[i]); // TODO: Is this necessary?
     }
 
     return v;
@@ -77,7 +76,6 @@ double chance_node(int* board, int depth) {
 
         vs = vs + value;
         count++;
-        // free(successors[i]); // TODO: Is this necessary?
     }
 
     return vs / (double)count;
@@ -442,3 +440,9 @@ int decision(int* board, int depth) {
 
     return max_action;
 }
+
+//int main() {
+//    int board[16] = {0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0};
+//
+//    printf("%d", decision(board, 6));
+//}
