@@ -46,6 +46,10 @@ double max_value(int* board, int depth) {
     int** successors = generate_successors_max(board);
 
     for (int i=0; i < successor_amount; i++) {
+        if(successors[i][16]==-1) {
+            continue;
+        }
+
         double value = chance_node(successors[i], depth - 1);
 
         if (value > v) {
@@ -89,7 +93,7 @@ int is_in_range(int num, int start, int end) {
 
 int move(int move, int* board) {
 
-    if (!move) {
+    if (move==-1) {
         move = random_num(4);
     }
 
@@ -125,6 +129,7 @@ int slides(int action, int* board, int perform) {
             }
             if (action==RIGHT) {
                 x = 3 - j;
+
                 move_modifier = RIGHT_VECTOR;
             } else {
                 x = j;
@@ -136,7 +141,7 @@ int slides(int action, int* board, int perform) {
                 y = i;
             }
 
-            if (board[4*x+y]==0) {
+            if (board[4*y+x]==0) {
                 continue;
             }
 
@@ -161,7 +166,6 @@ int slides(int action, int* board, int perform) {
                     }
                 }
             } else if (action==RIGHT) {
-
                 for (int x_new=3; x_new > move_to.x - 1; x_new--) {
                     int new_tile = 4*move_to.y+x_new;
                     if (is_in_range(x_new, 0, 3)) {
@@ -221,7 +225,7 @@ int collides(int action, int* board, int perform) {
     int* move_modifier;
 
     for (int i=0; i<4; i++) {
-        for (int j=0; i<4; i++) {
+        for (int j=0; j<4; j++) {
             if (action==LEFT) {
                 move_modifier = LEFT_VECTOR;
             }
@@ -243,17 +247,22 @@ int collides(int action, int* board, int perform) {
 
             Vector neighbour;
 
-            neighbour.x = x + move_modifier[0];
-            neighbour.y = y + move_modifier[1];
+            neighbour.x = x - move_modifier[0];
+            neighbour.y = y - move_modifier[1];
+
+            int tile = 4 * y + x;
 
             if (is_in_range(neighbour.x, 0, 3) && is_in_range(neighbour.y, 0, 3)) {
-                if (board[4*x+y]==0) {
+                if (board[tile]==0) {
                     continue;
                 }
-                if (board[4*neighbour.x+neighbour.y]==board[4*x+y]) {
+
+                int neighbour_tile = 4 * neighbour.y + neighbour.x;
+
+                if (board[neighbour_tile]==board[tile]) {
                     if (perform==1) {
-                        board[4*x+y] *= 2;
-                        board[4*neighbour.x+neighbour.y] = 0;
+                        board[tile] += 1;
+                        board[neighbour_tile] = 0;
                     }
                     collision = 1;
                 }
@@ -313,12 +322,11 @@ int** generate_successors_max(int* board) {
         int* successor = (int*) malloc(sizeof(int)*16);
         memcpy(successor, board, sizeof(int)*16);
 
-        if (move(m, successor)==1) {
-            successors[m] = successor;
-            num_successors++;
-        } else {
-            successors[m] = -1;
+        if (move(m, successor)==0) {
+            successor[16] = -1;
         }
+        successors[m] = successor;
+        num_successors++;
     }
 
     return successors;
@@ -363,12 +371,13 @@ int* perform_action(int action, int* board) {
     int* new_game = (int*) malloc(sizeof(int)*16);
     memcpy(new_game, board, sizeof(int)*16);
 
-    int did_move = move(action, board);
+    int did_move = move(action, new_game);
 
     if (did_move==1) {
         return new_game;
     } else {
-        board[15] = -1;
+        print_board(board);
+        board[16] = -1;
         return board;
     }
 }
@@ -381,7 +390,7 @@ int decision(int* board, int depth) {
     for (int a=0; a < 4; a++) {
         board = perform_action(a, board);
 
-        if (board[15] == -1) {
+        if (board[16] == -1) {
             continue;
         }
 
@@ -399,5 +408,5 @@ int decision(int* board, int depth) {
 //int main() {
 //    int arr[16] = {3, 4, 0, 1, 2, 4, 3, 5, 0, 0, 0, 0, 0, 0, 0, 0};
 //    printf("%d\n", INT_MIN);
-//    printf("%d\n", decision(arr, 4));
+//    printf("%d\n", decision(arr, 5));
 //}

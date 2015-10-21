@@ -73,9 +73,7 @@ START_TEST (test_slides)
         int did_move = 0;
 
         // Move right
-        print_board(board);
         did_move = slides(2, board, 1);
-        print_board(board);
         ck_assert_int_eq(did_move, 1);
         did_move = 0;
 
@@ -129,67 +127,69 @@ END_TEST
 
 START_TEST (test_collides)
     {
-//        int board[16] = {2, 2, 0, 0,
-//                         0, 4, 3, 0,
-//                         0, 0, 0, 0,
-//                         0, 3, 3, 4};
-//        int solution1[16] = {0, 0, 0, 3,
-//                             0, 0, 4, 3,
-//                             0, 0, 0, 0,
-//                             0, 0, 4, 4};
-//        int did_move = 0;
-//        print_board(board);
-//        // Move right
-//        did_move = collides(3, board, 1);
-//        //ck_assert_int_eq(did_move, 1);
-//        did_move = 0;
-//        print_board(board);
-//        for (int i=0; i < 16; i++) {
-//            ck_assert_int_eq(board[i], solution1[i]);
-//        }
-//
-//
-//        int solution2[16] = {0, 0, 0, 0,
-//                             0, 0, 0, 0,
-//                             0, 0, 0, 4,
-//                             0, 0, 5, 4};
-//
-//        // Move down
-//        did_move = collides(2, board, 1);
-//        ck_assert_int_eq(did_move, 1);
-//        did_move = 0;
-//
-//        for (int i=0; i < 16; i++) {
-//            ck_assert_int_eq(board[i], solution2[i]);
-//        }
-//
-//        int solution3[16] = {0, 0, 0, 0,
-//                             0, 0, 0, 0,
-//                             0, 0, 0, 0,
-//                             0, 0, 5, 5};
-//
-//        // Move left
-//        did_move = collides(1, board, 1);
-//        ck_assert_int_eq(did_move, 1);
-//        did_move = 0;
-//
-//        for (int i=0; i < 16; i++) {
-//            ck_assert_int_eq(board[i], solution3[i]);
-//        }
-//
-//        int solution4[16] = {0, 0, 0, 0,
-//                             0, 0, 0, 0,
-//                             0, 0, 0, 0,
-//                             0, 0, 0, 6};
-//
-//        // Move up
-//        did_move = collides(0, board, 1);
-//        ck_assert_int_eq(did_move, 1);
-//        did_move = 0;
-//
-//        for (int i=0; i < 16; i++) {
-//            ck_assert_int_eq(board[i], solution4[i]);
-//        }
+        int board[16] = {2, 2, 0, 0,
+                         0, 4, 3, 0,
+                         0, 0, 0, 0,
+                         0, 3, 3, 4};
+        int solution1[16] = {0, 0, 0, 3,
+                             0, 0, 4, 3,
+                             0, 0, 0, 0,
+                             0, 0, 4, 4};
+        int did_collide = 0;
+
+        // Move right
+        slides(2, board, 1);
+        did_collide = collides(2, board, 1);
+        ck_assert_int_eq(did_collide, 1);
+        did_collide = 0;
+        for (int i=0; i < 16; i++) {
+            ck_assert_int_eq(board[i], solution1[i]);
+        }
+
+
+        int solution2[16] = {0, 0, 0, 0,
+                             0, 0, 0, 0,
+                             0, 0, 0, 4,
+                             0, 0, 5, 4};
+
+        // Move down
+        slides(3, board, 1);
+        did_collide = collides(3, board, 1);
+        ck_assert_int_eq(did_collide, 1);
+        did_collide = 0;
+
+        for (int i=0; i < 16; i++) {
+            ck_assert_int_eq(board[i], solution2[i]);
+        }
+
+        int solution3[16] = {0, 0, 0, 0,
+                             0, 0, 0, 0,
+                             0, 0, 0, 0,
+                             0, 0, 5, 5};
+
+        // Move down
+        slides(3, board, 1);
+        did_collide = collides(3, board, 1);
+        ck_assert_int_eq(did_collide, 1);
+        did_collide = 0;
+
+        for (int i=0; i < 16; i++) {
+            ck_assert_int_eq(board[i], solution3[i]);
+        }
+
+        int solution4[16] = {0, 0, 0, 0,
+                             0, 0, 0, 0,
+                             0, 0, 0, 0,
+                             0, 0, 0, 6};
+
+        // Move right
+        slides(2, board, 1);
+        did_collide = collides(2, board, 1);
+        ck_assert_int_eq(did_collide, 1);
+
+        for (int i=0; i < 16; i++) {
+            ck_assert_int_eq(board[i], solution4[i]);
+        }
     }
 END_TEST
 
@@ -266,28 +266,28 @@ START_TEST (test_move)
                       0, 0, 0, 0,
                       0, 0, 0, 0};
 
-        int did_move = move(1, board);
+        int did_move = move(0, board);
         ck_assert_int_eq(did_move, 1);
 
         for (int i = 0; i < 16; i++) {
             ck_assert_int_eq(left[i], board[i]);
         }
 
-        did_move = move(0, board);
+        did_move = move(2, board);
         ck_assert_int_eq(did_move, 1);
 
         for (int i = 0; i < 16; i++) {
             ck_assert_int_eq(right[i], board[i]);
         }
 
-        did_move = move(2, board);
+        did_move = move(3, board);
         ck_assert_int_eq(did_move, 1);
 
         for (int i = 0; i < 16; i++) {
             ck_assert_int_eq(down[i], board[i]);
         }
 
-        did_move = move(3, board);
+        did_move = move(1, board);
         ck_assert_int_eq(did_move, 1);
 
         for (int i = 0; i < 16; i++) {
@@ -298,60 +298,61 @@ END_TEST
 
 START_TEST (test_generate_successors_max)
     {
-//        int board[16] = {2, 4, 0, 0,
-//                         0, 0, 8, 0,
-//                         0, 0, 0, 0,
-//                         0, 0, 0, 0};
-//
-//        int after_gen[16] = {2, 4, 0, 0,
-//                             0, 0, 8, 0,
-//                             0, 0, 0, 0,
-//                             0, 0, 0, 0};
-//
-//        int** successors = generate_successors_max(board);
-//
-//        // Test if old board not modified
-//        for (int i = 0; i < 16; i++) {
-//            ck_assert_int_eq(board[i], after_gen[i]);
-//        }
-//
-//        // After a move to the left
-//        int left[16] = {2, 4, 0, 0,
-//                        8, 0, 0, 0,
-//                        0, 0, 0, 0,
-//                        0, 0, 0, 0};
-//
-//        // After a move to the right
-//        int right[16] = {0, 0, 2, 4,
-//                         0, 0, 0, 8,
-//                         0, 0, 0, 0,
-//                         0, 0, 0, 0};
-//
-//        // After a move upwards
-//        int up[16] = {2, 4, 8, 0,
-//                      0, 0, 0, 0,
-//                      0, 0, 0, 0,
-//                      0, 0, 0, 0};
-//
-//        // After a move downwards
-//        int down[16] = {0, 0, 0, 0,
-//                        0, 0, 0, 0,
-//                        0, 0, 0, 0,
-//                        2, 4, 8, 0};
-//
-//        // Check if all successors have been successfully generated
-//        for (int j = 0; j < 16; j++) {
-//            ck_assert_int_eq(right[j], successors[0][j]);
-//            ck_assert_int_eq(left[j], successors[1][j]);
-//            ck_assert_int_eq(down[j], successors[2][j]);
-//            ck_assert_int_eq(up[j], successors[3][j]);
-//
-//        }
+        int board[16] = {2, 4, 0, 0,
+                         0, 0, 8, 0,
+                         0, 0, 0, 0,
+                         0, 0, 0, 0};
+
+        int after_gen[16] = {2, 4, 0, 0,
+                             0, 0, 8, 0,
+                             0, 0, 0, 0,
+                             0, 0, 0, 0};
+
+        int** successors = generate_successors_max(board);
+
+        // Test if old board not modified
+        for (int i = 0; i < 16; i++) {
+            ck_assert_int_eq(board[i], after_gen[i]);
+        }
+
+        // After a move to the left
+        int left[16] = {2, 4, 0, 0,
+                        8, 0, 0, 0,
+                        0, 0, 0, 0,
+                        0, 0, 0, 0};
+
+        // After a move to the right
+        int right[16] = {0, 0, 2, 4,
+                         0, 0, 0, 8,
+                         0, 0, 0, 0,
+                         0, 0, 0, 0};
+
+        // After a move upwards
+        int up[16] = {2, 4, 8, 0,
+                      0, 0, 0, 0,
+                      0, 0, 0, 0,
+                      0, 0, 0, 0};
+
+        // After a move downwards
+        int down[16] = {0, 0, 0, 0,
+                        0, 0, 0, 0,
+                        0, 0, 0, 0,
+                        2, 4, 8, 0};
+
+        // Check if all successors have been successfully generated
+        for (int j = 0; j < 16; j++) {
+            ck_assert_int_eq(right[j], successors[2][j]);
+            ck_assert_int_eq(left[j], successors[0][j]);
+            ck_assert_int_eq(down[j], successors[3][j]);
+            ck_assert_int_eq(up[j], successors[1][j]);
+
+        }
     }
 END_TEST
 
 START_TEST (test_generate_successors_chance)
     {
+
     }
 END_TEST
 
