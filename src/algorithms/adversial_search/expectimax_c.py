@@ -2,7 +2,7 @@ import ctypes
 import src.c_implementations
 
 
-class Expectimax(object):
+class ExpectimaxC(object):
     def __init__(self, actions, depth):
         path = src.c_implementations.__path__[0] + '/expectimax_lib.so'
         expectimax = ctypes.CDLL(path)
@@ -11,12 +11,15 @@ class Expectimax(object):
         expectimax.decision.argtypes = args
 
         self.search = expectimax
-        self.actions = actions.values()
+        self.actions = actions
         self.depth = depth
 
     def decision(self, board):
-        board_length = len(board)
-        array_type = ctypes.c_int * board_length
-        result = self.search.decision(array_type(*board),
+        cur_board = board.board
+        board_length = len(cur_board)
+        result = self.search.decision((ctypes.c_int * board_length)(*cur_board),
                                       ctypes.c_int(self.depth))
-        return int(result)
+
+        mapping = ['left', 'up', 'right', 'down']
+        move = board.possible_moves[mapping[int(result)]]
+        return move

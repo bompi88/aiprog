@@ -415,7 +415,7 @@ int* perform_action(int action, int* board) {
         return new_game;
     } else {
         print_board(board);
-        board[16] = -1;
+        board[15] = -1;
         return board;
     }
 }
@@ -428,7 +428,7 @@ int decision(int* board, int depth) {
     for (int a=0; a < 4; a++) {
         board = perform_action(a, board);
 
-        if (board[16] == -1) {
+        if (board[15] == -1) {
             continue;
         }
 
@@ -441,12 +441,4 @@ int decision(int* board, int depth) {
     }
 
     return max_action;
-}
-
-int main() {
-    int arr[16] = {3, 4, 0, 1,
-                   2, 4, 3, 5,
-                   0, 0, 0, 0,
-                   0, 0, 0, 0};
-    printf("%d\n", decision(arr, 5));
 }
