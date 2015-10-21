@@ -2,6 +2,7 @@ set(CHECK_INSTALL_DIR "/usr/local/Cellar/check/0.10.0")
 
 include_directories(
         ${CHECK_INSTALL_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../src/c_implementations
 )
 
 find_library(LIBCHECK NAMES libcheck.dylib)
