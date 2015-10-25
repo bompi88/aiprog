@@ -294,52 +294,55 @@ int is_impossible(int* board) {
 }
 
 double evaluation_function(int* board) {
-    if (is_impossible(board)) {
-        return 0;
-    }
+    double smoothness = smoothness(board) * 0.23;
+    double maxTile = maxTile(board);
+    double freeTiles = log(freeTiles(board)) * 2.3;
+    // double order = order(board) * 1.9;
+    double maxPlacement = maxPlacement(board);
 
-    int mask[16*4] = {
-                        // Top left
-                        10, 9, 8, 7,
-                        9, 6, 5, 4,
-                        8, 5, 3, 2,
-                        7, 4, 2, 1,
-                        // Top right
-                        7, 8, 9, 10,
-                        4, 5, 6, 9,
-                        2, 3, 5, 8,
-                        1, 2, 4, 7,
-                        // Bottom right
-                        1, 2, 4, 7,
-                        2, 3, 5, 8,
-                        4, 5, 6, 9,
-                        7, 8, 9, 10,
-                        // Bottom left
-                        7, 4, 2, 1,
-                        8, 5, 3, 2,
-                        9, 6, 5, 4,
-                        10, 9, 8, 7};
+    return smoothness + maxTile + freeTiles + maxPlacement; // order + maxPlacement;
+}
 
-    int grid_component = -1;
 
-    for(int k=0; k<4; k++) {
-        int h = 0;
+double maxPlacement(int* board) {
+    double maxPlacementH = 0;
 
-        for (int y = 0; y < 4; y++) {
-            for (int x = 0; x < 4; x++) {
-                int tile = 4 * y + x;
-                h += (int)mask[(k * 16) + tile] * (int)board[tile];
+    double maxTileValue = 0;
+    double maxTileIndex = 0;
+
+    for (int i = 0; i < 16; i++) {
+        int tile = board[i];
+
+        if (tile > maxTileValue) {
+            maxTileValue = tile;
+            maxTileIndex = i;
+            amountOfMaxTiles = 1;
+        }
+
+        if (maxTileIndex != 5 && maxTileIndex != 6 && // Not in the middle
+                maxTileIndex != 9 && maxTileIndex || 10) {
+            maxPlacementH = maxTileValue;
+
+            if (maxTileIndex == 0 || maxTileIndex == 3 || // In a corner
+                    maxTileIndex == 12 || maxTileIndex == 15) {
+                maxPlacementH = maxTileValue * 2.4;
             }
         }
+    }
 
-        if (h > grid_component) {
-            grid_component = h;
+    return maxPlacementH
+}
+
+double maxTile(final int* board) {
+    double maxTile = 0;
+
+    for (int i = 0; i < 16; i++) {
+        if (board[i] > maxTile) {
+            maxTile = board[i];
         }
     }
 
-    double free_tiles_component = amount_of_successors(board) / 32.0;
-
-    return ((double)grid_component) * free_tiles_component;
+    return maxTile;
 }
 
 int get_neighbour_value(int* board, int x, int y, int direction) {
@@ -382,18 +385,20 @@ double smoothness(int *board) {
     return smoothness;
 }
 
-int amount_of_successors(int* board) {
-    int count = 0;
+double freeTiles(final int* board) {
+    double free = 0;
 
-    for (int x=0; x<4; x++) {
-        for (int y=0; y<4; y++) {
-            if (board[4*x+y]==0) {
-                count++;
-            }
+    for (int i = 0; i < 16; i++) {
+        if (board[i] == 0) {
+            free++;
         }
     }
 
-    return count * 2;
+    return free;
+}
+
+int amount_of_successors(int* board) {
+    return freeTiles(board) * 2;
 }
 
 int** generate_successors_max(int* board) {

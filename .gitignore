@@ -1,5 +1,14 @@
 # Created by https://www.gitignore.io/api/osx,windows,pycharm,python
 
+### Cmake ###
+*.cmake
+Makefile
+CMakeCache.txt
+*/*CMakeFiles
+CMakeFiles/
+Testing/
+*.plist
+
 ### OSX ###
 .DS_Store
 .AppleDouble
