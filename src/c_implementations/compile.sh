@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-cc -shared -o expectimax_lib.so expectimax.c
+cc -Weverything -Wno-conversion -pedantic -shared -o expectimax_lib.so expectimax.c
