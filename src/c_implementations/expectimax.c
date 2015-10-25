@@ -458,10 +458,15 @@ int decision(int depth, int b0, int b1, int b2, int b3, int b4, int b5, int b6,
     return max_action;
 }
 
-int main() {
-    // int board[16] = {};
-    printf("%d", decision(4, 1, 0, 0, 0, 0, 0, 1, 1, 5, 5, 5, 3, 0, 3, 0, 0));
+int decision_map(int depth, int* board) {
+    return decision(depth, board[0], board[1], board[2], board[3], board[4], board[5], board[6], board[7],
+                    board[8], board[9], board[10], board[11], board[12], board[13], board[14], board[15]);
 }
+
+//int main() {
+    // int board[16] = {};
+//    printf("%d", decision(4, 1, 0, 0, 0, 0, 0, 1, 1, 5, 5, 5, 3, 0, 3, 0, 0));
+//}
 //
 //    printf("%d", decision(board, 6));
 //}

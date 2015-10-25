@@ -512,6 +512,80 @@ END_TEST
 
 START_TEST (test_perform_action)
     {
+        // The current board
+        int board[16] = {2, 4, 0, 0,
+                         0, 0, 8, 0,
+                         0, 0, 0, 0,
+                         0, 0, 0, 0};
+
+        // After a move to the left
+        int left[16] = {2, 4, 0, 0,
+                        8, 0, 0, 0,
+                        0, 0, 0, 0,
+                        0, 0, 0, 0};
+
+        // After a move to the right
+        int right[16] = {0, 0, 2, 4,
+                         0, 0, 0, 8,
+                         0, 0, 0, 0,
+                         0, 0, 0, 0};
+
+        // After a move downwards
+        int down[16] = {0, 0, 0, 0,
+                        0, 0, 0, 0,
+                        0, 0, 0, 0,
+                        2, 4, 8, 0};
+
+        // After a move upwards
+        int up[16] = {2, 4, 8, 0,
+                      0, 0, 0, 0,
+                      0, 0, 0, 0,
+                      0, 0, 0, 0};
+
+        int* new_board_0 = perform_action(0, board);
+
+        for (int i = 0; i < 16; i++) {
+            ck_assert_int_eq(left[i], new_board_0[i]);
+        }
+
+        int* new_board_2 = perform_action(2, board);
+
+        for (int i = 0; i < 16; i++) {
+            ck_assert_int_eq(right[i], new_board_2[i]);
+        }
+
+        int* new_board_3 = perform_action(3, board);
+
+        for (int i = 0; i < 16; i++) {
+            ck_assert_int_eq(down[i], new_board_3[i]);
+        }
+
+        int* new_board_1 = perform_action(1, board);
+
+        for (int i = 0; i < 16; i++) {
+            ck_assert_int_eq(up[i], new_board_1[i]);
+        }
+
+    }
+END_TEST
+
+START_TEST (test_decision)
+    {
+        // Scenario 0 - Left
+        int scenario_0[16] = {2, 2, 4, 2,
+                              8, 4, 2, 4,
+                              4, 2, 4, 2,
+                              2, 4, 2, 4};
+
+        ck_assert_int_eq(0, decision_map(3, scenario_0));
+
+        // Scenario 1 - Up
+        int scenario_1[16] = {1, 2, 4, 2,
+                              8, 2, 8, 4,
+                              4, 2, 4, 2,
+                              2, 4, 2, 4};
+
+        ck_assert_int_eq(1, decision_map(3, scenario_1));
     }
 END_TEST
 
@@ -532,6 +606,7 @@ Suite *expectimax_suite(void) {
     tcase_add_test(tc_core, test_generate_successors_max);
     tcase_add_test(tc_core, test_generate_successors_chance);
     tcase_add_test(tc_core, test_perform_action);
+    tcase_add_test(tc_core, test_decision);
 
     suite_add_tcase(s, tc_core);
 
