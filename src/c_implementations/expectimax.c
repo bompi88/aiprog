@@ -57,6 +57,8 @@ double max_value(int* board, int depth) {
         }
     }
 
+    free(successors);
+
     return v;
 }
 
@@ -77,6 +79,8 @@ double chance_node(int* board, int depth) {
         vs = vs + value;
         count++;
     }
+
+    free(successors);
 
     return vs / (double)count;
 }
@@ -412,19 +416,30 @@ int* perform_action(int action, int* board) {
     if (did_move==1) {
         return new_game;
     } else {
-        print_board(board);
-        board[15] = -1;
-        return board;
+        // print_board(board);
+        new_game[15] = -1;
+        return new_game;
     }
 }
 
-int decision(int* board, int depth) {
+int decision(int depth, int b0, int b1, int b2, int b3, int b4, int b5, int b6,
+                        int b7, int b8, int b9, int b10, int b11, int b12,
+                        int b13, int b14, int b15) {
     srand(time(0));
     double max_val = -INT_MAX;
     int max_action = -1;
+    int arg_board[] = {b0, b1, b2, b3, b4, b5, b6, b7, b8,
+                       b9, b10, b11, b12, b13, b14, b15};
+    int* start_board = (int*) malloc(sizeof(int)*16);
+
+    for (int i = 0; i < 16; i++) {
+        start_board[i] = arg_board[i];
+    }
+
+    // int* board = &start_board;
 
     for (int a=0; a < 4; a++) {
-        board = perform_action(a, board);
+        int *board = perform_action(a, start_board);
 
         if (board[15] == -1) {
             continue;
@@ -436,13 +451,17 @@ int decision(int* board, int depth) {
             max_val = value;
             max_action = a;
         }
+        free(board);
     }
+    free(start_board);
 
     return max_action;
 }
 
-//int main() {
-//    int board[16] = {0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0};
+int main() {
+    // int board[16] = {};
+    printf("%d", decision(4, 1, 0, 0, 0, 0, 0, 1, 1, 5, 5, 5, 3, 0, 3, 0, 0));
+}
 //
 //    printf("%d", decision(board, 6));
 //}
