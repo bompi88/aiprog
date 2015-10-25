@@ -368,7 +368,7 @@ double smoothness(int *board) {
                 continue;
             }
 
-            double value = board[4*x+y];
+            int value = board[4*x+y];
 
             for (int m = 0; m < 4; m++) {
                 int target_val = get_neighbour_value(board, x, y, m);
