@@ -28,9 +28,9 @@ int random_num(int max) {
 }
 
 void print_board(int* board) {
-    for (int i=0; i<4; i++) {
-        for (int j=0; j<4; j++) {
-            printf("%d,", board[4*i+j]);
+    for (int x=0; x<4; x++) {
+        for (int y=0; y<4; y++) {
+            printf("%d,", board[4*y+x]);
         }
         printf("\n");
     }
@@ -131,17 +131,17 @@ int slides(int action, int* board, int perform) {
                 move_modifier = UP_VECTOR;
             }
             if (action==RIGHT) {
-                x = 3 - j;
+                x = 3 - i;
 
                 move_modifier = RIGHT_VECTOR;
             } else {
-                x = j;
+                x = i;
             }
             if (action==DOWN) {
-                y = 3 - i;
+                y = 3 - j;
                 move_modifier = DOWN_VECTOR;
             } else {
-                y = i;
+                y = j;
             }
 
             if (board[4*y+x]==0) {
@@ -236,16 +236,16 @@ int collides(int action, int* board, int perform) {
                 move_modifier = UP_VECTOR;
             }
             if (action==RIGHT) {
-                x = 3 - j;
+                x = 3 - i;
                 move_modifier = RIGHT_VECTOR;
             } else {
-                x = j;
+                x = i;
             }
             if (action==DOWN) {
-                y = 3 - i;
+                y = 3 - j;
                 move_modifier = DOWN_VECTOR;
             } else {
-                y = i;
+                y = j;
             }
 
             Vector neighbour;
@@ -391,7 +391,7 @@ double smoothness(int *board) {
 
     for (int x = 0; x < 4; x++) {
         for (int y = 0; y < 4; y++) {
-            if (board[4*x+y] == 0) {
+            if (board[4*y+x] == 0) {
                 continue;
             }
 
@@ -469,7 +469,7 @@ int** generate_successors_chance(int* board) {
 
     for (int x=0; x<4; x++) {
         for (int y=0; y<4; y++) {
-            if (board[4*x+y]==0) {
+            if (board[4*y+x]==0) {
                 Vector xy;
                 xy.x = x;
                 xy.y = y;
@@ -487,7 +487,7 @@ int** generate_successors_chance(int* board) {
         for (int p=0; p < num_possibilities; p++) {
             int* successor = malloc(16 * sizeof(int));
             memcpy(successor, board, 16 * sizeof(int));
-            successor[4*zero_tiles[i].x+zero_tiles[i].y] = possibilities[p];
+            successor[4*zero_tiles[i].y+zero_tiles[i].x] = possibilities[p];
 
             successors[num_successors] = successor;
             successor_tiles[num_successors] = possibilities[p];
