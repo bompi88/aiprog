@@ -345,21 +345,45 @@ double maxTile(final int* board) {
     return maxTile;
 }
 
-int get_neighbour_value(int* board, int x, int y, int direction) {
-    int x_mod = 0;
-    int y_mod = 0;
+int get_neighbour_value(int* board, int pos_x, int pos_y, int direction) {
 
     if(direction==LEFT) {
-        x_mod -= 1;
-    } else if(direction==UP) {
-        y_mod += 1;
-    } else if(direction==RIGHT) {
-        x_mod += 1;
-    } else if(direction==DOWN) {
-        y_mod -= 1;
-    }
+        if(pos_x==0) {
+            return 0;
+        }
+        for (int x = pos_x - 1; x >= 0; x--) {
+            if (board[4*pos_y+x] == 0) { continue; }
 
-    return board[4*(x+x_mod)+(y+y_mod)];
+            return board[4*pos_y+x];
+        }
+        return 0;
+    } else if(direction==UP) {
+        if(pos_y==0) {
+            return 0;
+        }
+        for (int y = pos_y - 1; y >= 0; y--) {
+            if (board[4*y+pos_x] == 0) { continue; }
+
+            return board[4*y+pos_x];
+        }
+        return 0;
+    } else if(direction==RIGHT) {
+        if (pos_x == 3) { return 0; }
+        for (int x = pos_x + 1; x <= 3; x++) {
+            if (board[4*pos_y+x] == 0) { continue; }
+
+            return board[4*pos_y+x];
+        }
+        return 0;
+    } else if(direction==DOWN) {
+        if (pos_y == 3) { return 0; }
+        for (int y = pos_y + 1; y <= 3; y++) {
+            if (board[4*y+pos_x] == 0) { continue; }
+
+            return board[4*y+pos_x];
+        }
+        return 0;
+    }
 }
 
 double smoothness(int *board) {
