@@ -3,6 +3,7 @@
 #include <limits.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
 #include "expectimax.h"
 
 typedef struct {
@@ -339,6 +340,46 @@ double evaluation_function(int* board) {
     double free_tiles_component = amount_of_successors(board) / 32.0;
 
     return ((double)grid_component) * free_tiles_component;
+}
+
+int get_neighbour_value(int* board, int x, int y, int direction) {
+    int x_mod = 0;
+    int y_mod = 0;
+
+    if(direction==LEFT) {
+        x_mod -= 1;
+    } else if(direction==UP) {
+        y_mod += 1;
+    } else if(direction==RIGHT) {
+        x_mod += 1;
+    } else if(direction==DOWN) {
+        y_mod -= 1;
+    }
+
+    return board[4*(x+x_mod)+(y+y_mod)];
+}
+
+double smoothness(int *board) {
+    double smoothness = 0;
+
+    for (int x = 0; x < 4; x++) {
+        for (int y = 0; y < 4; y++) {
+            if (board[4*x+y] == 0) {
+                continue;
+            }
+
+            double value = board[4*x+y];
+
+            for (int m = 0; m < 4; m++) {
+                int target_val = get_neighbour_value(board, x, y, m);
+                if (target_val != 0) {
+                    smoothness -= abs(value - target_val);
+                }
+            }
+        }
+    }
+
+    return smoothness;
 }
 
 int amount_of_successors(int* board) {
