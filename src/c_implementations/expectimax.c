@@ -294,15 +294,10 @@ int is_impossible(int* board) {
 }
 
 double evaluation_function(int* board) {
-    double smoothness = smoothness(board) * 0.23;
-    double maxTile = maxTile(board);
-    double freeTiles = log(freeTiles(board)) * 2.3;
-    // double order = order(board) * 1.9;
-    double maxPlacement = maxPlacement(board);
-
-    return smoothness + maxTile + freeTiles + maxPlacement; // order + maxPlacement;
+    return ((smoothness(board) * 0.23) + maxTile(board) +
+            (log(freeTiles(board)) * 2.3) + maxPlacement(board) +
+            (order(board) * 1.9));
 }
-
 
 double maxPlacement(int* board) {
     double maxPlacementH = 0;
@@ -316,24 +311,25 @@ double maxPlacement(int* board) {
         if (tile > maxTileValue) {
             maxTileValue = tile;
             maxTileIndex = i;
-            amountOfMaxTiles = 1;
         }
 
-        if (maxTileIndex != 5 && maxTileIndex != 6 && // Not in the middle
-                maxTileIndex != 9 && maxTileIndex || 10) {
+         // Not in the middle
+        if (maxTileIndex != 5 && maxTileIndex != 6 &&
+                maxTileIndex != 9 && maxTileIndex != 10) {
             maxPlacementH = maxTileValue;
 
-            if (maxTileIndex == 0 || maxTileIndex == 3 || // In a corner
+             // In a corner
+            if (maxTileIndex == 0 || maxTileIndex == 3 ||
                     maxTileIndex == 12 || maxTileIndex == 15) {
                 maxPlacementH = maxTileValue * 2.4;
             }
         }
     }
 
-    return maxPlacementH
+    return maxPlacementH;
 }
 
-double maxTile(final int* board) {
+double maxTile(int* board) {
     double maxTile = 0;
 
     for (int i = 0; i < 16; i++) {
@@ -346,7 +342,6 @@ double maxTile(final int* board) {
 }
 
 int get_neighbour_value(int* board, int pos_x, int pos_y, int direction) {
-
     if(direction==LEFT) {
         if(pos_x==0) {
             return 0;
@@ -384,6 +379,7 @@ int get_neighbour_value(int* board, int pos_x, int pos_y, int direction) {
         }
         return 0;
     }
+    return 0;
 }
 
 double smoothness(int *board) {
@@ -409,7 +405,94 @@ double smoothness(int *board) {
     return smoothness;
 }
 
-double freeTiles(final int* board) {
+double order(int* board) {
+    double totals[] = {0.0, 0.0 ,0.0, 0.0};
+
+    for (int i = 0; i < 4; i++) { // Check up and down
+        int current = 0;
+        int next = current + 1;
+
+        while (next < 4) {
+            while ((next < 4) && !checkOccupied(board, i, next)) {
+                next++;
+            }
+
+            if (next >= 4) { next--; }
+
+            double currentValue = 0;
+            double nextValue = 0;
+
+            if (checkOccupied(board, i, current)) {
+                currentValue = getNodeValue(board, i, current);
+            }
+
+            if (checkOccupied(board, i, next)) {
+                nextValue = getNodeValue(board, i, next);
+            }
+
+            if (currentValue > nextValue) {
+                totals[0] += nextValue - currentValue;
+            } else if (nextValue > currentValue) {
+                totals[1] += currentValue - nextValue;
+            }
+
+            current = next;
+            next++;
+        }
+    }
+
+
+    for (int j = 0; j < 4; j++) { // Check left and right
+        int current = 0;
+        int next = current + 1;
+
+        while (next < 4) {
+            while ((next < 4) && !checkOccupied(board, j, next)) {
+                next++;
+            }
+
+            if (next >= 4) { next--; }
+
+            double currentValue = 0;
+            double nextValue = 0;
+
+            if (checkOccupied(board, current, j)) {
+                currentValue = getNodeValue(board, current, j);
+            }
+
+            if (checkOccupied(board, next, j)) {
+                nextValue = getNodeValue(board, next, j);
+            }
+
+            if (currentValue > nextValue) {
+                totals[2] += nextValue - currentValue;
+            } else if (nextValue > currentValue) {
+                totals[3] += currentValue - nextValue;
+            }
+
+            current = next;
+            next++;
+        }
+    }
+
+    int total_up_down = (totals[0] > totals[1]) ? totals[0] : totals[1];
+    int total_left_right = (totals[2] > totals[3]) ? totals[2] : totals[3];
+
+    return total_up_down + total_left_right;
+}
+
+int getNodeValue(int* board, int posX, int posY) {
+    int withinX = (posX >= 0) && (posX < 4);
+    int withinY = (posY >= 0) && (posY < 4);
+
+    return (withinX && withinY) ? board[4 * posY + posX] : 0;
+}
+
+int checkOccupied(int* board, int posX, int posY) {
+    return getNodeValue(board, posX, posY) != 0;
+}
+
+double freeTiles(int* board) {
     double free = 0;
 
     for (int i = 0; i < 16; i++) {
