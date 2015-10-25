@@ -3,6 +3,7 @@
 
 double max_value(int* board, int depth);
 double chance_node(int* board, int depth);
+int move(int move, int* board);
 int slides(int action, int* board, int perform);
 int collides(int action, int* board, int perform);
 int is_impossible(int* board);

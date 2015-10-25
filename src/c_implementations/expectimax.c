@@ -94,21 +94,19 @@ int is_in_range(int num, int start, int end) {
 }
 
 int move(int move, int* board) {
-
     if (move==-1) {
+        printf("should never not have a move here");
         move = random_num(4);
     }
 
     int did_slide = slides(move, board, 1);
     int did_collide = collides(move, board, 1);
 
-    int did_slides_after_collision = 0;
-
     if (did_collide==1) {
-        did_slides_after_collision = slides(move, board, 0);
+        slides(move, board, 0);
     }
 
-    int did_move = did_slide || did_collide || did_slides_after_collision;
+    int did_move = did_slide || did_collide;
 
     return did_move;
 }
@@ -321,22 +319,26 @@ double evaluation_function(int* board) {
 
     int grid_component = INT_MIN;
 
-    int h = 0;
     for(int k=0; k<4; k++) {
+        int h = 0;
+
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {
                 int tile = 4 * y + x;
                 h += (int)mask[(k * 16) + tile] * (int)board[tile];
 
-                if(h>grid_component) {
-                    grid_component = h;
-                }
-                double free_tiles_component = amount_of_successors(board) / (double) 16;
-
-                return ((double)grid_component) / free_tiles_component;
             }
         }
+
+        if(h>grid_component) {
+            grid_component = h;
+        }
     }
+
+
+    double free_tiles_component = amount_of_successors(board) / (double) 2;
+
+    return ((double)grid_component) / free_tiles_component;
     return 1;
 }
 
@@ -368,6 +370,25 @@ int** generate_successors_max(int* board) {
         successors[m] = successor;
         num_successors++;
     }
+
+//    printf("board\n");
+//
+//    for (int i = 0; i < 16; i++) {
+//        printf("%d, ", board[i]);
+//    }
+//
+//    printf("\n");
+//
+//    printf("successors\n");
+//
+//    for (int j = 0; j < num_successors; j++) {
+//        for (int i = 0; i < 16; i++) {
+//            printf("%d, ", successors[j][i]);
+//        }
+//        printf("\n");
+//    }
+//
+//    printf("\n");
 
     return successors;
 }
@@ -458,9 +479,54 @@ int decision(int depth, int b0, int b1, int b2, int b3, int b4, int b5, int b6,
     return max_action;
 }
 
+
 int decision_map(int depth, int* board) {
     return decision(depth, board[0], board[1], board[2], board[3], board[4], board[5], board[6], board[7],
                     board[8], board[9], board[10], board[11], board[12], board[13], board[14], board[15]);
+}
+
+int main() {
+    int board[16] = {1, 0, 0, 0, 0, 0, 1, 1, 5, 5, 5, 3, 0, 3, 0, 0};
+    int dec = decision(4, board[0], board[1], board[2], board[3], board[4], board[5],
+                            board[6], board[7], board[8], board[9], board[10], board[11],
+                            board[12], board[13], board[14], board[15]);
+    printf("%d\n", dec);
+
+    int* next_board = (int*) malloc(sizeof(int)*16);
+
+    for (int i = 0; i < 16; i++) {
+        next_board[i] = board[i];
+    }
+
+    move(dec, next_board);
+    print_board(next_board);
+
+    for (int i=0; i<50; i++) {
+        for (int i = 0; i < 16; i++) {
+            board[i] = next_board[i];
+        }
+
+        if (is_impossible(next_board)) {
+            printf("Finished after %d moves\n", i);
+            break;
+        }
+
+        int dec = decision(4, board[0], board[1], board[2], board[3], board[4], board[5],
+                            board[6], board[7], board[8], board[9], board[10], board[11],
+                            board[12], board[13], board[14], board[15]);
+
+        move(dec, next_board);
+
+        for (int i = 0; i < 16; i++) {
+            if (next_board[i] == 0) {
+                next_board[i] = 1;
+                break;
+            }
+        }
+
+        print_board(next_board);
+        printf("%d\n", dec);
+    }
 }
 
 //int main() {
