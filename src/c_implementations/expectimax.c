@@ -294,51 +294,51 @@ int is_impossible(int* board) {
 }
 
 double evaluation_function(int* board) {
-    return ((smoothness(board) * 0.23) + maxTile(board) +
-            (freeTiles(board) * 2.3) + maxPlacement(board) +
+    return ((smoothness(board) * 0.23) + max_tile(board) +
+            (free_tiles(board) * 2.3) + max_placement(board) +
             (order(board) * 1.9));
 }
 
-double maxPlacement(int* board) {
-    double maxPlacementH = 0;
+double max_placement(int* board) {
+    double max_placement_h = 0;
 
-    double maxTileValue = 0;
-    double maxTileIndex = 0;
+    double max_tile_value = 0;
+    double max_tile_index = 0;
 
     for (int i = 0; i < 16; i++) {
         int tile = board[i];
 
-        if (tile > maxTileValue) {
-            maxTileValue = tile;
-            maxTileIndex = i;
+        if (tile > max_tile_value) {
+            max_tile_value = tile;
+            max_tile_index = i;
         }
 
          // Not in the middle
-        if (maxTileIndex != 5 && maxTileIndex != 6 &&
-                maxTileIndex != 9 && maxTileIndex != 10) {
-            maxPlacementH = maxTileValue;
+        if (max_tile_index != 5 && max_tile_index != 6 &&
+                max_tile_index != 9 && max_tile_index != 10) {
+            max_placement_h = max_tile_value;
 
              // In a corner
-            if (maxTileIndex == 0 || maxTileIndex == 3 ||
-                    maxTileIndex == 12 || maxTileIndex == 15) {
-                maxPlacementH = maxTileValue * 2.4;
+            if (max_tile_index == 0 || max_tile_index == 3 ||
+                    max_tile_index == 12 || max_tile_index == 15) {
+                max_placement_h = max_tile_value * 2.4;
             }
         }
     }
 
-    return maxPlacementH;
+    return max_placement_h;
 }
 
-double maxTile(int* board) {
-    double maxTile = 0;
+double max_tile(int* board) {
+    double max_tile = 0;
 
     for (int i = 0; i < 16; i++) {
-        if (board[i] > maxTile) {
-            maxTile = board[i];
+        if (board[i] > max_tile) {
+            max_tile = board[i];
         }
     }
 
-    return maxTile;
+    return max_tile;
 }
 
 int get_neighbour_value(int* board, int pos_x, int pos_y, int direction) {
@@ -413,27 +413,27 @@ double order(int* board) {
         int next = current + 1;
 
         while (next < 4) {
-            while ((next < 4) && !checkOccupied(board, i, next)) {
+            while ((next < 4) && !check_occupied(board, i, next)) {
                 next++;
             }
 
             if (next >= 4) { next--; }
 
-            double currentValue = 0;
-            double nextValue = 0;
+            double current_value = 0;
+            double next_value = 0;
 
-            if (checkOccupied(board, i, current)) {
-                currentValue = getNodeValue(board, i, current);
+            if (check_occupied(board, i, current)) {
+                current_value = get_node_value(board, i, current);
             }
 
-            if (checkOccupied(board, i, next)) {
-                nextValue = getNodeValue(board, i, next);
+            if (check_occupied(board, i, next)) {
+                next_value = get_node_value(board, i, next);
             }
 
-            if (currentValue > nextValue) {
-                totals[0] += nextValue - currentValue;
-            } else if (nextValue > currentValue) {
-                totals[1] += currentValue - nextValue;
+            if (current_value > next_value) {
+                totals[0] += next_value - current_value;
+            } else if (next_value > current_value) {
+                totals[1] += current_value - next_value;
             }
 
             current = next;
@@ -447,27 +447,27 @@ double order(int* board) {
         int next = current + 1;
 
         while (next < 4) {
-            while ((next < 4) && !checkOccupied(board, j, next)) {
+            while ((next < 4) && !check_occupied(board, j, next)) {
                 next++;
             }
 
             if (next >= 4) { next--; }
 
-            double currentValue = 0;
-            double nextValue = 0;
+            double current_value = 0;
+            double next_value = 0;
 
-            if (checkOccupied(board, current, j)) {
-                currentValue = getNodeValue(board, current, j);
+            if (check_occupied(board, current, j)) {
+                current_value = get_node_value(board, current, j);
             }
 
-            if (checkOccupied(board, next, j)) {
-                nextValue = getNodeValue(board, next, j);
+            if (check_occupied(board, next, j)) {
+                next_value = get_node_value(board, next, j);
             }
 
-            if (currentValue > nextValue) {
-                totals[2] += nextValue - currentValue;
-            } else if (nextValue > currentValue) {
-                totals[3] += currentValue - nextValue;
+            if (current_value > next_value) {
+                totals[2] += next_value - current_value;
+            } else if (next_value > current_value) {
+                totals[3] += current_value - next_value;
             }
 
             current = next;
@@ -481,18 +481,18 @@ double order(int* board) {
     return total_up_down + total_left_right;
 }
 
-int getNodeValue(int* board, int posX, int posY) {
-    int withinX = (posX >= 0) && (posX < 4);
-    int withinY = (posY >= 0) && (posY < 4);
+int get_node_value(int* board, int pos_x, int pos_y) {
+    int within_x = (pos_x >= 0) && (pos_x < 4);
+    int within_y = (pos_y >= 0) && (pos_y < 4);
 
-    return (withinX && withinY) ? board[4 * posY + posX] : 0;
+    return (within_x && within_y) ? board[4 * pos_y + pos_x] : 0;
 }
 
-int checkOccupied(int* board, int posX, int posY) {
-    return getNodeValue(board, posX, posY) != 0;
+int check_occupied(int* board, int pos_x, int pos_y) {
+    return get_node_value(board, pos_x, pos_y) != 0;
 }
 
-int freeTiles(int* board) {
+int free_tiles(int* board) {
     int free_value = 0;
 
     for (int i = 0; i < 16; i++) {
@@ -505,7 +505,7 @@ int freeTiles(int* board) {
 }
 
 int amount_of_successors(int* board) {
-    return freeTiles(board) * 2;
+    return free_tiles(board) * 2;
 }
 
 int** generate_successors_max(int* board) {
