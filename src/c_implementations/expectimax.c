@@ -38,7 +38,7 @@ void print_board(int* board) {
 
 double max_value(int* board, int depth) {
     if (depth == 0 || is_impossible(board)) {
-        printf("%d\n", (int) evaluation_function(board));
+        printf("eval: %d depth: %d impossible: %d\n", (int) evaluation_function(board), depth, is_impossible(board));
         return evaluation_function(board);
     }
 
@@ -65,7 +65,7 @@ double max_value(int* board, int depth) {
 
 double chance_node(int* board, int depth) {
     if (depth == 0 || is_impossible(board)) {
-        printf("%d\n", (int) evaluation_function(board));
+        printf("eval: %d depth: %d impossible: %d\n", (int) evaluation_function(board), depth, is_impossible(board));
         return evaluation_function(board);
     }
     int successor_amount = amount_of_successors(board);
@@ -75,7 +75,7 @@ double chance_node(int* board, int depth) {
     int count = 0;
 
     for (int i=0; i < successor_amount; i++) {
-        double probability = successor_tiles[i];
+        double probability = (successor_tiles[i] == 2) ? 0.9 : 0.1;
         double value = probability *  max_value(successors[i], depth - 1);
 
         vs = vs + value;
@@ -319,7 +319,7 @@ double evaluation_function(int* board) {
                         9, 6, 5, 4,
                         10, 9, 8, 7};
 
-    int grid_component = INT_MIN;
+    int grid_component = -1;
 
     for(int k=0; k<4; k++) {
         int h = 0;
@@ -328,18 +328,17 @@ double evaluation_function(int* board) {
             for (int x = 0; x < 4; x++) {
                 int tile = 4 * y + x;
                 h += (int)mask[(k * 16) + tile] * (int)board[tile];
-
             }
         }
 
-        if(h > grid_component) {
+        if (h > grid_component) {
             grid_component = h;
         }
     }
 
-    double free_tiles_component = amount_of_successors(board);
+    double free_tiles_component = amount_of_successors(board) / 32.0;
 
-    return ((double)grid_component) + free_tiles_component;
+    return ((double)grid_component) * free_tiles_component;
 }
 
 int amount_of_successors(int* board) {
