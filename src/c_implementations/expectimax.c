@@ -46,7 +46,7 @@ double max_value(int* board, int depth) {
     int** successors = generate_successors_max(board);
 
     for (int i=0; i < successor_amount; i++) {
-        if(successors[i][16]==-1) {
+        if(successors[i][15]==-1) {
             continue;
         }
 
@@ -356,14 +356,14 @@ int amount_of_successors(int* board) {
 
 int** generate_successors_max(int* board) {
     num_successors = 0;
-    int** successors = (int**) malloc(sizeof(int*)*4);
+    int** successors = malloc(4 * sizeof(int*));
 
     for (int m=0; m<4; m++) {
-        int* successor = (int*) malloc(sizeof(int)*16);
-        memcpy(successor, board, sizeof(int)*16);
+        int* successor = malloc(16 * sizeof(int));
+        memcpy(successor, board, 16 * sizeof(int));
 
         if (move(m, successor)==0) {
-            successor[16] = -1;
+            successor[15] = -1;
         }
         successors[m] = successor;
         num_successors++;
@@ -389,14 +389,14 @@ int** generate_successors_chance(int* board) {
         }
     }
 
-    int** successors = (int**) malloc(sizeof(int*)*count*2);
+    int** successors = malloc(2 * count * sizeof(int*));
     int num_possibilities = 2;
     int possibilities[2] = { 2, 4 };
 
     for (int i=0; i < count; i++) {
         for (int p=0; p < num_possibilities; p++) {
-            int* successor = (int*) malloc(sizeof(int)*16);
-            memcpy(successor, board, sizeof(int)*16);
+            int* successor = malloc(16 * sizeof(int));
+            memcpy(successor, board, 16 * sizeof(int));
             successor[4*zero_tiles[i].x+zero_tiles[i].y] = possibilities[p];
 
             successors[num_successors] = successor;
@@ -408,8 +408,8 @@ int** generate_successors_chance(int* board) {
 }
 
 int* perform_action(int action, int* board) {
-    int* new_game = (int*) malloc(sizeof(int)*16);
-    memcpy(new_game, board, sizeof(int)*16);
+    int* new_game = malloc(16 * sizeof(int));
+    memcpy(new_game, board, 16 * sizeof(int));
 
     int did_move = move(action, new_game);
 
@@ -430,7 +430,7 @@ int decision(int depth, int b0, int b1, int b2, int b3, int b4, int b5, int b6,
     int max_action = -1;
     int arg_board[] = {b0, b1, b2, b3, b4, b5, b6, b7, b8,
                        b9, b10, b11, b12, b13, b14, b15};
-    int* start_board = (int*) malloc(sizeof(int)*16);
+    int* start_board = malloc(16 * sizeof(int));
 
     for (int i = 0; i < 16; i++) {
         start_board[i] = arg_board[i];
