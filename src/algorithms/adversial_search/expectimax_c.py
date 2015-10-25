@@ -11,14 +11,12 @@ class ExpectimaxC(object):
 
     def decision(self, board):
         b = board.board
-        d = self.depth
-        result = self.search.decision(d, b[0], b[1], b[2], b[3], b[4], b[5],
-                                         b[6], b[7], b[8], b[9], b[10],
-                                         b[11], b[12], b[13], b[14], b[15])
-        print(result)
+        result = self.search.decision(self.depth, b[0], b[1], b[2], b[3], b[4],
+                                      b[5], b[6], b[7], b[8], b[9], b[10],
+                                      b[11], b[12], b[13], b[14], b[15])
 
-        index = (result * 2) / 2
+        # print(result)
 
         mapping = ['left', 'up', 'right', 'down']
-        move = board.possible_moves[mapping[index]]
+        move = board.possible_moves[mapping[result]]
         return move

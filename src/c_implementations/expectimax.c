@@ -38,6 +38,7 @@ void print_board(int* board) {
 
 double max_value(int* board, int depth) {
     if (depth == 0 || is_impossible(board)) {
+        printf("%d\n", (int) evaluation_function(board));
         return evaluation_function(board);
     }
 
@@ -64,6 +65,7 @@ double max_value(int* board, int depth) {
 
 double chance_node(int* board, int depth) {
     if (depth == 0 || is_impossible(board)) {
+        printf("%d\n", (int) evaluation_function(board));
         return evaluation_function(board);
     }
     int successor_amount = amount_of_successors(board);
@@ -291,7 +293,7 @@ int is_impossible(int* board) {
 }
 
 double evaluation_function(int* board) {
-    if (is_impossible(board)==1) {
+    if (is_impossible(board)) {
         return 0;
     }
 
@@ -330,16 +332,14 @@ double evaluation_function(int* board) {
             }
         }
 
-        if(h>grid_component) {
+        if(h > grid_component) {
             grid_component = h;
         }
     }
 
+    double free_tiles_component = amount_of_successors(board);
 
-    double free_tiles_component = amount_of_successors(board) / (double) 2;
-
-    return ((double)grid_component) / free_tiles_component;
-    return 1;
+    return ((double)grid_component) + free_tiles_component;
 }
 
 int amount_of_successors(int* board) {
@@ -484,7 +484,7 @@ int decision_map(int depth, int* board) {
     return decision(depth, board[0], board[1], board[2], board[3], board[4], board[5], board[6], board[7],
                     board[8], board[9], board[10], board[11], board[12], board[13], board[14], board[15]);
 }
-
+/*
 int main() {
     int board[16] = {1, 0, 0, 0, 0, 0, 1, 1, 5, 5, 5, 3, 0, 3, 0, 0};
     int dec = decision(4, board[0], board[1], board[2], board[3], board[4], board[5],
@@ -528,7 +528,7 @@ int main() {
         printf("%d\n", dec);
     }
 }
-
+*/
 //int main() {
     // int board[16] = {};
 //    printf("%d", decision(4, 1, 0, 0, 0, 0, 0, 1, 1, 5, 5, 5, 3, 0, 3, 0, 0));
