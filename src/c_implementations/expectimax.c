@@ -295,7 +295,7 @@ int is_impossible(int* board) {
 
 double evaluation_function(int* board) {
     return ((smoothness(board) * 0.23) + maxTile(board) +
-            (log(freeTiles(board)) * 2.3) + maxPlacement(board) +
+            (freeTiles(board) * 2.3) + maxPlacement(board) +
             (order(board) * 1.9));
 }
 
@@ -492,16 +492,16 @@ int checkOccupied(int* board, int posX, int posY) {
     return getNodeValue(board, posX, posY) != 0;
 }
 
-double freeTiles(int* board) {
-    double free = 0;
+int freeTiles(int* board) {
+    int free_value = 0;
 
     for (int i = 0; i < 16; i++) {
         if (board[i] == 0) {
-            free++;
+            free_value++;
         }
     }
 
-    return free;
+    return free_value;
 }
 
 int amount_of_successors(int* board) {

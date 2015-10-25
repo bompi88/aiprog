@@ -13,7 +13,7 @@ double order(int* board);
 double maxTile(int* board);
 int getNodeValue(int* board, int posX, int posY);
 int checkOccupied(int* board, int posX, int posY);
-double freeTiles(int* board);
+int freeTiles(int* board);
 double smoothness(int *board);
 int get_neighbour_value(int* board, int x, int y, int direction);
 int amount_of_successors(int* board);
