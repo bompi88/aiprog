@@ -52,6 +52,14 @@ class Play2048State(object):
     def sum_tiles(self):
         return sum(self.board)
 
+    def max_tile(self):
+        max_tile = float('-inf')
+
+        for el in self.board:
+            max_tile = max(max_tile, el)
+
+        return max_tile
+
     def next_state(self):
         viable = []
         for x in range(4):
