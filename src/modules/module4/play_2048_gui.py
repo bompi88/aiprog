@@ -27,7 +27,7 @@ class Play2048GUI(QtGui.QFrame):
     def __init__(self, parent):
         QtGui.QFrame.__init__(self, parent)
 
-        self.depth = 5
+        self.depth = 2
         self.heuristic = RandomMove
         self.search = ExpectimaxC
 

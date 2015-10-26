@@ -1,8 +1,13 @@
 #ifndef AIPROG_EXPECTIMAX_H
 #define AIPROG_EXPECTIMAX_H
 
-double max_value(int* board, int depth);
-double chance_node(int* board, int depth);
+typedef struct {
+    int move;
+    double heuristic;
+} ExpectimaxNode;
+
+ExpectimaxNode max_value(int* board, int depth);
+ExpectimaxNode chance_node(int* board, int depth);
 int is_in_range(int num, int start, int end);
 int move(int move, int* board);
 int slides(int action, int* board, int perform);

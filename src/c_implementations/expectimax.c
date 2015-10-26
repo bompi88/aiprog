@@ -3,6 +3,7 @@
 #include <limits.h>
 #include <string.h>
 #include <math.h>
+//#include <time.h>
 #include "expectimax.h"
 
 typedef struct {
@@ -23,12 +24,14 @@ static int NO_MOVE_VECTOR[2] = { 0, 0 };
 static int successor_tiles[50];
 static int num_successors = 0;
 
-double max_value(int* board, int depth) {
-    if (depth == 0 || is_impossible(board)) {
-        return evaluation_function(board);
-    }
+ExpectimaxNode max_value(int* board, int depth) {
+    //if (depth == 0 || is_impossible(board)) {
+    //    return evaluation_function(board);
+    //}
 
-    double v = INT_MIN;
+    ExpectimaxNode v = {-1, INT_MIN};
+    ExpectimaxNode current = {-1, INT_MIN};
+
     int successor_amount = 4;
     int** successors = generate_successors_max(board);
 
@@ -37,10 +40,16 @@ double max_value(int* board, int depth) {
             continue;
         }
 
-        double value = chance_node(successors[i], depth - 1);
+        if (depth == 0) {
+            current.move = i;
+            current.heuristic = evaluation_function(successors[i]);
+        } else {
+            current = chance_node(successors[i], depth - 1);
+        }
 
-        if (value > v) {
-            v = value;
+        if (current.heuristic > v.heuristic) {
+            v.move = i;
+            v.heuristic = current.heuristic;
         }
     }
 
@@ -49,24 +58,51 @@ double max_value(int* board, int depth) {
     return v;
 }
 
-double chance_node(int* board, int depth) {
-    if (depth == 0 || is_impossible(board)) {
-        return evaluation_function(board);
-    }
+ExpectimaxNode chance_node(int* board, int depth) {
+    //if (depth == 0 || is_impossible(board)) {
+    //    return evaluation_function(board);
+    //}
     int successor_amount = amount_of_successors(board);
     int** successors = generate_successors_chance(board);
 
     double vs = 0;
     int count = 0;
 
-    for (int i=0; i < successor_amount; i++) {
-        double probability = (successor_tiles[i] == 2) ? 0.9 : 0.1;
-        double heuristic = max_value(successors[i], depth - 1);
+    /*
+    int successor_checks[4];
 
-        if (heuristic <= INT_MIN) {
-            continue;
+    if (successor_amount > 4) {
+        int rand_index = rand() % successor_amount;
+        int rand_index2 = rand() % successor_amount;
+        int rand_index3 = rand() % successor_amount;
+        int rand_index4 = rand() % successor_amount;
+
+        while (rand_index2 == rand_index) {
+            rand_index2 = rand() % successor_amount;
         }
 
+        while (rand_index3 == rand_index2 || rand_index3 == rand_index) {
+            rand_index3 = rand() % successor_amount;
+        }
+
+        while (rand_index4 == rand_index3 || rand_index4 == rand_index2 || rand_index4 == rand_index) {
+            rand_index4 = rand() % successor_amount;
+        }
+
+        successor_checks[0] = rand_index;
+        successor_checks[1] = rand_index2;
+        successor_checks[2] = rand_index3;
+        successor_checks[3] = rand_index4;
+        successor_amount = 4;
+    }
+    */
+
+    for (int i=0; i < successor_amount; i++) {
+        int successor = i;
+        ExpectimaxNode node = max_value(successors[successor], depth);
+        double heuristic = node.heuristic;
+
+        double probability = (successor_tiles[successor] == 2) ? 0.9 : 0.1;
         double value = probability * heuristic;
 
         vs += value;
@@ -75,7 +111,8 @@ double chance_node(int* board, int depth) {
 
     free(successors);
 
-    return vs / (double)count;
+    ExpectimaxNode chance_node = {-1, vs / (double)count};
+    return chance_node;
 }
 
 int is_in_range(int num, int start, int end) {
@@ -572,8 +609,7 @@ int* perform_action(int action, int* board) {
 int decision(int depth, int b0, int b1, int b2, int b3, int b4, int b5, int b6,
                         int b7, int b8, int b9, int b10, int b11, int b12,
                         int b13, int b14, int b15) {
-    double max_val = -INT_MAX;
-    int max_action = -1;
+    //srand((unsigned int)time(NULL));
     int arg_board[] = {b0, b1, b2, b3, b4, b5, b6, b7, b8,
                        b9, b10, b11, b12, b13, b14, b15};
     int* start_board = malloc(16 * sizeof(int));
@@ -582,24 +618,28 @@ int decision(int depth, int b0, int b1, int b2, int b3, int b4, int b5, int b6,
         start_board[i] = arg_board[i];
     }
 
-    for (int a=0; a < 4; a++) {
-        int *board = perform_action(a, start_board);
+    ExpectimaxNode max_node = {-1, INT_MIN};
 
-        if (board[15] == -1) {
-            continue;
-        }
+    max_node = max_value(start_board, depth);
 
-        double value = max_value(board, depth);
-
-        if (value > max_val) {
-            max_val = value;
-            max_action = a;
-        }
-        free(board);
-    }
+//    for (int a=0; a < 4; a++) {
+//        int *board = perform_action(a, start_board);
+//
+//        if (board[15] == -1) {
+//            continue;
+//        }
+//
+//        ExpectimaxNode node = max_value(board, depth);
+//
+//        if (node.heuristic > max_node.heuristic) {
+//            max_node.heuristic = node.heuristic;
+//            max_node.move = node.move;
+//        }
+//        free(board);
+//    }
     free(start_board);
 
-    return max_action;
+    return max_node.move;
 }
 
 int decision_map(int depth, int* board) {
