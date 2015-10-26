@@ -44,6 +44,8 @@ to the decision function implemented there. We had some interfacing issues betwe
 C and Python, so the function signature in C is uglier than it should have to
 be taking each tile in the board as a separate argument.
 
+\input{module_4/class_diagram}
+
 \section{Heuristics}
 
 The decision function in the C implementation uses ExpectiMax to find the best move.
@@ -67,7 +69,7 @@ The other idea of monotonicity is checked on both the x-axis and the y-axis, and
 the heuristic contributions of these are summed together. It checks that all the tiles
 on both the x-axis and the y-axis are sorted. This also gives the advantage of
 creating chains that can be merged together, and penalizes low tile values from
-entering "behind" large tiles.
+entering `behind' large tiles.
 
 Removing the highest tile from a save corner, and having a low value get trapped
 inside several large ones is the most common way of ending the game. Therefore
