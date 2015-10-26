@@ -39,7 +39,7 @@ double max_value(int* board, int depth) {
         return evaluation_function(board);
     }
 
-    double v = -INT_MAX;
+    double v = INT_MIN;
     int successor_amount = 4;
     int** successors = generate_successors_max(board);
 
