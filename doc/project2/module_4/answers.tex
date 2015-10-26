@@ -1,4 +1,74 @@
 \section{Overall structure and key elements of our Expectimax system}
+For this module we started writing in Python, as recommended by the course
+staff. However, maybe due to the inherit nature of Python, or due to mistakes
+in our first implementation we got pretty bad results using MiniMax with depth 3.
+Increasing the depth was slow, and we thought that the heuristic was smart enough
+that we should get tiles higher than the 512, and sometimes 1024 we were getting.
+
+Therefore we decided to look for alternatives. We considered Java, but did not
+want to rewrite our GUI. We could also have made a command line application in
+Java, as we knew the interface would be fairly simple with just giving in a depth
+and board, and getting back an integer representing a move. We feared that the
+cost of shelling to CLI application, and starting the JVM for every move would
+be a bottleneck.
+
+So in the end we decided to use the built-in Python library ctypes, to interface
+with a Expectimax implementation in C. We did not have a ton of experience using
+C, so there are probably many more optimizations that could be done. Mostly we
+ported our Python code line for line, and then a mixture of Valgrind to find
+which functions took the most time, and just plain old compiler optimizations
+to let GCC do our work for us. With this implementation we can go to depth 6
+in Expectimax, and if we generate C instead of 2C chance successors the
+movements are quite quick, in the order of 200ms. However, since we spent most
+of our time optimizing the weight in the evaluation function when the c program
+was somewhat slower, they are most suitable for 2C successors and only using depth 6.
+This actually gives better results than searching deeper.
+
+The code functions by having a Qt4 GUI written in Python 2.7, which
+manages the application window, and a 2048 Widget that draws the board.
+When the users presses play a QThread worker object is initialized which
+manages the Expectimax search. It has a Play2048Player which keeps track of
+Play2048States. Every move it sends the board to the widget which draws it.
+The state contains the board, represented as a List(16). Originally this
+state inherited a generic AdversialSearchState, but since the adversial
+search in the final code is implemented entirely in C, this extra
+genericity offered no benefit. The Play2048Player has a search field, which
+contain an instance of the class the implements an adversial search. This
+search only has to contain a decision(board) method which takes a board
+as an argument and returns a move representing the best possible action
+given the current board.
+
+In our final implementation the search in Play2048Player is an instance of
+ExpectimaxC. This is a simple proxy, which links to c .so-library and delegates
+to the decision function implemented there. We had some interfacing issues between
+C and Python, so the function signature in C is uglier than it should have to
+be taking each tile in the board as a separate argument.
 
 \section{Heuristics}
-* This is the most important section. Use mathematical expressions to illustrate the heuristics.
+
+The decision function in the C implementation uses ExpectiMax to find the best move.
+The evaluation function used has implemented ideas of smoothness, the highest tile
+on the current board, the amount of free tiles, the placement of the highest tile,
+be in a corner, on an edge or in the middle, and the monotonicity of the board.
+The constants in this equation can be supplied from the Python side, so we
+could create a test runner in Python which ran the search supplying different
+values for these constants.
+
+The two main ideas in this heuristic, aside from giving penalty to full board, and
+misplaced high tiles are smoothness and monotonicity. Smoothness gives penalty
+for the difference between neighbouring tiles. This means that neighbouring tiles
+which are close in value are preferred to stay close together. The value of this is
+that tiles can often be chained together in long tiles if we have for instance
+1024, 512, 218 and 126 on the bottom row. Getting a new 126 above our existing 126
+means we can get => 1024, 512, 218, 218 => 1024, 512, 512, x => 1024, 1024, x, x =>
+2048, x, x, x. The smoother the board, the better the chance of this happening.
+
+The other idea of monotonicity is checked on both the x-axis and the y-axis, and
+the heuristic contributions of these are summed together. It checks that all the tiles
+on both the x-axis and the y-axis are sorted. This also gives the advantage of
+creating chains that can be merged together, and penalizes low tile values from
+entering "behind" large tiles.
+
+Removing the highest tile from a save corner, and having a low value get trapped
+inside several large ones is the most common way of ending the game. Therefore
+almost all our contributions to the heuristic focueses on this not happening.
