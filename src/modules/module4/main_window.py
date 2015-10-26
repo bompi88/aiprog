@@ -4,6 +4,9 @@ from PyQt4.QtGui import QPixmap
 
 import res.imgs
 import res.play2048s
+import src.c_implementations
+
+from subprocess import call
 from src.utils.func import make_function
 from src.modules.module4.play_2048_gui import Play2048GUI
 
@@ -17,6 +20,15 @@ class MainWindow(QtGui.QMainWindow):
         self.gui = Play2048GUI(self)
         self.screenshot_count = 0
         self.init_ui()
+        welcome_message = 'Welcome! The default values are - '
+        welcome_message += 'depth: {}, heuristic {}, search {}'.format(
+                                self.gui.depth, self.gui.heuristic.__name__,
+                                self.gui.search.__name__
+                            )
+        self.gui.status_message.emit(welcome_message)
+
+        # compile c implementation of ExpectiMax
+        call(['{}/compile.sh'.format(src.c_implementations.__path__[0])])
 
     def init_ui(self):
         """ Initializes the UI, delegates to init_menubar and init_toolbar """

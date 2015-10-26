@@ -27,9 +27,9 @@ class Play2048GUI(QtGui.QFrame):
     def __init__(self, parent):
         QtGui.QFrame.__init__(self, parent)
 
-        self.depth = 1
+        self.depth = 5
         self.heuristic = RandomMove
-        self.search = Minimax
+        self.search = ExpectimaxC
 
         self.delay = 50
         self.worker = None
@@ -70,7 +70,6 @@ class Play2048GUI(QtGui.QFrame):
         self.setMinimumSize(size)
         self.parent().adjustSize()
         self.parent().setWindowTitle('Module 4 - 2048')
-        self.status_message.emit(str('Welcome'))
 
     def init_colors(self):
         self.colors = {

@@ -23,19 +23,8 @@ static int NO_MOVE_VECTOR[2] = { 0, 0 };
 static int successor_tiles[50];
 static int num_successors = 0;
 
-void print_board(int* board) {
-    for (int x=0; x<4; x++) {
-        for (int y=0; y<4; y++) {
-            printf("%d,", board[4*y+x]);
-        }
-        printf("\n");
-    }
-    printf("\n");
-}
-
 double max_value(int* board, int depth) {
     if (depth == 0 || is_impossible(board)) {
-        printf("eval: %f depth: %d impossible: %d\n", evaluation_function(board), depth, is_impossible(board));
         return evaluation_function(board);
     }
 
@@ -62,7 +51,6 @@ double max_value(int* board, int depth) {
 
 double chance_node(int* board, int depth) {
     if (depth == 0 || is_impossible(board)) {
-        printf("eval: %f depth: %d impossible: %d\n", evaluation_function(board), depth, is_impossible(board));
         return evaluation_function(board);
     }
     int successor_amount = amount_of_successors(board);
@@ -386,11 +374,11 @@ double smoothness(int *board) {
 
     for (int x = 0; x < 4; x++) {
         for (int y = 0; y < 4; y++) {
-            if (board[4*y+x] == 0) {
+            if (board[4 * y + x] == 0) {
                 continue;
             }
 
-            int value = board[4*x+y];
+            int value = board[4 * y + x];
 
             for (int m = 0; m < 4; m++) {
                 int target_val = get_neighbour_value(board, x, y, m);
