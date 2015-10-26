@@ -6,7 +6,6 @@ class Play2048Player(object):
         self.game = Play2048State()
 
         self.search = search(depth)
-        self.upped = False
 
         self.gui_worker = gui_worker
 
@@ -26,10 +25,6 @@ class Play2048Player(object):
 
                 if self.gui_worker:
                     self.gui_worker.move_completed()
-
-            if not self.upped and self.game.max_tile() > 10:  # 2048
-                self.upped = True
-                self.search.depth += 1
 
             if not self.game.is_possible():
                 ended = True

@@ -5,7 +5,7 @@ from src.algorithms.adversial_search.expectimax_c import ExpectimaxC
 
 
 def main():
-    plays = 2
+    plays = 10
 
     constants = [
         ('smoothness', 0.2),
