@@ -19,6 +19,7 @@ else
     find src -name '*.py' -o -name '*.c' -o -name '*.h' -o -name '*.sh' | cpio -pdm delivery
     find res -name '*.py' -o -name '*.txt' -o -name '*.png' | cpio -pdm delivery
     find tests -name '*.py' -o -name '*.c' -o -name '*.h' | cpio -pdm delivery
+    cp README.md delivery/README.md
     cp run.sh delivery/run.sh
     cp tests.sh delivery/tests.sh
 
