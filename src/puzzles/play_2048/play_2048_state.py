@@ -19,6 +19,14 @@ class Play2048State(object):
 
         board[4 * (tile % 4) + tile / 4] = value
 
+        tile_set = tile
+        while tile_set == tile:
+            tile = randint(0, 15)
+
+        value = 2 if randint(1, 10) is 10 else 1
+
+        board[4 * (tile % 4) + tile / 4] = value
+
         return board
 
     def perform(self, move):

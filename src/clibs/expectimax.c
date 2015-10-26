@@ -143,7 +143,7 @@ int amount_of_successors(int* board) {
         }
     }
 
-    return count;
+    return count * 2;
 }
 
 int** generate_successors_max(int* board) {
@@ -176,19 +176,22 @@ int** generate_successors_chance(int* board) {
         }
     }
 
-    int** successors = malloc(count * sizeof(int*));
+    int** successors = malloc(2 * count * sizeof(int*));
+    int num_possibilities = 2;
+    int possibilities[2] = { 2, 4 };
 
-    for (int i=0; i < count; i++) {
-        int* successor = malloc(16 * sizeof(int));
-        memcpy(successor, board, 16 * sizeof(int));
+    for (int i = 0; i < count; i++) {
+        for (int p = 0; p < num_possibilities; p++) {
+            int* successor = malloc(16 * sizeof(int));
+            memcpy(successor, board, 16 * sizeof(int));
 
-        int tile = (rand() % 10 == 0) ? TILE_4_VALUE : TILE_2_VALUE;
+            int tile = 4 * (zero_tiles[i] / 4) + (zero_tiles[i] % 4);
+            successor[tile] = possibilities[p];
 
-        successor[4 * (zero_tiles[i] / 4) + (zero_tiles[i] % 4)] = tile;
-
-        successors[num_successors] = successor;
-        successor_tiles[num_successors] = tile;
-        num_successors++;
+            successors[num_successors] = successor;
+            successor_tiles[num_successors] = possibilities[p];
+            num_successors++;
+        }
     }
     return successors;
 }

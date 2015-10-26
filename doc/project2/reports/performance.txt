@@ -1,0 +1,122 @@
+/usr/bin/python
+/Users/krisvage/Programmering/python/aiprog/tests/puzzles/play_2048/heuristics_performance.py
+Search: ExpectimaxC
+
+No changes run
+
+Smoothness: 0.2, Max tile: 0.9, Free tiles: 2.3
+Max placement: 1.0, Monotonicity: 1.9
+Average score: 28594.4
+Avg time: 2.56 s, tot: 25.60 s
+Best: 68256, worst: 7152
+All scores: [8220, 7824, 32772, 68256, 16884, 25392, 7152, 28084, 32840, 58520]
+Max tiles: [512, 512, 2048, 4096, 1024, 2048, 512, 2048, 2048, 4096]
+2048s: 4 of 10
+
+Playing with: Smoothness
+
+Smoothness: 0.18, Max tile: 0.9, Free tiles: 2.3
+Max placement: 1.0, Monotonicity: 1.9
+Average score: 20624.8
+Avg time: 2.08 s, tot: 20.84 s
+Best: 57324, worst: 5756
+All scores: [9720, 26572, 15408, 13848, 57324, 14916, 34076, 14412, 14216, 5756]
+Max tiles: [1024, 2048, 1024, 1024, 4096, 1024, 2048, 1024, 1024, 512]
+2048s: 2 of 10
+
+Smoothness: 0.22, Max tile: 0.9, Free tiles: 2.3
+Max placement: 1.0, Monotonicity: 1.9
+Average score: 17192.8
+Avg time: 1.99 s, tot: 19.87 s
+Best: 36200, worst: 5464
+All scores: [17096, 15916, 5464, 23964, 22496, 7840, 36200, 14096, 20056, 8800]
+Max tiles: [1024, 1024, 512, 2048, 2048, 512, 2048, 1024, 1024, 512]
+2048s: 3 of 10
+
+Playing with: Max_tile
+
+Smoothness: 0.2, Max tile: 0.81, Free tiles: 2.3
+Max placement: 1.0, Monotonicity: 1.9
+Average score: 21037.6
+Avg time: 2.35 s, tot: 23.51 s
+Best: 36792, worst: 14352
+All scores: [14836, 16132, 17964, 18152, 36792, 22524, 17508, 14352, 18176,
+33940]
+Max tiles: [1024, 1024, 1024, 1024, 2048, 2048, 1024, 1024, 1024, 2048]
+2048s: 3 of 10
+
+Smoothness: 0.2, Max tile: 0.99, Free tiles: 2.3
+Max placement: 1.0, Monotonicity: 1.9
+Average score: 22116.8
+Avg time: 2.00 s, tot: 20.01 s
+Best: 35964, worst: 7368
+All scores: [18416, 35964, 33276, 17336, 14860, 32820, 13044, 15804, 7368,
+32280]
+Max tiles: [1024, 2048, 2048, 1024, 1024, 2048, 1024, 1024, 512, 2048]
+2048s: 4 of 10
+
+Playing with: Free_tiles
+
+Smoothness: 0.2, Max tile: 0.9, Free tiles: 2.07
+Max placement: 1.0, Monotonicity: 1.9
+Average score: 15605.2
+Avg time: 1.58 s, tot: 15.83 s
+Best: 31704, worst: 6916
+All scores: [6916, 18344, 15220, 8788, 12064, 11492, 14560, 22504, 31704, 14460]
+Max tiles: [512, 1024, 1024, 512, 1024, 1024, 1024, 1024, 2048, 1024]
+2048s: 1 of 10
+
+Smoothness: 0.2, Max tile: 0.9, Free tiles: 2.53
+Max placement: 1.0, Monotonicity: 1.9
+Average score: 20782.0
+Avg time: 2.04 s, tot: 20.40 s
+Best: 37888, worst: 8016
+All scores: [28732, 19996, 16180, 17880, 8016, 18456, 33072, 37888, 12180,
+15420]
+Max tiles: [2048, 1024, 1024, 1024, 512, 1024, 2048, 2048, 1024, 1024]
+2048s: 3 of 10
+
+Playing with: Max_placement
+
+Smoothness: 0.2, Max tile: 0.9, Free tiles: 2.3
+Max placement: 0.9, Monotonicity: 1.9
+Average score: 20717.6
+Avg time: 2.14 s, tot: 21.38 s
+Best: 33848, worst: 11988
+All scores: [33848, 24928, 16164, 14952, 26484, 12552, 26960, 23116, 11988,
+16184]
+Max tiles: [2048, 2048, 1024, 1024, 2048, 1024, 2048, 2048, 1024, 1024]
+2048s: 5 of 10
+
+Smoothness: 0.2, Max tile: 0.9, Free tiles: 2.3
+Max placement: 1.1, Monotonicity: 1.9
+Average score: 17720.4
+Avg time: 2.05 s, tot: 20.47 s
+Best: 35408, worst: 6160
+All scores: [20416, 35408, 28604, 17048, 6160, 16424, 7328, 14188, 15864, 15764]
+Max tiles: [1024, 2048, 2048, 1024, 512, 1024, 512, 1024, 1024, 1024]
+2048s: 2 of 10
+
+Playing with: Monotonicity
+
+Smoothness: 0.2, Max tile: 0.9, Free tiles: 2.3
+Max placement: 1.0, Monotonicity: 1.71
+Average score: 19433.6
+Avg time: 1.95 s, tot: 19.47 s
+Best: 36316, worst: 7584
+All scores: [36316, 24572, 30488, 7584, 11944, 17716, 12884, 20236, 7800, 24796]
+Max tiles: [2048, 2048, 2048, 512, 1024, 1024, 1024, 1024, 512, 2048]
+2048s: 4 of 10
+
+Smoothness: 0.2, Max tile: 0.9, Free tiles: 2.3
+Max placement: 1.0, Monotonicity: 2.09
+Average score: 24885.6
+Avg time: 2.47 s, tot: 24.69 s
+Best: 37100, worst: 12900
+All scores: [28248, 16304, 23596, 15768, 17652, 37100, 35160, 30624, 12900,
+31504]
+Max tiles: [2048, 1024, 2048, 1024, 1024, 2048, 2048, 2048, 1024, 2048]
+2048s: 6 of 10
+
+Highest score: 68256
+Highest tile: 4096
