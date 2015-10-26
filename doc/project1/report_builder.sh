@@ -21,4 +21,4 @@ echo "Making Project 1"
 pdflatex -output-directory=tmp project > /dev/null
 
 echo "Moving Project 1"
-mv tmp/project.pdf pdfs/project_1.pdf
+mv tmp/project.pdf pdfs/project1.pdf
