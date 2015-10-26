@@ -14,7 +14,7 @@ def main():
         ('max_placement', 1.0),
         ('monotonicity', 1.9)
     ]
-    multipliers = [1, 0.9, 1.10]
+    multipliers = [1, 0.9, 1.10, 0.5, 2, 0.1, 10]
 
     search = ExpectimaxC
     depth = 2
