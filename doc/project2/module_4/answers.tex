@@ -4,7 +4,7 @@ staff. However, maybe due to the inherit nature of Python or due to mistakes
 done in our first implementation, we got pretty bad results using MiniMax with a depth of 3.
 Increasing the depth resulted in really slow running times, and we thought that our heuristic was smart enough to get the job done, as long as the search could go deeper. At this time, we mostly got tiles of 512, but occasionally also tiles of value 1024. This was not good enough.
 
-Therefore we decided to look for faster alternatives, that could potentially process more nodes in the same amount of time. We considered Java, but did not want to rewrite our slick GUI. We could also have created a command line application in
+Therefore we decided to look for faster alternatives, that could potentially process to deeper levels in the same amount of time. We considered Java, but did not want to rewrite our slick GUI. We could also have created a command line application in
 Java, as the interface would be fairly simple; just simply providing a maximum depth
 and a board, and getting back an integer representing a move in either direction. We feared that the
 cost of shelling to CLI application and starting the JVM for every move, would
@@ -12,35 +12,34 @@ be a bottleneck.
 
 So in the end we decided to use the built-in Python library ctypes, to interface
 with an Expectimax implementation in C. We did not have a ton of experience using
-C, so it is probably a lot of additional optimizations that could have been done. Mostly we
-ported our Python code line for line, and then a mixture of Valgrind to find
-which functions took the most time, and just plain old compiler optimizations
-to let GCC do our work for us. With this implementation we can go to depth 6
-in Expectimax, and if we generate C instead of 2C chance successors the
+C, so there is probably a lot of additional optimizations that could have been done. Mostly we
+ported our Python code line for line. To optimize our implementation we did a mixture of profiling in Valgrind to find
+which functions took the most time, and performing plain old compiler optimizations through setting a different GCC optimization flag. By doing this, GCC did a lot of work for us. After those optimizations, we now achieve a depth of 6
+in Expectimax, and if we generate only C - instead of 2C - chance successors, the
 movements are quite quick, in the order of 200ms. However, since we spent most
-of our time optimizing the weight in the evaluation function when the c program
-was somewhat slower, they are most suitable for 2C successors and only using depth 6.
-This actually gives better results than searching deeper.
+of our time optimizing the weights in the evaluation function when the c program
+was somewhat slower, they weights are most suitable for 2C successors and by only using a depth of 6.
+By searching deeper than this, the results actually get worse, while using our tuned weights.
 
 The code functions by having a Qt4 GUI written in Python 2.7, which
-manages the application window, and a 2048 Widget that draws the board.
-When the users presses play a QThread worker object is initialized which
-manages the Expectimax search. It has a Play2048Player which keeps track of
-Play2048States. Every move it sends the board to the widget which draws it.
-The state contains the board, represented as a List(16). Originally this
-state inherited a generic AdversialSearchState, but since the adversial
+manages the application window and a 2048 Widget that draws the board.
+When the user presses play, a QThread worker object is initialized, which
+manages the Expectimax search. It has a \emph{Play2048Player}, which keeps track of
+\emph{Play2048State}s. After every move, it sends the board to the widget, which then draws it.
+The state contains the board, represented as a \(List(16)\). Originally this
+state inherited a generic \emph{AdversialSearchState}, but since the adversial
 search in the final code is implemented entirely in C, this extra
-genericity offered no benefit. The Play2048Player has a search field, which
-contain an instance of the class the implements an adversial search. This
-search only has to contain a decision(board) method which takes a board
+genericity offered no benefit at all. The \emph{Play2048Player} has a search field, which
+contains an instance of the class that is an implementation of an adversial search algorithm. This
+search class only has to contain a \emph{decision(board)} method which takes a board
 as an argument and returns a move representing the best possible action
 given the current board.
 
-In our final implementation the search in Play2048Player is an instance of
-ExpectimaxC. This is a simple proxy, which links to c .so-library and delegates
-to the decision function implemented there. We had some interfacing issues between
+In our final implementation, the search in \emph{Play2048Player} is an instance of
+\emph{ExpectimaxC}. This is a simple proxy, which links to c .so-library and delegates
+to the decision function implemented there. We had some interface issues between
 C and Python, so the function signature in C is uglier than it should have to
-be taking each tile in the board as a separate argument.
+be; taking each tile in the board as a separate argument.
 
 \input{module_4/class_diagram}
 
