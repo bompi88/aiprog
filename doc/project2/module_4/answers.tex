@@ -7,7 +7,7 @@ Increasing the depth resulted in really slow running times, and we thought that 
 Therefore we decided to look for faster alternatives, that could potentially process to deeper levels in the same amount of time. We considered Java, but did not want to rewrite our slick GUI. We could also have created a command line application in
 Java, as the interface would be fairly simple; just simply providing a maximum depth
 and a board, and getting back an integer representing a move in either direction. We feared that the
-cost of shelling to CLI application and starting the JVM for every move, would
+cost of shelling to a CLI application and starting the JVM for every move, would
 be a bottleneck.
 
 So in the end we decided to use the built-in Python library ctypes, to interface
@@ -17,7 +17,7 @@ ported our Python code line for line. To optimize our implementation we did a mi
 which functions took the most time, and performing plain old compiler optimizations through setting a different GCC optimization flag. By doing this, GCC did a lot of work for us. After those optimizations, we now achieve a depth of 6
 in Expectimax, and if we generate only C - instead of 2C - chance successors, the
 movements are quite quick, in the order of 200ms. However, since we spent most
-of our time optimizing the weights in the evaluation function when the c program
+of our time optimizing the weights in the evaluation function when the C-program
 was somewhat slower, they weights are most suitable for 2C successors and by only using a depth of 6.
 By searching deeper than this, the results actually get worse, while using our tuned weights.
 
@@ -40,6 +40,8 @@ In our final implementation, the search in \emph{Play2048Player} is an instance 
 to the decision function implemented there. We had some interface issues between
 C and Python, so the function signature in C is uglier than it should have to
 be; taking each tile in the board as a separate argument.
+
+Our code and heuristic takes heavy inspiration from ovolve's StackOverflow answer here\footnote{http://stackoverflow.com/questions/22342854/what-is-the-optimal-algorithm-for-the-game-2048} and implementation.\footnote{https://github.com/ov3y/2048-AI}
 
 \input{module_4/class_diagram}
 
