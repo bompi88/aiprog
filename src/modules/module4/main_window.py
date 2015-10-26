@@ -144,7 +144,7 @@ class MainWindow(QtGui.QMainWindow):
         path = res.play2048s.__path__[0] + '/'
         screenshots = path + '*.jpg'
         gif = path + 'animated.gif'
-        cmd = 'convert -delay 15 -loop 0 -coalesce -layers OptimizeFrame '
+        cmd = 'convert -delay 15 -loop 1 -colors 256 -layers Optimize '
         cmd += '{} {}'.format(screenshots, gif)
 
         call([cmd], shell=True)

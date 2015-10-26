@@ -1,5 +1,7 @@
 # Created by https://www.gitignore.io/api/osx,windows,pycharm,python
 
+*.gif
+
 ### Cmake ###
 *.cmake
 Makefile
