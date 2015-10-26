@@ -7,7 +7,7 @@ include_directories(
 
 find_library(LIBCHECK NAMES libcheck.dylib)
 set(LIBS ${LIBS} source_lib ${LIBCHECK})
-include_directories(. ${CMAKE_SOURCE_DIR}/src/c_implementations)
+include_directories(. ${CMAKE_SOURCE_DIR}/src/clibs)
 
 add_executable(aiprog_tests algorithms/adversial_search/play_2048/test_c_implementation.c)
 

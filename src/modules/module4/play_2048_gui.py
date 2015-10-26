@@ -105,6 +105,11 @@ class Play2048GUI(QtGui.QFrame):
         self.end_search()
         self.start()
 
+    def game_ended(self):
+        self.status_message.emit('Game ended')
+        if self.take_screenshots:
+            self.parent().animate()
+
     def start_manual_game(self):
         self.start(True)
 

@@ -17,7 +17,7 @@ class Play2048Worker(QThread):
     def run(self):
         self.player.play()
 
-        self.gui.status_message.emit('Game ended')
+        self.gui.game_ended()
 
     def move_completed(self):
         if self.gui.take_screenshots:

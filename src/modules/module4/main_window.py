@@ -4,7 +4,7 @@ from PyQt4.QtGui import QPixmap
 
 import res.imgs
 import res.play2048s
-import src.c_implementations
+import src.clibs
 
 from subprocess import call
 from src.utils.func import make_function
@@ -28,7 +28,7 @@ class MainWindow(QtGui.QMainWindow):
         self.gui.status_message.emit(welcome_message)
 
         # compile c implementation of ExpectiMax
-        call(['{}/compile.sh'.format(src.c_implementations.__path__[0])])
+        call(['{}/compile.sh'.format(src.clibs.__path__[0])])
 
     def init_ui(self):
         """ Initializes the UI, delegates to init_menubar and init_toolbar """
@@ -134,11 +134,21 @@ class MainWindow(QtGui.QMainWindow):
 
     def shoot(self):
         path = res.play2048s.__path__[0]
-        filename = '/screenshot-' + str(self.screenshot_count) + '.jpg'
+        filename = '/screenshot-' + str(self.screenshot_count).zfill(6) + '.jpg'
 
         window = QPixmap.grabWidget(self.window())
         window.save(path + filename, 'jpg')
         self.screenshot_count += 1
+
+    def animate(self):
+        path = res.play2048s.__path__[0] + '/'
+        screenshots = path + '*.jpg'
+        gif = path + 'animated.gif'
+        cmd = 'convert -delay 15 -loop 0 -coalesce -layers OptimizeFrame '
+        cmd += '{} {}'.format(screenshots, gif)
+
+        call([cmd], shell=True)
+        self.gui.status_message.emit('Created gif')
 
 
 def main():
