@@ -7,12 +7,12 @@ from src.puzzles.play_2048.play_2048_player import Play2048Player
 class Play2048Worker(QThread):
     """ Inherit QThread for easy threading """
 
-    def __init__(self, gui, heuristic):
+    def __init__(self, gui):
         QThread.__init__(self, None)
         self.exiting = False
 
         self.gui = gui
-        self.player = Play2048Player(heuristic, gui.search, gui.depth, self)
+        self.player = Play2048Player(gui.search, gui.depth, self)
 
     def run(self):
         self.player.play()

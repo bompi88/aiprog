@@ -20,14 +20,13 @@ class MainWindow(QtGui.QMainWindow):
         self.gui = Play2048GUI(self)
         self.screenshot_count = 0
         self.init_ui()
-        welcome_message = 'Welcome! The default values are - '
-        welcome_message += 'depth: {}, heuristic {}, search {}'.format(
-                                self.gui.depth, self.gui.heuristic.__name__,
-                                self.gui.search.__name__
-                            )
+        welcome_message = 'Welcome! Depth: {}, Search: {}'.format(
+            self.gui.depth,
+            self.gui.search.__name__
+        )
         self.gui.status_message.emit(welcome_message)
 
-        # compile c implementation of ExpectiMax
+        # Compile c implementation of Expectimax
         call(['{}/compile.sh'.format(src.clibs.__path__[0])])
 
     def init_ui(self):
@@ -53,18 +52,15 @@ class MainWindow(QtGui.QMainWindow):
     def init_menubar(self):
         """ Initializes a menubar with the following items:
         File -> [ Kill, Reset, Exit ]
-        Delay -> [ 10 ms, 50 ms, 150 ms, 500 ms, 1000 ms, 2000 ms ]
+        Delay -> [ 10 ms, 50 ms, 150 ms, 500 ms ]
         Screenshots -> [ On, Off ]
-        Depth -> [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
-        Heuristic -> [ Random, Snake, Corner, Ov3y ]
+        Depth -> [ 2, 3 ]
         """
         menu = self.menuBar()
         file_menu = menu.addMenu('&File')
         delay_menu = menu.addMenu('&Delay')
         screenshots_menu = menu.addMenu('&Screenshots')
         depth_menu = menu.addMenu('&Depth')
-        heuristic_menu = menu.addMenu('&Heuristic')
-        search_type_menu = menu.addMenu('&Search type')
 
         kill_action = QtGui.QAction('&Kill game', self)
         kill_action.setShortcut('Ctrl+K')
@@ -80,7 +76,7 @@ class MainWindow(QtGui.QMainWindow):
         exit_action.triggered.connect(QtGui.qApp.quit)
         file_menu.addAction(exit_action)
 
-        delays = [0, 50, 150, 500, 1000, 2000]
+        delays = [0, 50, 150, 500]
         for delay in delays:
             delay_action = QtGui.QAction('&' + str(delay) + ' ms', self)
             expr = 'self.gui.set_delay({})'.format(delay)
@@ -95,28 +91,12 @@ class MainWindow(QtGui.QMainWindow):
         screens_off.triggered.connect(lambda: self.gui.set_screenshots(False))
         screenshots_menu.addAction(screens_off)
 
-        depths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        depths = [2, 3]
         for depth in depths:
             depth_action = QtGui.QAction('&' + str(depth), self)
             expr = 'self.gui.set_depth({})'.format(depth)
             depth_action.triggered.connect(make_function([], expr, locals()))
             depth_menu.addAction(depth_action)
-
-        heuristics = ['Random', 'Snake', 'Corner', 'Ov3y']
-        for heuristic in heuristics:
-            heuristic_action = QtGui.QAction('&' + heuristic, self)
-            exp = 'self.gui.set_heuristic("{}")'.format(heuristic)
-            heuristic_action.triggered.connect(make_function([], exp, locals()))
-            heuristic_menu.addAction(heuristic_action)
-
-        search_types = ['Minimax', 'MinimaxAlphaBeta',
-                        'Expectimax', 'Expectimax C']
-        for search_type in search_types:
-            search_type_action = QtGui.QAction('&' + search_type, self)
-            exp = 'self.gui.set_search_type("{}")'.format(search_type)
-            lambda_func = make_function([], exp, locals())
-            search_type_action.triggered.connect(lambda_func)
-            search_type_menu.addAction(search_type_action)
 
     def init_toolbar(self):
         """ Initializes a toolbar, with a run button and delay controls """

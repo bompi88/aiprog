@@ -5,12 +5,10 @@ from copy import deepcopy
 from src.puzzles.play_2048.play_2048_state import Play2048State
 from src.puzzles.play_2048.play_2048_player import Play2048Player
 
-from src.puzzles.play_2048.heuristics.snake_gradient import SnakeGradient
-
 
 class TestPlay2048Player(unittest.TestCase):
     def setUp(self):
-        self.game = Play2048State(SnakeGradient)
+        self.game = Play2048State()
         self.actions = Play2048Player.actions()
         self.moves = self.actions.values()
 

@@ -1,19 +1,14 @@
 from random import randint
 from copy import copy
 
-from src.algorithms.adversial_search.search_state import SearchState
 
-
-class Play2048State(SearchState):
-    def __init__(self, heuristic):
+class Play2048State(object):
+    def __init__(self):
         self.board = self.start_board()
-        self.successors = None
-        self.successor_tiles = None
 
         self.possible_moves = {'left': [-1, 0], 'up': [0, -1],
                                'right': [1, 0], 'down': [0, 1]}
         self.score = 0
-        self.heuristic = heuristic
 
     @staticmethod
     def start_board():
@@ -36,7 +31,7 @@ class Play2048State(SearchState):
             return None
 
     def copy_with_board(self, board):
-        new_state = Play2048State(self.heuristic)
+        new_state = Play2048State()
         new_state.score = self.score
         new_state.board = board
 
@@ -51,67 +46,11 @@ class Play2048State(SearchState):
 
         return False
 
-    def free_tiles(self):
-        return 16 - self.set_tiles()
-
     def set_tiles(self):
         return sum([0 if tile is 0 else 1 for tile in self.board])
 
     def sum_tiles(self):
         return sum(self.board)
-
-    def max_tile(self):
-        max_tile = float('-inf')
-
-        for el in self.board:
-            max_tile = max(max_tile, el)
-
-        return max_tile
-
-    def cutoff_test(self, depth):
-        return depth is 0 or not self.is_possible()
-
-    def generate_successors(self, is_max):
-        self.successors = []
-
-        if is_max:
-            self.successor_moves()
-        else:
-            self.successor_tiles = []
-            self.successor_spawns()
-
-        return self.successors
-
-    def successor_moves(self):
-        for move in self.possible_moves.values():
-            successor = self.copy_with_board(copy(self.board))
-
-            if successor.move(move):
-                self.successors.append(successor)
-
-    def successor_spawns(self):
-        zero_tiles = []
-        for x in range(4):
-            for y in range(4):
-                if self.board[4 * y + x] is 0:
-                    zero_tiles.append((x, y))
-
-        possibilities = [1, 2]
-
-        for tile in zero_tiles:
-            for possibility in possibilities:
-                new_board = copy(self.board)
-                new_board[4 * tile[1] + tile[0]] = possibility
-
-                successor = self.copy_with_board(new_board)
-                self.successors.append(successor)
-                self.successor_tiles.append(possibility)
-
-    def evaluation_function(self):
-        if not self.is_possible():
-            return 0
-
-        return self.heuristic.evaluation_function(self)
 
     def next_state(self):
         viable = []

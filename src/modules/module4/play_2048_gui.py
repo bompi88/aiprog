@@ -4,16 +4,9 @@ from PyQt4.QtCore import pyqtSignal
 
 from src.modules.module4.utils.play_2048_worker import Play2048Worker
 from src.modules.module4.utils.play_2048_manual import Play2048Manual
-from src.algorithms.adversial_search.minimax import Minimax
-from src.algorithms.adversial_search.minimax_alpha_beta import MinimaxAlphaBeta
-from src.algorithms.adversial_search.expectimax import Expectimax
 from src.algorithms.adversial_search.expectimax_c import ExpectimaxC
 
 from src.puzzles.play_2048.play_2048_player import Play2048Player
-from src.puzzles.play_2048.heuristics.random_move import RandomMove
-from src.puzzles.play_2048.heuristics.snake_gradient import SnakeGradient
-from src.puzzles.play_2048.heuristics.corner_gradient import CornerGradient
-from src.puzzles.play_2048.heuristics.ov3y import Ov3y
 
 from math import log
 
@@ -28,7 +21,6 @@ class Play2048GUI(QtGui.QFrame):
         QtGui.QFrame.__init__(self, parent)
 
         self.depth = 2
-        self.heuristic = RandomMove
         self.search = ExpectimaxC
 
         self.delay = 50
@@ -131,7 +123,7 @@ class Play2048GUI(QtGui.QFrame):
         if manual:
             self.worker = Play2048Manual(self)
         else:
-            self.worker = Play2048Worker(self, self.heuristic)
+            self.worker = Play2048Worker(self)
             self.worker.start()
 
         self.started = True
@@ -231,30 +223,6 @@ class Play2048GUI(QtGui.QFrame):
     def set_depth(self, depth):
         self.depth = depth
         self.status_message.emit('Depth: ' + str(depth))
-
-    def set_heuristic(self, heuristic):
-        if heuristic == 'Random':
-            self.heuristic = RandomMove
-        elif heuristic == 'Snake':
-            self.heuristic = SnakeGradient
-        elif heuristic == 'Corner':
-            self.heuristic = CornerGradient
-        elif heuristic == 'Ov3y':
-            self.heuristic = Ov3y
-
-        self.status_message.emit('Heuristic: ' + self.heuristic.__name__)
-
-    def set_search_type(self, search_type):
-        if search_type == 'Minimax':
-            self.search = Minimax
-        elif search_type == 'MinimaxAlphaBeta':
-            self.search = MinimaxAlphaBeta
-        elif search_type == 'Expectimax':
-            self.search = Expectimax
-        elif search_type == 'Expectimax C':
-            self.search = ExpectimaxC
-
-        self.status_message.emit('Search: ' + self.search.__name__)
 
     def set_screenshots(self, take_screenshots):
         self.take_screenshots = take_screenshots

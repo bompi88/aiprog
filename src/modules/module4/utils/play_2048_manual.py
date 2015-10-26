@@ -4,7 +4,7 @@ from src.puzzles.play_2048.play_2048_state import Play2048State
 class Play2048Manual(object):
     def __init__(self, gui):
         self.gui = gui
-        self.game = Play2048State(None)
+        self.game = Play2048State()
 
     def do_move(self, move):
         if not self.gui.started:
