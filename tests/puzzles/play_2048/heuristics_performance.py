@@ -8,13 +8,13 @@ def main():
     plays = 10
 
     constants = [
-        ('smoothness', 0.23),
-        ('max_tile', 1.0),
+        ('smoothness', 0.2),
+        ('max_tile', 0.9),
         ('free_tiles', 2.3),
         ('max_placement', 1.0),
         ('monotonicity', 1.9)
     ]
-    multipliers = [0.9, 1, 1.10]
+    multipliers = [1, 0.9, 1.10]
 
     search = ExpectimaxC
     depth = 2
@@ -23,15 +23,20 @@ def main():
 
     did_one = False
 
+    high_score = 0
+    highest_tile = 0
+
     for constant in constants:
-        print('Playing with: ' + str(constant[0]).capitalize())
-        print('')
+        if did_one:
+            print('Playing with: ' + str(constant[0]).capitalize())
+            print('')
 
         for multiplier in multipliers:
             if multiplier == 1 and did_one:
                 continue
 
             if multiplier == 1:
+                print "No changes run\n"
                 did_one = True
 
             max_tiles = []
@@ -66,6 +71,12 @@ def main():
             average = sum(scores) / float(plays)
             avg_t = tot_t / float(plays)
 
+            if max(scores) > high_score:
+                high_score = max(scores)
+
+            if max(max_tiles) > highest_tile:
+                highest_tile = max(max_tiles)
+
             print('Smoothness: {}, Max tile: {}, Free tiles: {}'.format(
                 player.search.smoothness_constant,
                 player.search.max_tile_constant,
@@ -82,6 +93,13 @@ def main():
             print('Max tiles: ' + str(max_tiles))
             print('2048s: {} of {}'.format(max_tiles.count(2048), plays))
             print('')
+
+            if multiplier == 1:
+                print('Playing with: ' + str(constant[0]).capitalize())
+                print('')
+
+    print 'Highest score: ' + str(high_score)
+    print 'Highest tile: ' + str(highest_tile)
 
 if __name__ == '__main__':
     main()

@@ -9,8 +9,8 @@ class ExpectimaxC(object):
 
         self.depth = depth
 
-        self.smoothness_constant = 0.23
-        self.max_tile_constant = 1.0
+        self.smoothness_constant = 0.2
+        self.max_tile_constant = 0.9
         self.free_tiles_constant = 2.3
         self.max_placement_constant = 1.0
         self.monotonicity_constant = 1.9

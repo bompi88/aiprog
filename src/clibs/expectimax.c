@@ -60,7 +60,7 @@ int decision(int depth, BOARD_ARGS, HEURISTIC_CONSTANTS) {
 }
 
 int decision_map(int depth, int* board) {
-    return decision(depth, BOARD_ARGS_ELEMENTS, 0.23, 1.0, 2.3, 1.0, 1.9);
+    return decision(depth, BOARD_ARGS_ELEMENTS, 0.2, 0.9, 2.3, 1.0, 1.9);
 }
 
 ExpectimaxNode max_value(int* board, int depth) {
