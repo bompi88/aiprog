@@ -3,7 +3,7 @@ import src.clibs
 
 
 class ExpectimaxC(object):
-    def __init__(self, _, depth):
+    def __init__(self, depth):
         self.path = src.clibs.__path__[0] + '/expectimax_lib.so'
         self.search = ctypes.CDLL(self.path)
 
@@ -30,3 +30,21 @@ class ExpectimaxC(object):
         mapping = ['left', 'up', 'right', 'down']
         move = board.possible_moves[mapping[result]]
         return move
+
+
+def main():
+    from src.puzzles.play_2048.play_2048_state import Play2048State
+    game = Play2048State()
+    game.board = [0, 0, 0, 1, 2, 3, 4, 0, 3, 2, 1, 0, 1, 2, 3, 4]
+    search = ExpectimaxC(3)
+
+    correct_decision = [0, 1]
+
+    for _ in range(20):
+        decision = search.decision(game)
+        if decision != correct_decision:
+            print 'Something broke!'
+
+
+if __name__ == '__main__':
+    main()

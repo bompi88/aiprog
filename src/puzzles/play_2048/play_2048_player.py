@@ -5,7 +5,7 @@ class Play2048Player(object):
     def __init__(self, search, depth, gui_worker=None):
         self.game = Play2048State()
 
-        self.search = search(self.actions().values(), depth)
+        self.search = search(depth)
         self.upped = False
 
         self.gui_worker = gui_worker

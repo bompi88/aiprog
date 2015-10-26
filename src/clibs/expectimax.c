@@ -3,12 +3,8 @@
 #include <limits.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 #include "expectimax.h"
-
-typedef struct {
-    int x;
-    int y;
-} Vector;
 
 #define LEFT 0
 #define UP 1
@@ -22,6 +18,14 @@ static int UP_VECTOR[2] = { 0, -1 };
 static int RIGHT_VECTOR[2] = { 1, 0 };
 static int DOWN_VECTOR[2] = { 0, 1 };
 static int NO_MOVE_VECTOR[2] = { 0, 0 };
+
+#define TILE_0_VALUE 0
+#define TILE_2_VALUE 1
+#define TILE_4_VALUE 2
+
+#define TRUE 1
+#define FALSE 0
+#define IS_FALSE ==0
 
 #define HEURISTIC_CONSTANTS double smoothness, double max_tile, double free_tiles_multiplier, double max_placement, double monotonicity
 
@@ -41,6 +45,8 @@ int main() {
 }
 
 int decision(int depth, BOARD_ARGS, HEURISTIC_CONSTANTS) {
+    srand((unsigned int)time(NULL));
+
     int arg_board[] = {BOARD_ARGS_VALUES};
 
     smoothness_constant = smoothness;
@@ -75,7 +81,7 @@ ExpectimaxNode max_value(int* board, int depth) {
             continue;
         }
 
-        if (depth == 0) {
+        if (depth IS_FALSE) {
             current.move = i;
             current.heuristic = evaluation_function(successors[i]);
         } else {
@@ -108,7 +114,7 @@ ExpectimaxNode chance_node(int* board, int depth) {
         ExpectimaxNode node = max_value(successors[i], depth);
         double heuristic = node.heuristic;
 
-        double probability = (successor_tiles[i] == 2) ? 0.9 : 0.1;
+        double probability = (successor_tiles[i] == TILE_2_VALUE) ? 0.9 : 0.1;
         double value = probability * heuristic;
 
         vs += value;
@@ -132,12 +138,12 @@ int amount_of_successors(int* board) {
     int count = 0;
 
     for (int i = 0; i < 16; i++) {
-        if (board[i] == 0) {
+        if (board[i] == TILE_0_VALUE) {
             count++;
         }
     }
 
-    return count * 2;
+    return count;
 }
 
 int** generate_successors_max(int* board) {
@@ -160,42 +166,38 @@ int** generate_successors_max(int* board) {
 
 int** generate_successors_chance(int* board) {
     num_successors = 0;
-    Vector zero_tiles[16];
+    int zero_tiles[16];
     int count = 0;
 
-    for (int x=0; x<4; x++) {
-        for (int y=0; y<4; y++) {
-            if (board[4*y+x]==0) {
-                Vector xy = {x, y};
-                zero_tiles[count] = xy;
-                count++;
-            }
+    for (int i=0; i < 16; i++) {
+        if (board[i] == 0) {
+            zero_tiles[count] = i;
+            count++;
         }
     }
 
-    int** successors = malloc(2 * count * sizeof(int*));
-    int num_possibilities = 2;
-    int possibilities[2] = { 2, 4 };
+    int** successors = malloc(count * sizeof(int*));
 
     for (int i=0; i < count; i++) {
-        for (int p=0; p < num_possibilities; p++) {
-            int* successor = malloc(16 * sizeof(int));
-            memcpy(successor, board, 16 * sizeof(int));
-            successor[4*zero_tiles[i].y+zero_tiles[i].x] = possibilities[p];
+        int* successor = malloc(16 * sizeof(int));
+        memcpy(successor, board, 16 * sizeof(int));
 
-            successors[num_successors] = successor;
-            successor_tiles[num_successors] = possibilities[p];
-            num_successors++;
-        }
+        int tile = (rand() % 10 == 0) ? TILE_4_VALUE : TILE_2_VALUE;
+
+        successor[4 * (zero_tiles[i] / 4) + (zero_tiles[i] % 4)] = tile;
+
+        successors[num_successors] = successor;
+        successor_tiles[num_successors] = tile;
+        num_successors++;
     }
     return successors;
 }
 
 int is_in_range(int num, int start, int end) {
     if ((num >= start) && (num <= end)) {
-        return 1;
+        return TRUE;
     } else {
-        return 0;
+        return FALSE;
     }
 }
 
@@ -211,14 +213,17 @@ int move(int move, int* board) {
 }
 
 int slides(int action, int* board, int perform) {
-    int did_move = 0;
+    int did_move = FALSE;
+    int x = 0;
+    int y = 0;
+    int* move_modifier = NO_MOVE_VECTOR;
+    int move_to_x;
+    int move_to_y;
 
     for (int i=0; i<4; i++) {
         for (int j=0; j<4; j++) {
-            int x = 0;
-            int y = 0;
-            int* move_modifier = NO_MOVE_VECTOR;
-            Vector move_to;
+            x = 0;
+            y = 0;
 
             if (action==LEFT) {
                 move_modifier = LEFT_VECTOR;
@@ -240,18 +245,18 @@ int slides(int action, int* board, int perform) {
                 y = i;
             }
 
-            if (board[4*y+x]==0) {
+            if (board[4*y+x]==TILE_0_VALUE) {
                 continue;
             }
 
-            move_to.x = x + move_modifier[0];
-            move_to.y = y + move_modifier[1];
+            move_to_x = x + move_modifier[0];
+            move_to_y = y + move_modifier[1];
 
             int tile = 4 * y + x;
 
             if (action==LEFT) {
-                for (int x_new=0; x_new < move_to.x + 1; x_new++) {
-                    int new_tile = 4*move_to.y+x_new;
+                for (int x_new=0; x_new < move_to_x + 1; x_new++) {
+                    int new_tile = 4*move_to_y+x_new;
                     if (is_in_range(x_new, 0, 3)) {
                         if (board[new_tile]==0) {
                             if (perform) {
@@ -259,14 +264,14 @@ int slides(int action, int* board, int perform) {
                                 board[tile] = 0;
                             }
 
-                            did_move = 1;
+                            did_move = TRUE;
                             break;
                         }
                     }
                 }
             } else if (action==RIGHT) {
-                for (int x_new=3; x_new > move_to.x - 1; x_new--) {
-                    int new_tile = 4*move_to.y+x_new;
+                for (int x_new=3; x_new > move_to_x - 1; x_new--) {
+                    int new_tile = 4*move_to_y+x_new;
                     if (is_in_range(x_new, 0, 3)) {
                         if (board[new_tile]==0) {
 
@@ -275,13 +280,13 @@ int slides(int action, int* board, int perform) {
                                 board[tile] = 0;
                             }
 
-                            did_move = 1;
+                            did_move = TRUE;
                             break;
                         }
                     }
                 }
             } else if (action==UP) {
-                for (int y_new=0; y_new < move_to.y + 1; y_new++) {
+                for (int y_new=0; y_new < move_to_y + 1; y_new++) {
                     int new_tile = 4*y_new+x;
                     if (is_in_range(y_new, 0, 3)) {
                         if (board[new_tile]==0) {
@@ -290,13 +295,13 @@ int slides(int action, int* board, int perform) {
                                 board[tile] = 0;
                             }
 
-                            did_move = 1;
+                            did_move = TRUE;
                             break;
                         }
                     }
                 }
             } else if (action==DOWN) {
-                for (int y_new=3; y_new > move_to.y - 1; y_new--) {
+                for (int y_new=3; y_new > move_to_y - 1; y_new--) {
                     int new_tile = 4*y_new+x;
                     if (is_in_range(y_new, 0, 3)) {
                         if (board[new_tile]==0) {
@@ -305,7 +310,7 @@ int slides(int action, int* board, int perform) {
                                 board[tile] = 0;
                             }
 
-                            did_move = 1;
+                            did_move = TRUE;
                             break;
                         }
                     }
@@ -320,8 +325,10 @@ int slides(int action, int* board, int perform) {
 int collides(int action, int* board, int perform) {
     int x = 0;
     int y = 0;
-    int collision = 0;
+    int collision = FALSE;
     int* move_modifier = NO_MOVE_VECTOR;
+    int neighbour_x = 0;
+    int neighbour_y = 0;
 
     for (int i=0; i<4; i++) {
         for (int j=0; j<4; j++) {
@@ -344,26 +351,24 @@ int collides(int action, int* board, int perform) {
                 y = j;
             }
 
-            Vector neighbour;
-
-            neighbour.x = x - move_modifier[0];
-            neighbour.y = y - move_modifier[1];
+            neighbour_x = x - move_modifier[0];
+            neighbour_y = y - move_modifier[1];
 
             int tile = 4 * y + x;
 
-            if (is_in_range(neighbour.x, 0, 3) && is_in_range(neighbour.y, 0, 3)) {
+            if (is_in_range(neighbour_x, 0, 3) && is_in_range(neighbour_y, 0, 3)) {
                 if (board[tile]==0) {
                     continue;
                 }
 
-                int neighbour_tile = 4 * neighbour.y + neighbour.x;
+                int neighbour_tile = 4 * neighbour_y + neighbour_x;
 
                 if (board[neighbour_tile]==board[tile]) {
                     if (perform) {
                         board[tile] += 1;
-                        board[neighbour_tile] = 0;
+                        board[neighbour_tile] = TILE_0_VALUE;
                     }
-                    collision = 1;
+                    collision = TRUE;
                 }
             }
         }
@@ -373,15 +378,15 @@ int collides(int action, int* board, int perform) {
 }
 
 int is_impossible(int* board) {
-    int impossible = 1;
+    int impossible = TRUE;
 
     for (int m=0; m<4; m++) {
         if (slides(m, board, 0)) {
-            impossible = 0;
+            impossible = FALSE;
             break;
         }
         if (collides(m, board, 0)) {
-            impossible = 0;
+            impossible = FALSE;
             break;
         }
     }
@@ -483,9 +488,15 @@ double smoothness(int *board) {
 double monotonicity(int* board) {
     double totals[] = {0.0, 0.0 ,0.0, 0.0};
 
+    int current = 0;
+    int next = 0;
+
+    double current_value = 0;
+    double next_value = 0;
+
     for (int i = 0; i < 4; i++) { // Check up and down
-        int current = 0;
-        int next = current + 1;
+        current = 0;
+        next = current + 1;
 
         while (next < 4) {
             while ((next < 4) && !check_occupied(board, i, next)) {
@@ -494,8 +505,8 @@ double monotonicity(int* board) {
 
             if (next >= 4) { next--; }
 
-            double current_value = 0;
-            double next_value = 0;
+            current_value = 0;
+            next_value = 0;
 
             if (check_occupied(board, i, current)) {
                 current_value = get_node_value(board, i, current);
@@ -517,8 +528,8 @@ double monotonicity(int* board) {
     }
 
     for (int j = 0; j < 4; j++) { // Check left and right
-        int current = 0;
-        int next = current + 1;
+        current = 0;
+        next = current + 1;
 
         while (next < 4) {
             while ((next < 4) && !check_occupied(board, j, next)) {
@@ -527,8 +538,8 @@ double monotonicity(int* board) {
 
             if (next >= 4) { next--; }
 
-            double current_value = 0;
-            double next_value = 0;
+            current_value = 0;
+            next_value = 0;
 
             if (check_occupied(board, current, j)) {
                 current_value = get_node_value(board, current, j);
@@ -604,5 +615,5 @@ int get_node_value(int* board, int pos_x, int pos_y) {
 }
 
 int check_occupied(int* board, int pos_x, int pos_y) {
-    return get_node_value(board, pos_x, pos_y) != 0;
+    return get_node_value(board, pos_x, pos_y) != TILE_0_VALUE;
 }

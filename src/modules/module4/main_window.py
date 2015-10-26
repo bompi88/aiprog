@@ -54,7 +54,7 @@ class MainWindow(QtGui.QMainWindow):
         File -> [ Kill, Reset, Exit ]
         Delay -> [ 10 ms, 50 ms, 150 ms, 500 ms ]
         Screenshots -> [ On, Off ]
-        Depth -> [ 2, 3 ]
+        Depth -> [ 2, 3, 4 ]
         """
         menu = self.menuBar()
         file_menu = menu.addMenu('&File')
@@ -91,7 +91,7 @@ class MainWindow(QtGui.QMainWindow):
         screens_off.triggered.connect(lambda: self.gui.set_screenshots(False))
         screenshots_menu.addAction(screens_off)
 
-        depths = [2, 3]
+        depths = [2, 3, 4]
         for depth in depths:
             depth_action = QtGui.QAction('&' + str(depth), self)
             expr = 'self.gui.set_depth({})'.format(depth)

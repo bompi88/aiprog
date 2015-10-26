@@ -1,6 +1,7 @@
 # Created by https://www.gitignore.io/api/osx,windows,pycharm,python
 
 *.gif
+*.DSYM/
 
 ### Cmake ###
 *.cmake
