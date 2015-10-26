@@ -47,12 +47,10 @@ be; taking each tile in the board as a separate argument.
 \section{The heuristic}
 
 The decision function in the C implementation uses ExpectiMax to find the best move.
-The evaluation function used has implemented ideas of smoothness, the highest tile
+The evaluation function used has implemented ideas of smoothness, measurement of the highest tile
 on the current board, the amount of free tiles, the placement of the highest tile,
-be in a corner, on an edge or in the middle, and the monotonicity of the board.
-The constants in this equation can be supplied from the Python side, so we
-could create a test runner in Python which ran the search supplying different
-values for these constants.
+to be in a corner, to be on an edge or to be in the middle, and additionally the monotonicity of the board.
+The weights in this equation can be supplied from the Python side, so we created a test runner in Python, which ran the search with different values for those weights.
 
 \[
  heuristic =
@@ -73,24 +71,23 @@ values for these constants.
 \end{split}
 \end{equation}
 
-The two main ideas in this heuristic, aside from giving penalty to full board, and
-misplaced high tiles are smoothness and monotonicity. Smoothness gives penalty
-for the difference between neighbouring tiles. This means that neighbouring tiles
-which are close in value are preferred to stay close together. The value of this is
-that tiles can often be chained together in long tiles if we have for instance
-1024, 512, 218 and 126 on the bottom row. Getting a new 126 above our existing 126
-means we can get => 1024, 512, 218, 218 => 1024, 512, 512, x => 1024, 1024, x, x =>
+The two main ideas in this heuristic, aside from giving penalty to full boards and
+misplaced high tiles, are smoothness and monotonicity. Smoothness gives penalty
+for the difference between neighbouring tiles. This means that neighbouring tiles,
+which are close in value are preferred to stay close together. The outcome of this is
+tiles being chained together in long sequences. If we take a look at an example where the following tiles is located in the provided order in the bottom row of the board: 1024, 512, 256 and 128. Getting a new 128 above our existing 128
+means we can get => 1024, 512, 256, 256 => 1024, 512, 512, x => 1024, 1024, x, x =>
 2048, x, x, x. The smoother the board, the better the chance of this happening.
 
-The other idea of monotonicity is checked on both the x-axis and the y-axis, and
+The other idea, the idea of monotonicity, is processed on both the x-axis and the y-axis, and
 the heuristic contributions of these are summed together. It checks that all the tiles
-on both the x-axis and the y-axis are sorted. This also gives the advantage of
-creating chains that can be merged together, and penalizes low tile values from
-entering `behind' large tiles.
+on both the x-axis and the y-axis are in a sorted order. This also gives the advantage of
+creating chains that can be merged together, and low tile values is being penalized when
+entering `behind' larger tile values.
 
-Removing the highest tile from a save corner, and having a low value get trapped
+Removing the highest tile from a safe corner, and having a low value get trapped
 inside several large ones is the most common way of ending the game. Therefore
-almost all our contributions to the heuristic focueses on this not happening.
+almost all our contributions to the heuristic has the focus on trying to avoid this to happen.
 
 \section{Improving the heuristic}
 
@@ -100,18 +97,18 @@ the board, and makes good decisions for when to merge tiles into this sorted row
 However spotting the difference a decent heuristic and a slighly better one is not
 easy by just running the program and trying to manually deduce a reasoning for why
 it acts like it does. In the end, it is these small improvements that decide whether
-we end up with 1024, 512, 256, but never manages to get the last 256 or whether
-we find this last 256 and gets it merged together with the rest to create a 2048 tile.
+we end up with 1024, 512, 256, but never manages to get the last 256, or whether
+we find this last 256 and gets it to merge together with the rest to create a 2048 tile.
 
 To find these slight improvements we created a script that ran our program x amount of
-times, and reported on the tiles achieved, average score and other metrics.
+times, and reported on the tiles achieved, average scores and other metrics.
 
 In the following run we have altered each constant by 0.9 and 1.1 and see if we
 get different results. Each combination is run ten times. The original values
 of smoothness = 0.2, max tile = 0.9, free tiles = 2.3, placement of max tile = 1.0
 and monotonicity = 1.9 are the values we plan on using at the demo. We can se
 that in this run, it actually achieves better than any small change to a constant.
-However, 2048 is to random that 10 is a big enough sample size.
+However, the game of 2048 is too random, that 10 is not a big enough sample size.
 
 In the table the column names are shortened, their meanings are: "Smo.." => smoothness
 constant, "Max" => max tile constant, "Free" => amount of free tiles constant,
