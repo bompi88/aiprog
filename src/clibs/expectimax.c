@@ -397,7 +397,7 @@ double evaluation_function(int* board) {
     return (
             (smoothness(board) * smoothness_constant) +
             (max_tile(board) * max_tile_constant) +
-            (free_tiles(board) * free_tiles_constant) +
+            (log(free_tiles(board)) * free_tiles_constant) +
             (max_placement(board) * max_placement_constant) +
             (monotonicity(board) * monotonicity_constant)
            );
@@ -444,12 +444,12 @@ double max_placement(int* board) {
          // Not in the middle
         if (max_tile_index != 5 && max_tile_index != 6 &&
                 max_tile_index != 9 && max_tile_index != 10) {
-            max_placement_h = max_tile_value;
+            max_placement_h = 1;
 
              // In a corner
             if (max_tile_index == 0 || max_tile_index == 3 ||
                     max_tile_index == 12 || max_tile_index == 15) {
-                max_placement_h = max_tile_value * 2.4;
+                max_placement_h = 2;
             }
         }
     }

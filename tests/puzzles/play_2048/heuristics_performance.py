@@ -14,18 +14,26 @@ def main():
         ('max_placement', 1.0),
         ('monotonicity', 1.9)
     ]
-    multipliers = [0.75, 0.9, 1, 1.10, 1.25]
+    multipliers = [0.9, 1, 1.10]
 
     search = ExpectimaxC
     depth = 2
 
     print 'Search: ' + search.__name__ + '\n'
 
+    did_one = False
+
     for constant in constants:
         print('Playing with: ' + str(constant[0]).capitalize())
         print('')
 
         for multiplier in multipliers:
+            if multiplier == 1 and did_one:
+                continue
+
+            if multiplier == 1:
+                did_one = True
+
             max_tiles = []
             scores = []
             timings = []
