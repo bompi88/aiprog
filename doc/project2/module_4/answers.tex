@@ -1,20 +1,18 @@
 \section{Overall structure and key elements of our Expectimax system}
 For this module we started writing in Python, as recommended by the course
-staff. However, maybe due to the inherit nature of Python, or due to mistakes
-in our first implementation we got pretty bad results using MiniMax with depth 3.
-Increasing the depth was slow, and we thought that the heuristic was smart enough
-that we should get tiles higher than the 512, and sometimes 1024 we were getting.
+staff. However, maybe due to the inherit nature of Python or due to mistakes
+done in our first implementation, we got pretty bad results using MiniMax with a depth of 3.
+Increasing the depth resulted in really slow running times, and we thought that our heuristic was smart enough to get the job done, as long as the search could go deeper. At this time, we mostly got tiles of 512, but occasionally also tiles of value 1024. This was not good enough.
 
-Therefore we decided to look for alternatives. We considered Java, but did not
-want to rewrite our GUI. We could also have made a command line application in
-Java, as we knew the interface would be fairly simple with just giving in a depth
-and board, and getting back an integer representing a move. We feared that the
-cost of shelling to CLI application, and starting the JVM for every move would
+Therefore we decided to look for faster alternatives, that could potentially process more nodes in the same amount of time. We considered Java, but did not want to rewrite our slick GUI. We could also have created a command line application in
+Java, as the interface would be fairly simple; just simply providing a maximum depth
+and a board, and getting back an integer representing a move in either direction. We feared that the
+cost of shelling to CLI application and starting the JVM for every move, would
 be a bottleneck.
 
 So in the end we decided to use the built-in Python library ctypes, to interface
-with a Expectimax implementation in C. We did not have a ton of experience using
-C, so there are probably many more optimizations that could be done. Mostly we
+with an Expectimax implementation in C. We did not have a ton of experience using
+C, so it is probably a lot of additional optimizations that could have been done. Mostly we
 ported our Python code line for line, and then a mixture of Valgrind to find
 which functions took the most time, and just plain old compiler optimizations
 to let GCC do our work for us. With this implementation we can go to depth 6
