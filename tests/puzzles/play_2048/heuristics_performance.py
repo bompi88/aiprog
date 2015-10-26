@@ -46,7 +46,7 @@ def main():
             player = None
 
             for _ in range(plays):
-                player = Play2048Player(None, search, depth)
+                player = Play2048Player(search, depth)
                 t0 = time()
 
                 sm = multiplier if constant[0] == 'smoothness' else 1
