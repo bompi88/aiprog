@@ -94,8 +94,8 @@ class VertexColoringState(SearchState):
 
     def print_level(self):
         """ Prints a state to the terminal, for aid in debugging. """
-        print '\nVC State'
-        print [self.state.nv, self.state.ne]
-        print self.state.vertices
-        print self.state.edges
-        print self.domains
+        print('\nVC State')
+        print([self.state.nv, self.state.ne])
+        print(self.state.vertices)
+        print(self.state.edges)
+        print(self.domains)

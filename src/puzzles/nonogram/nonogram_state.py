@@ -144,4 +144,4 @@ class NonogramState(SearchState):
 
     def print_level(self):
         """ Prints state to terminal """
-        print self
+        print(self)

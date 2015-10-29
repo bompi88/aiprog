@@ -105,4 +105,4 @@ class NavigationState(SearchState):
                 if element is C.nav_tile.OBSTACLE:
                     output[i][j] = C.nav_tile.PRINT_OBSTACLE
 
-        print '\n'.join([' '.join([str(el) for el in row]) for row in output])
+        print('\n'.join([' '.join([str(el) for el in row]) for row in output]))

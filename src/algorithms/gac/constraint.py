@@ -49,7 +49,7 @@ class Constraint(object):
             self.satisfied = False
             if v2:
                 for d2 in domains[v2]:
-                    if apply(self.function[v1], [d1, d2]):
+                    if self.function[v1](*[d1, d2]):
                         self.satisfied = True
                         break
             else:

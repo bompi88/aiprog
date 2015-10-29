@@ -52,3 +52,6 @@ class SearchState(object):
     def add_child(self, child):
         """ Add a child to this node """
         self.kids.append(child)
+
+    def __lt__(self, other):
+        return self.f < other.f

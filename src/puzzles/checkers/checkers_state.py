@@ -61,7 +61,7 @@ class CheckersState(SearchState):
             str_row = [str(el) if el > 9 else (' ' + str(el)) for el in row]
             rows.append(' '.join(str_row))
 
-        print '\n'.join(rows) + '\n'
+        print('\n'.join(rows) + '\n')
 
     def print_path(self):
         """ Print a complete solution path by recursively printing parents """

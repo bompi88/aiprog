@@ -33,7 +33,7 @@ def main():
     solution = NonogramBfs(nonogram).best_first_search()
 
     if not solution:
-        print "Failed"
+        print('Failed')
 
 if __name__ == '__main__':
     main()
