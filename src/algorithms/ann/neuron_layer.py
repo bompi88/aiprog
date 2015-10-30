@@ -1,6 +1,9 @@
+from theano import tensor as T
+
+
 class NeuronLayer(object):
 
-    def __init__(self, input, n_input, n_output, W=None, b=None, activation_function=T.sigmoid):
+    def __init__(self, input, n_input, n_output, w=None, b=None, activation_function=T.sigmoid):
         """
 
         :param input:
@@ -14,8 +17,8 @@ class NeuronLayer(object):
         self.input = input
         self.n_input = n_input
         self.n_output = n_output
-        self.W = W
+        self.w = w
         self.b = b
         self.activation_function = activation_function
 
-
+        # weight = theano.shared(np.random.uniform(-0.1, 0.1, size=(self.structure[idx], self.structure[idx + 1])))
