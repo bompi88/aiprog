@@ -19,7 +19,7 @@ def main():
     search = ExpectimaxC
     depth = 2
 
-    print 'Search: ' + search.__name__ + '\n'
+    print('Search: ' + search.__name__ + '\n')
 
     did_one = False
 
@@ -36,7 +36,7 @@ def main():
                 continue
 
             if multiplier == 1:
-                print "No changes run\n"
+                print('No changes run\n')
                 did_one = True
 
             max_tiles = []
@@ -98,8 +98,8 @@ def main():
                 print('Playing with: ' + str(constant[0]).capitalize())
                 print('')
 
-    print 'Highest score: ' + str(high_score)
-    print 'Highest tile: ' + str(highest_tile)
+    print('Highest score: ' + str(high_score))
+    print('Highest tile: ' + str(highest_tile))
 
 if __name__ == '__main__':
     main()

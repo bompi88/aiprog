@@ -35,7 +35,7 @@ def main():
 
     solution.print_level()
     if not solution:
-        print "Failed"
+        print('Failed')
 
 if __name__ == '__main__':
     main()

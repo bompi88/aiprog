@@ -17,7 +17,7 @@ class Play2048State(object):
         tile = randint(0, 15)
         value = 2 if randint(1, 10) is 10 else 1
 
-        board[4 * (tile % 4) + tile / 4] = value
+        board[int(4 * (tile % 4) + tile / 4)] = value
 
         tile_set = tile
         while tile_set == tile:
@@ -25,7 +25,7 @@ class Play2048State(object):
 
         value = 2 if randint(1, 10) is 10 else 1
 
-        board[4 * (tile % 4) + tile / 4] = value
+        board[int(4 * (tile % 4) + tile / 4)] = value
 
         return board
 
@@ -101,8 +101,8 @@ class Play2048State(object):
         check_range = []
 
         if move is None:
-            print self.board
-            print self.is_possible()
+            print(self.board)
+            print(self.is_possible())
 
         for i in range(4):
             for j in range(4):

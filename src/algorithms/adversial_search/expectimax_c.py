@@ -43,7 +43,7 @@ def main():
     for _ in range(20):
         decision = search.decision(game)
         if decision != correct_decision:
-            print 'Something broke!'
+            print('Something broke!')
 
 
 if __name__ == '__main__':

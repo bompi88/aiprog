@@ -173,4 +173,4 @@ class BestFirstSearch(object):
         if self.gui:
             self.gui.status_message.emit(str(message))
         else:
-            print message + '\n'
+            print(message + '\n')
