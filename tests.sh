@@ -6,4 +6,4 @@ pylint tests/ --rcfile=.pylintrc
 
 echo ""
 echo "Unittests"
-python -m unittest discover
+python3 -m unittest discover
