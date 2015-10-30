@@ -32,5 +32,5 @@ def softmax(m, threshold=0):
 def relu(m, threshold=0):
     x, y, b = T.dvectors('x', 'y', 'b')
     w = T.dmatrix('W')
-    y = T.nnet.softplus(T.dot(w, x) + b)
+    y = T.nnet.relu(T.dot(w, x) + b)
     return y(m, threshold)
