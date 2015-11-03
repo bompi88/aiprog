@@ -238,13 +238,13 @@ if __name__ == '__main__':
             'type': 'convolution',
             'number_of_kernels': 50,
             'pool_size': (2, 2),
-            'image_size': (28, 28),
+            'image_size': (12, 12),
             'filter_size': (5, 5)
         },
         {
             'type': 'hidden',
             'output_size': 500,
-            'activation_function': T.sigmoid
+            'activation_function': T.tanh
         },
         {
             'type': 'logistic_regression',
