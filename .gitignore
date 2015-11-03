@@ -2,6 +2,8 @@
 
 *.gif
 *.DSYM/
+*.pkl
+tests/algorithms/ann/data/mnist.pkl.gz
 
 ### Cmake ###
 *.cmake
