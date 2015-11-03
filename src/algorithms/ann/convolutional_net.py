@@ -104,7 +104,7 @@ class ConvolutionalNet(object):
                     self.layers.append(
                         HiddenLayer(
                             self.random_feed,
-                            _input=input_to_next_layer.flatten(2),
+                            _input=input_to_next_layer,
                             n_in=self.structure[idx-1]['output_size'],
                             n_out=layer_def['output_size'],
                             activation=layer_def['activation_function']
@@ -142,10 +142,13 @@ class ConvolutionalNet(object):
     def train(self, train_set_x, train_set_y, epochs=100):
         print('----> Started training...')
 
+        self.train_set_x = train_set_x
+        self.train_set_y = train_set_y
+
         if self.trainer is None:
             self.trainer = theano.function(
                 [self.index],
-                self.fcost,
+                self.cost,
                 updates=self.updates,
                 givens={
                     self.x: self.train_set_x[self.index * self.batch_size: (self.index + 1) * self.batch_size],
@@ -168,18 +171,11 @@ class ConvolutionalNet(object):
 
         return errors
 
-    def test(self, cases):
-        print('----> Started testing...')
+    def validate(self, valid_set_x, valid_set_y):
+        print('----> Started validation...')
 
-        if self.tester is None:
-            self.tester = theano.function(
-                [self.index],
-                self.layers[-1].errors(self.y),
-                givens={
-                    self.x: self.test_set_x[self.index * self.batch_size: (self.index + 1) * self.batch_size],
-                    self.y: self.test_set_y[self.index * self.batch_size: (self.index + 1) * self.batch_size]
-                }
-            )
+        self.valid_set_x = valid_set_x
+        self.valid_set_y = valid_set_y
 
         if self.validator is None:
             self.validator = theano.function(
@@ -188,6 +184,22 @@ class ConvolutionalNet(object):
                 givens={
                     self.x: self.valid_set_x[self.index * self.batch_size: (self.index + 1) * self.batch_size],
                     self.y: self.valid_set_y[self.index * self.batch_size: (self.index + 1) * self.batch_size]
+                }
+            )
+
+    def test(self, test_set_x, test_set_y):
+        print('----> Started testing...')
+
+        self.test_set_x = test_set_x
+        self.test_set_y = test_set_y
+
+        if self.tester is None:
+            self.tester = theano.function(
+                [self.index],
+                self.layers[-1].errors(self.y),
+                givens={
+                    self.x: self.test_set_x[self.index * self.batch_size: (self.index + 1) * self.batch_size],
+                    self.y: self.test_set_y[self.index * self.batch_size: (self.index + 1) * self.batch_size]
                 }
             )
 
