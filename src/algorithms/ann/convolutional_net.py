@@ -10,11 +10,15 @@ from src.algorithms.ann.logistic_regression_layer import LogisticRegressionLayer
 from theano import tensor as T
 import theano
 import numpy
+import pickle
+import os
+import sys
+import timeit
 
 
 class ConvolutionalNet(object):
 
-    def __init__(self, structure, learning_rate=0.1, batch_size=20):
+    def __init__(self, structure, datasets, learning_rate=0.1, batch_size=20):
         """
         Creates a convolutional neural net.
 
@@ -45,18 +49,14 @@ class ConvolutionalNet(object):
 
         self.layers = []
 
-        self.test_set_x = None
-        self.test_set_y = None
+        self.train_set_x, self.train_set_y = datasets[0]
+        self.valid_set_x, self.valid_set_y = datasets[1]
+        self.test_set_x, self.test_set_y = datasets[2]
 
-        self.train_set_x = None
-        self.train_set_y = None
+        self.n_train_batches = self.train_set_x.get_value(borrow=True).shape[0] // batch_size
+        self.n_valid_batches = self.valid_set_x.get_value(borrow=True).shape[0] // batch_size
+        self.n_test_batches = self.test_set_x.get_value(borrow=True).shape[0] // batch_size
 
-        self.valid_set_x = None
-        self.valid_set_y = None
-
-        self.construct_net()
-
-    def construct_net(self):
         print('----> Constructing the neural net...')
 
         self.index = T.lscalar()
@@ -133,75 +133,135 @@ class ConvolutionalNet(object):
             for param_i, grad_i in zip(self.params, self.gradients)
         ]
 
+        self.trainer = theano.function(
+            [self.index],
+            self.cost,
+            updates=self.updates,
+            givens={
+                self.x: self.train_set_x[self.index * self.batch_size: (self.index + 1) * self.batch_size],
+                self.y: self.train_set_y[self.index * self.batch_size: (self.index + 1) * self.batch_size]
+            }
+        )
+
+        self.validator = theano.function(
+            [self.index],
+            self.layers[-1].errors(self.y),
+            givens={
+                self.x: self.valid_set_x[self.index * self.batch_size: (self.index + 1) * self.batch_size],
+                self.y: self.valid_set_y[self.index * self.batch_size: (self.index + 1) * self.batch_size]
+            }
+        )
+
+        self.tester = theano.function(
+            [self.index],
+            self.layers[-1].errors(self.y),
+            givens={
+                self.x: self.test_set_x[self.index * self.batch_size: (self.index + 1) * self.batch_size],
+                self.y: self.test_set_y[self.index * self.batch_size: (self.index + 1) * self.batch_size]
+            }
+        )
+
     def update_net(self, case):
         return 0
 
     def predict(self, case):
         return 0
 
-    def train(self, train_set_x, train_set_y, epochs=100):
+    def train(self, n_epochs=100):
         print('----> Started training...')
 
-        self.train_set_x = train_set_x
-        self.train_set_y = train_set_y
+        patience = 5000  # look as this many examples regardless
+        patience_increase = 2  # wait this much longer when a new best is
+                                      # found
+        improvement_threshold = 0.995  # a relative improvement of this much is
+                                      # considered significant
+        validation_frequency = min(self.n_train_batches, patience / 2)
+                                      # go through this many
+                                      # minibatche before checking the network
+                                      # on the validation set; in this case we
+                                      # check every epoch
 
-        if self.trainer is None:
-            self.trainer = theano.function(
-                [self.index],
-                self.cost,
-                updates=self.updates,
-                givens={
-                    self.x: self.train_set_x[self.index * self.batch_size: (self.index + 1) * self.batch_size],
-                    self.y: self.train_set_y[self.index * self.batch_size: (self.index + 1) * self.batch_size]
-                }
-            )
+        best_validation_loss = numpy.inf
+        test_score = 0.
+        start_time = timeit.default_timer()
 
+        done_looping = False
         epoch = 0
-        errors = []
-
-        while epoch < epochs:
+        while (epoch < n_epochs) and (not done_looping):
             epoch += 1
-            error = 0
+            for minibatch_index in range(self.n_train_batches):
 
-            for case in cases:
-                preprocessed_case = preprocess(case)
-                error += self.update_net(preprocessed_case)
+                minibatch_avg_cost = self.trainer(minibatch_index)
+                # iteration number
+                iter = (epoch - 1) * self.n_train_batches + minibatch_index
 
-            errors.append(error)
+                if (iter + 1) % validation_frequency == 0:
+                    # compute zero-one loss on validation set
+                    validation_losses = [self.validator(i)
+                                         for i in range(self.n_valid_batches)]
+                    this_validation_loss = numpy.mean(validation_losses)
 
-        return errors
+                    print(
+                        'epoch %i, minibatch %i/%i, validation error %f %%' %
+                        (
+                            epoch,
+                            minibatch_index + 1,
+                            self.n_train_batches,
+                            this_validation_loss * 100.
+                        )
+                    )
 
-    def validate(self, valid_set_x, valid_set_y):
-        print('----> Started validation...')
+                    # if we got the best validation score until now
+                    if this_validation_loss < best_validation_loss:
+                        #improve patience if loss improvement is good enough
+                        if this_validation_loss < best_validation_loss *  \
+                           improvement_threshold:
+                            patience = max(patience, iter * patience_increase)
 
-        self.valid_set_x = valid_set_x
-        self.valid_set_y = valid_set_y
+                        best_validation_loss = this_validation_loss
+                        # test it on the test set
 
-        if self.validator is None:
-            self.validator = theano.function(
-                [self.index],
-                self.layers[-1].errors(self.y),
-                givens={
-                    self.x: self.valid_set_x[self.index * self.batch_size: (self.index + 1) * self.batch_size],
-                    self.y: self.valid_set_y[self.index * self.batch_size: (self.index + 1) * self.batch_size]
-                }
+                        test_losses = [self.tester(i)
+                                       for i in range(self.n_test_batches)]
+                        test_score = numpy.mean(test_losses)
+
+                        print(
+                            (
+                                '     epoch %i, minibatch %i/%i, test error of'
+                                ' best model %f %%'
+                            ) %
+                            (
+                                epoch,
+                                minibatch_index + 1,
+                                self.n_train_batches,
+                                test_score * 100.
+                            )
+                        )
+
+                        # save the best model
+                        with open('best_model.pkl', 'wb') as f:
+                            pickle.dump(self.layers[-1], f)
+
+                if patience <= iter:
+                    done_looping = True
+                    break
+
+        end_time = timeit.default_timer()
+        print(
+            (
+                'Optimization complete with best validation score of %f %%,'
+                'with test performance %f %%'
             )
+            % (best_validation_loss * 100., test_score * 100.)
+        )
+        print('The code run for %d epochs, with %f epochs/sec' % (
+            epoch, 1. * epoch / (end_time - start_time)))
+        sys.stderr.write('The code for file ' +
+                         os.path.split(__file__)[1] +
+                         ' ran for %.1fs' % (end_time - start_time))
 
-    def test(self, test_set_x, test_set_y):
+    def test(self, cases):
         print('----> Started testing...')
-
-        self.test_set_x = test_set_x
-        self.test_set_y = test_set_y
-
-        if self.tester is None:
-            self.tester = theano.function(
-                [self.index],
-                self.layers[-1].errors(self.y),
-                givens={
-                    self.x: self.test_set_x[self.index * self.batch_size: (self.index + 1) * self.batch_size],
-                    self.y: self.test_set_y[self.index * self.batch_size: (self.index + 1) * self.batch_size]
-                }
-            )
 
         predictions = []
         for case in cases:
@@ -252,4 +312,7 @@ if __name__ == '__main__':
         }
     ]
 
-    net = ConvolutionalNet(net_structure, 0.1, 500)
+    datasets = []
+
+    net = ConvolutionalNet(net_structure, datasets, 0.1, 500)
+    net.train(100)
