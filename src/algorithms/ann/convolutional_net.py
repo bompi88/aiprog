@@ -6,6 +6,7 @@ from src.utils.preprocessing import preprocess
 from src.algorithms.ann.convolutional_layer import ConvolutionalLayer
 from src.algorithms.ann.hidden_layer import HiddenLayer
 from src.algorithms.ann.logistic_regression_layer import LogisticRegressionLayer
+from src.utils.mnist_basics import load_all_flat_cases
 
 from theano import tensor as T
 import theano
@@ -34,20 +35,8 @@ class ConvolutionalNet(object):
         self.learning_rate = learning_rate
         self.batch_size = batch_size
 
-        # Our Theano functions
-        self.tester = None
-        self.validator = None
-        self.trainer = None
-
-        self.x = None
-        self.y = None
-        self.cost = None
-        self.index = 0
-        self.params = []
-        self.updates = None
-        self.gradients = None
-
         self.layers = []
+        self.params = []
 
         self.train_set_x, self.train_set_y = datasets[0]
         self.valid_set_x, self.valid_set_y = datasets[1]
@@ -60,10 +49,10 @@ class ConvolutionalNet(object):
         print('----> Constructing the neural net...')
 
         self.index = T.lscalar()
-        x = T.matrix('x')   # images
-        y = T.ivector('y')  # labels
+        self.x = T.matrix('x')   # images
+        self.y = T.ivector('y')  # labels
 
-        input_to_first_layer = x.reshape((self.batch_size, 1, 28, 28))
+        input_to_first_layer = self.x.reshape((self.batch_size, 1, 28, 28))
 
         input_to_next_layer = None
 
@@ -89,6 +78,7 @@ class ConvolutionalNet(object):
                         poolsize=layer_def['pool_size']
                     )
                 )
+                input_to_next_layer = self.layers[idx].output
             elif layer_def['type'] == 'hidden':
                 if self.structure[idx-1]['type'] == 'convolution':
                     self.layers.append(
@@ -110,6 +100,7 @@ class ConvolutionalNet(object):
                             activation=layer_def['activation_function']
                         )
                     )
+                input_to_next_layer = self.layers[idx].output
             elif layer_def['type'] == 'logistic_regression':
                 self.layers.append(
                     LogisticRegressionLayer(
@@ -119,9 +110,7 @@ class ConvolutionalNet(object):
                     )
                 )
 
-            input_to_next_layer = self.layers[idx].output
-
-        self.cost = self.layers[-1].negative_log_likelihood(y)
+        self.cost = self.layers[-1].negative_log_likelihood(self.y)
 
         for layer in self.layers:
             self.params += layer.params
@@ -312,7 +301,19 @@ if __name__ == '__main__':
         }
     ]
 
-    datasets = []
+    def shared_dataset(data_xy, borrow=True):
+        data_x, data_y = data_xy
 
-    net = ConvolutionalNet(net_structure, datasets, 0.1, 500)
+        shared_x = theano.shared(numpy.asarray(data_x, dtype=theano.config.floatX), borrow=borrow)
+        shared_y = theano.shared(numpy.asarray(data_y, dtype=theano.config.floatX), borrow=borrow)
+
+        return shared_x, T.cast(shared_y, 'int32')
+
+    datasets = [
+        shared_dataset(load_all_flat_cases('training')),
+        shared_dataset(load_all_flat_cases('testing')),
+        shared_dataset(load_all_flat_cases('testing'))
+    ]
+
+    net = ConvolutionalNet(net_structure, datasets, 0.1, 20)
     net.train(100)
