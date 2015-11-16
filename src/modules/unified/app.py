@@ -17,37 +17,28 @@ class App(object):
 
         self.add_switcher_menu()
 
-    def navigation(self):
-        """ Loads a Navigation instance into main window """
+    def loader(self, cls):
         self.main_window.close()
-        self.main_window = Navigation()
+        self.main_window = cls()
         self.qt_app.setActiveWindow(self.main_window)
 
         self.add_switcher_menu()
+
+    def navigation(self):
+        """ Loads a Navigation instance into main window """
+        self.loader(Navigation)
 
     def graph(self):
         """ Loads a Graph instance into main window """
-        self.main_window.close()
-        self.main_window = Graph()
-        self.qt_app.setActiveWindow(self.main_window)
-
-        self.add_switcher_menu()
+        self.loader(Graph)
 
     def nonogram(self):
         """ Loads a Nonogram instance into main window """
-        self.main_window.close()
-        self.main_window = Nonogram()
-        self.qt_app.setActiveWindow(self.main_window)
-
-        self.add_switcher_menu()
+        self.loader(Nonogram)
 
     def play_2048(self):
         """ Loads a Nonogram instance into main window """
-        self.main_window.close()
-        self.main_window = Play2048()
-        self.qt_app.setActiveWindow(self.main_window)
-
-        self.add_switcher_menu()
+        self.loader(Play2048)
 
     def add_switcher_menu(self):
         """ Adds the following items to the menubar:
