@@ -1,0 +1,49 @@
+\documentclass[10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1.2in]{geometry}
+\usepackage{../packages/tikz-uml}
+\usetikzlibrary{positioning}
+
+%% For å lime in kode
+\usepackage{listings}
+\usepackage{color}
+
+\renewcommand{\lstlistingname}{Code snippet}
+
+\definecolor{purple}{RGB}{160,32,240}
+\definecolor{graa}{RGB}{245,245,245}
+\definecolor{blaa}{RGB}{0,0,255}
+\definecolor{sienna}{RGB}{255,130,71}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+\definecolor{deepskyblue}{RGB}{0,191,255}
+
+\author{Kristian Våge and Bjørn Bråthen}
+\title{Using A* to solve NavigationBfs Problems}
+
+\begin{document}
+\maketitle
+\lstset{
+	language=python,
+	basicstyle=\small,
+	numberstyle=\small,
+	numbers=left,
+	numbersep=8pt,
+	frame=single,
+	framerule=0pt,
+	showstringspaces=false,
+	otherkeywords={},
+	emph=[2]{self},
+	morecomment=[s]{"""}{"""},
+	commentstyle=\color{deepskyblue},
+	stringstyle=\color{deepgreen},
+	emphstyle=\color{blaa},
+	emphstyle=[2]{\color{sienna}},
+	backgroundcolor=\color{graa},
+	keywordstyle=\color{purple}
+}
+%###
+\input{module_1/answers}
+%###
+
+\end{document}
