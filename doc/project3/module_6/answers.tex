@@ -1,5 +1,28 @@
-\section{Central aspects of your A*-GAC program}
-This report describes our implementation of the A*-GAC and our solution to the vertex coloring problem.
+%%
+% Deliverables
+%   1. A report (of length no greater than 4 pages) that includes
+%      the following:
+%     • A discussion of the choices made in designing your ANN,
+%       particularly those involving topology, activation function,
+%       learning rate, momentum, etc. Justify your choices; don’t just
+%       state them (2 points).
+%     • A description of TWO different representations (i.e., two
+%       forms of preprocessing) that were at- tempted, and a comparison
+%       of the results achieved by each. These results should involve
+%       enough runs (e.g. 50) and analysis to statistically justify the
+%       choice of one representation over the other. Use Welch’s T-test
+%       (see function scipy.stats.ttest ind with the equal var flag set
+%       to False) to verify that one representation beats the other.
+%       The random variable to sample from each 2048 run should be the
+%       high tile at run’s end (rather than, say, the number of moves or
+%       sum total of all tiles). (4 points)
+%     • An analysis of your best ANN playing one game of 2048. This should
+%       highlight a few points in the game where it made smart decisions,
+%       and others where it appeared to make unwise moves (unless, of
+%       course, your ANN plays perfectly). (2 points)
 
-\subsection{Generality of the A* and the A*-GAC}
-Two classes must be subclassed to solve new problems; the BestFirstSearch class and the SearchState class. To utilize the power of the GAC, it has to be run on every generated node, even the root node.
+\section{Using an artifical neural network for playing the game 2048}
+...
+
+\subsection{Design choices}
+...
