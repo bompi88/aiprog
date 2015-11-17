@@ -150,11 +150,16 @@ class ConvolutionalNet(object):
             }
         )
 
-    def update_net(self, case):
-        return 0
+        self.predictor = theano.function(
+            inputs=[self.index],
+            outputs=self.layers[-1].y_pred,
+            givens={
+                self.x: self.test_set_x[self.index * self.batch_size: (self.index + 1) * self.batch_size]
+            }
+        )
 
     def predict(self, case):
-        return 0
+        return self.predictor(case)
 
     def train(self, n_epochs=100):
         print('----> Started training...')
@@ -252,17 +257,29 @@ class ConvolutionalNet(object):
     def test(self, cases):
         print('----> Started testing...')
 
-        predictions = []
+        errors = []
         for case in cases:
             # Preprocess the features before running the Ann
-            preprocessed_case = preprocess(case)
+            # preprocessed_case = preprocess(case)
 
             # Predict using Ann
-            prediction = self.predict(preprocessed_case)
+            result = self.predict(case)
 
-            # Add prediciton to predictions list
-            predictions.append(prediction)
-        return predictions
+            errors.append(result)
+
+        return errors
+
+        # errors = 0
+        # for case, label in cases:
+        #     # Preprocess the features before running the Ann
+        #     # preprocessed_case = preprocess(case)
+        #
+        #     # Predict using Ann
+        #     prediction = self.predict(case)
+        #
+        #     errors += prediction == label
+        #
+        # return errors
 
     def blind_test(self, cases):
         """
@@ -309,11 +326,16 @@ if __name__ == '__main__':
 
         return shared_x, T.cast(shared_y, 'int32')
 
+    training_set = load_all_flat_cases('training')
+    testing_set = load_all_flat_cases('testing')
+
     datasets = [
-        shared_dataset(load_all_flat_cases('training')),
-        shared_dataset(load_all_flat_cases('testing')),
-        shared_dataset(load_all_flat_cases('testing'))
+        shared_dataset(training_set),
+        shared_dataset(testing_set),
+        shared_dataset(testing_set)
     ]
 
-    net = ConvolutionalNet(net_structure, datasets, 0.1, 20)
-    net.train(100)
+    net = ConvolutionalNet(net_structure, datasets, 0.1, 100)
+    net.train(1)
+
+    print(net.test([0, 12, 13, 50, 32, 14]))
