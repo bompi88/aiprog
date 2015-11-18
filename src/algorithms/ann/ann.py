@@ -186,7 +186,7 @@ if __name__ == '__main__':
         regression_layer=SumOfSquaredErrors
     )
 
-    net.train(100)
+    net.train(60)
     net.test()
 
     minor_demo(net)
