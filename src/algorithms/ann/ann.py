@@ -4,7 +4,7 @@ Defines a neural net.
 
 from src.utils.preprocessing import normalize_images, as_binary_vector
 from src.algorithms.ann.hidden_layer import HiddenLayer
-from src.algorithms.ann.logistic_regression_layer import LogisticRegressionLayer
+from src.algorithms.ann.sum_of_squared_errors import SumOfSquaredErrors
 from src.utils.mnist_basics import load_all_flat_cases
 
 from theano import tensor as T
@@ -16,7 +16,7 @@ import time
 class Ann(object):
 
     def __init__(self, structure, datasets, activation_function=T.nnet.sigmoid, learning_rate=0.1,
-                 regression_layer=LogisticRegressionLayer):
+                 regression_layer=SumOfSquaredErrors):
         """
         Creates a neural net.
 
@@ -183,7 +183,7 @@ if __name__ == '__main__':
         datasets=provided_datasets,
         activation_function=[T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid],
         learning_rate=0.1,
-        regression_layer=LogisticRegressionLayer
+        regression_layer=SumOfSquaredErrors
     )
 
     net.train(100)

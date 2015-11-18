@@ -31,4 +31,6 @@ class LogisticRegressionLayer(object):
         self.params = [self.w, self.b]
 
     def error(self, label):
-        return T.sum((self.prediction - label)**2)
+        """ Backpropagation error calculation """
+        raise NotImplementedError(
+            'Implement error() in LogisticRegressionLayer subclass')
