@@ -5,7 +5,7 @@ Defines a neural net.
 from src.utils.preprocessing import normalize_images, as_binary_vector
 from src.algorithms.ann.hidden_layer import HiddenLayer
 from src.algorithms.ann.sum_of_squared_errors import SumOfSquaredErrors
-from src.utils.mnist_basics import load_all_flat_cases
+from src.utils.mnist_basics import load_all_flat_cases, minor_demo
 
 from theano import tensor as T
 import theano
@@ -188,3 +188,5 @@ if __name__ == '__main__':
 
     net.train(100)
     net.test()
+
+    minor_demo(net)
