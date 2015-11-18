@@ -5,7 +5,7 @@ import numpy
 
 class HiddenLayer(object):
 
-    def __init__(self, rng, _input, n_in, n_out, w=None, b=None, activation=T.tanh):
+    def __init__(self, rng, _input, n_in, n_out, w=None, b=None, activation=T.nnet.sigmoid):
         self.input = _input
 
         if w is None:
