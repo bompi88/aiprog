@@ -5,7 +5,7 @@ import numpy
 
 class LogisticRegressionLayer(object):
 
-    def __init__(self, _input, n_in, n_out):
+    def __init__(self, _input, n_in, n_out, activation=T.nnet.sigmoid):
 
         self.input = _input
 
@@ -27,7 +27,7 @@ class LogisticRegressionLayer(object):
             borrow=True
         )
 
-        self.prediction = T.nnet.sigmoid(T.dot(_input, self.w) + self.b)
+        self.prediction = activation(T.dot(_input, self.w) + self.b)
         self.params = [self.w, self.b]
 
     def error(self, label):

@@ -15,7 +15,8 @@ import time
 
 class Ann(object):
 
-    def __init__(self, structure, datasets, activation_function=T.nnet.sigmoid, learning_rate=0.1):
+    def __init__(self, structure, datasets, activation_function=T.nnet.sigmoid, learning_rate=0.1,
+                 regression_layer=LogisticRegressionLayer):
         """
         Creates a neural net.
 
@@ -52,6 +53,7 @@ class Ann(object):
 
         # Create the layers
         for i in range(len(structure) - 1):
+            a = self.activation_function[i] if type(self.activation_function) is list else self.activation_function
             if i < len(structure) - 2:
                 self.layers.append(
                     HiddenLayer(
@@ -59,17 +61,18 @@ class Ann(object):
                         _input=input_to_next_layer,
                         n_in=structure[i],
                         n_out=structure[i+1],
-                        activation=self.activation_function
+                        activation=a
                     )
                 )
                 input_to_next_layer = self.layers[i].output
             else:
                 # create last layer
                 self.layers.append(
-                    LogisticRegressionLayer(
+                    regression_layer(
                         _input=input_to_next_layer,
                         n_in=structure[i],
-                        n_out=structure[i+1]
+                        n_out=structure[i+1],
+                        activation=a
                     )
                 )
 
@@ -175,6 +178,13 @@ if __name__ == '__main__':
         testing_set
     ]
 
-    net = Ann([784, 50, 30, 10], provided_datasets, T.nnet.sigmoid, 0.1)
+    net = Ann(
+        structure=[784, 50, 30, 10],
+        datasets=provided_datasets,
+        activation_function=[T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid],
+        learning_rate=0.1,
+        regression_layer=LogisticRegressionLayer
+    )
+
     net.train(100)
     net.test()
