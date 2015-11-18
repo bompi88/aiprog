@@ -5,7 +5,7 @@ from src.modules.module1.main_window import MainWindow as Navigation
 from src.modules.module2.main_window import MainWindow as Graph
 from src.modules.module3.main_window import MainWindow as Nonogram
 from src.modules.module4.main_window import MainWindow as Play2048
-
+from src.modules.module5.main_window import MainWindow as MNIST
 
 class App(object):
     """ Loads a navigation window as default, and lets the user choose between
@@ -40,6 +40,10 @@ class App(object):
         """ Loads a Nonogram instance into main window """
         self.loader(Play2048)
 
+    def mnist(self):
+        """ Loads a Nonogram instance into main window """
+        self.loader(MNIST)
+
     def add_switcher_menu(self):
         """ Adds the following items to the menubar:
          Modules -> [ Navigation, Graphs, Nonograms ]
@@ -56,12 +60,16 @@ class App(object):
         play_2048_action = QtGui.QAction('&2048', self.main_window)
         play_2048_action.triggered.connect(self.play_2048)
 
+        mnist_action = QtGui.QAction('&MNIST', self.main_window)
+        mnist_action.triggered.connect(self.mnist)
+
         menu = self.main_window.menuBar()
         module_menu = menu.addMenu('&Modules')
         module_menu.addAction(navigation_action)
         module_menu.addAction(graph_action)
         module_menu.addAction(nonogram_action)
         module_menu.addAction(play_2048_action)
+        module_menu.addAction(mnist_action)
 
 
 def main():

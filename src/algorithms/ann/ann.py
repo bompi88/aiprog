@@ -5,7 +5,6 @@ Defines a neural net.
 from src.utils.preprocessing import normalize_images, as_binary_vector
 from src.algorithms.ann.hidden_layer import HiddenLayer
 from src.algorithms.ann.sum_of_squared_errors import SumOfSquaredErrors
-from src.utils.mnist_basics import load_all_flat_cases, minor_demo
 
 from theano import tensor as T
 import theano
@@ -164,29 +163,3 @@ class Ann(object):
             for el in case[row*28:(row+1)*28]:
                 print(1 if el else 0, end="")
             print("\n", end="")
-
-
-if __name__ == '__main__':
-
-    print('----> Loading cases...')
-
-    training_set = load_all_flat_cases('training')
-    testing_set = load_all_flat_cases('testing')
-
-    provided_datasets = [
-        training_set,
-        testing_set
-    ]
-
-    net = Ann(
-        structure=[784, 50, 30, 10],
-        datasets=provided_datasets,
-        activation_function=[T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid],
-        learning_rate=0.1,
-        regression_layer=SumOfSquaredErrors
-    )
-
-    net.train(60)
-    net.test()
-
-    minor_demo(net)
