@@ -17,7 +17,7 @@ int is_impossible(int* board);
 double evaluation_function(int* board);
 double max_placement(int* board);
 double monotonicity(int* board);
-double max_tile(int* board);
+int max_tile(int* board);
 int get_node_value(int* board, int pos_x, int pos_y);
 int check_occupied(int* board, int pos_x, int pos_y);
 int free_tiles(int* board);
