@@ -11,8 +11,35 @@ def load_2048_example():
     features, labels = [], []
 
     for line in data:
-        features.append(line[1])
+        features.append(process(line[1]))
         labels.append(line[0])
 
     return features, labels
-w
+
+
+def process_states(states):
+    for state in states:
+        process(state)
+
+    return states
+
+
+def process(state):
+    modifier = [
+        15, 14, 13, 12,
+        8, 9, 10, 11,
+        7, 6, 5, 4,
+        0, 1, 2, 3
+    ]
+
+    sub = 15 - max(state)
+
+    for i, tile in enumerate(state):
+
+        if modifier[i] - sub > 0:
+            modifier[i] = sub - modifier[i]
+
+        if state[i] != 0:
+            state[i] = modifier[i] + state[i]
+
+    return state

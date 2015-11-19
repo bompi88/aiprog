@@ -42,13 +42,15 @@ class Ann(object):
         self.test_set_images, self.test_set_labels = datasets[1]
 
         print('----> Normalizing images...')
-        self.gui_worker.gui.status_message.emit("Normalizing images...")
+        if self.gui_worker:
+            self.gui_worker.gui.status_message.emit("Normalizing images...")
 
         # self.train_set_images = normalize_images(self.train_set_images)
         # self.test_set_images = normalize_images(self.test_set_images)
 
         print('----> Constructing the neural net...')
-        self.gui_worker.gui.status_message.emit("Constructing the neural net...")
+        if self.gui_worker:
+            self.gui_worker.gui.status_message.emit("Constructing the neural net...")
 
         self.input = T.dvector('input')
         self.label = T.dvector('label')
@@ -105,7 +107,8 @@ class Ann(object):
 
     def train(self, epochs=100):
         print('----> Started training...')
-        self.gui_worker.gui.status_message.emit("Started training...")
+        if self.gui_worker:
+            self.gui_worker.gui.status_message.emit("Started training...")
         errors = []
         start_time = time.time()
 
@@ -141,7 +144,8 @@ class Ann(object):
 
     def test(self):
         print('----> Started testing...')
-        self.gui_worker.gui.status_message.emit("Started testing...")
+        if self.gui_worker:
+            self.gui_worker.gui.status_message.emit("Started testing...")
 
         n_errors = 0
         start_time = time.time()
@@ -152,19 +156,20 @@ class Ann(object):
             if prediction.tolist().index(max(prediction)) != self.test_set_labels[i]:
                 n_errors += 1
 
-        self.gui_worker.gui.status_message.emit(
-            "Number of misclassifications: {}, Error percentage: {}, Time: {}"
-            .format(
-                n_errors,
-                (n_errors / len(self.train_set_images)) * 100,
-                time.time() - start_time
+        if self.gui_worker:
+            self.gui_worker.gui.status_message.emit(
+                "Number of misclassifications: {}, Error percentage: {}, Time: {}"
+                .format(
+                    n_errors,
+                    (n_errors / len(self.train_set_images)) * 100,
+                    time.time() - start_time
+                )
             )
-        )
         print("Number of misclassifications: ", n_errors, "\n")
         print("Error percentage: ", (n_errors / len(self.test_set_images)) * 100)
         print("Tests ran in ", time.time() - start_time, " seconds.")
 
-    def blind_test(self, feature_sets):
+    def blind_test(self, feature_sets, normalize=None):
         """
         This method should predict a value for all testobjects in the list feature_sets, and returns a list with the
         predictions.
@@ -172,15 +177,23 @@ class Ann(object):
         :return:
         """
         print('----> Started blind test...')
-        self.gui_worker.gui.status_message.emit("Started blind test...")
+        if self.gui_worker:
+            self.gui_worker.gui.status_message.emit("Started blind test...")
         classifications = []
 
         print('----> Normalizing cases...')
-        self.gui_worker.gui.status_message.emit("Normalizing cases...")
-        feature_sets = normalize_images(feature_sets)
+        if self.gui_worker:
+            self.gui_worker.gui.status_message.emit("Normalizing cases...")
+
+        print(feature_sets)
+        if normalize:
+            feature_sets = normalize(feature_sets)
+        else:
+            feature_sets = normalize_images(feature_sets)
 
         print('----> Run blind tests...')
-        self.gui_worker.gui.status_message.emit("Run blind tests...")
+        if self.gui_worker:
+            self.gui_worker.gui.status_message.emit("Run blind tests...")
         for test_case in feature_sets:
             prediction = self.predictor(test_case)
             classifications.append(prediction.tolist().index(max(prediction)))

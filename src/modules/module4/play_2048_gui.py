@@ -4,6 +4,7 @@ from PyQt4.QtCore import pyqtSignal
 
 from src.modules.module4.utils.play_2048_worker import Play2048Worker
 from src.modules.module4.utils.play_2048_manual import Play2048Manual
+from src.modules.module4.utils.play_2048_test_worker import Play2048TestWorker
 from src.algorithms.adversial_search.expectimax_c import ExpectimaxC
 
 from src.puzzles.play_2048.play_2048_player import Play2048Player
@@ -115,6 +116,18 @@ class Play2048GUI(QtGui.QFrame):
 
     def start_manual_game(self):
         self.start(True)
+
+    def start_test(self):
+        if self.started:
+            return
+
+        self.worker = Play2048TestWorker(self)
+        self.worker.start()
+
+        self.started = True
+        self.update()
+
+        self.status_message.emit(str('Test started'))
 
     def end_search(self):
         if not self.started:

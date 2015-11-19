@@ -117,9 +117,13 @@ class MainWindow(QtGui.QMainWindow):
         start_action = QtGui.QAction('&Play yourself', self)
         start_action.triggered.connect(self.gui.start_manual_game)
 
+        test_action = QtGui.QAction('&Test ann', self)
+        test_action.triggered.connect(self.gui.start_test)
+
         toolbar = self.addToolBar('Toolbar')
         toolbar.addAction(run_action)
         toolbar.addAction(start_action)
+        toolbar.addAction(test_action)
 
     def shoot(self):
         path = res.play2048s.__path__[0]
