@@ -15,7 +15,7 @@ import time
 class Ann(object):
 
     def __init__(self, structure, datasets, activation_function=T.nnet.sigmoid, learning_rate=0.1,
-                 regression_layer=SumOfSquaredErrors):
+                 regression_layer=SumOfSquaredErrors, gui_worker=None):
         """
         Creates a neural net.
 
@@ -27,6 +27,7 @@ class Ann(object):
         """
 
         self.random_feed = numpy.random.RandomState(23455)
+        self.gui_worker = gui_worker
 
         self.learning_rate = learning_rate
         self.activation_function = activation_function
@@ -39,11 +40,13 @@ class Ann(object):
         self.test_set_images, self.test_set_labels = datasets[1]
 
         print('----> Normalizing images...')
+        self.gui_worker.gui.status_message.emit("Normalizing images...")
 
         self.train_set_images = normalize_images(self.train_set_images)
         self.test_set_images = normalize_images(self.test_set_images)
 
         print('----> Constructing the neural net...')
+        self.gui_worker.gui.status_message.emit("Constructing the neural net...")
 
         self.input = T.dvector('input')
         self.label = T.dvector('label')
@@ -100,6 +103,7 @@ class Ann(object):
 
     def train(self, epochs=100):
         print('----> Started training...')
+        self.gui_worker.gui.status_message.emit("Started training...")
         errors = []
         start_time = time.time()
 
@@ -115,6 +119,18 @@ class Ann(object):
                     n_errors += 1
                 total_error += error
             errors.append(total_error)
+            if self.gui_worker:
+                self.gui_worker.plot(errors)
+                self.gui_worker.gui.status_message.emit(
+                    "Epoch: {}, Error measure: {}, Number of misclassifications: {}, Error percentage: {}, Elapsed time: {}"
+                    .format(
+                        epoch,
+                        total_error,
+                        n_errors,
+                        (n_errors / len(self.train_set_images)) * 100,
+                        time.time() - start_time
+                    )
+                )
             print("Error measure: ", total_error)
             print("Number of misclassifications: ", n_errors, "\n")
             print("Error percentage: ", (n_errors / len(self.train_set_images)) * 100)
@@ -123,6 +139,7 @@ class Ann(object):
 
     def test(self):
         print('----> Started testing...')
+        self.gui_worker.gui.status_message.emit("Started testing...")
 
         n_errors = 0
         start_time = time.time()
@@ -133,6 +150,14 @@ class Ann(object):
             if prediction.tolist().index(max(prediction)) != self.test_set_labels[i]:
                 n_errors += 1
 
+        self.gui_worker.gui.status_message.emit(
+            "Number of misclassifications: {}, Error percentage: {}, Time: {}"
+            .format(
+                n_errors,
+                (n_errors / len(self.train_set_images)) * 100,
+                time.time() - start_time
+            )
+        )
         print("Number of misclassifications: ", n_errors, "\n")
         print("Error percentage: ", (n_errors / len(self.test_set_images)) * 100)
         print("Tests ran in ", time.time() - start_time, " seconds.")
@@ -145,12 +170,15 @@ class Ann(object):
         :return:
         """
         print('----> Started blind test...')
+        self.gui_worker.gui.status_message.emit("Started blind test...")
         classifications = []
 
         print('----> Normalizing cases...')
+        self.gui_worker.gui.status_message.emit("Normalizing cases...")
         feature_sets = normalize_images(feature_sets)
 
         print('----> Run blind tests...')
+        self.gui_worker.gui.status_message.emit("Run blind tests...")
         for test_case in feature_sets:
             prediction = self.predictor(test_case)
             classifications.append(prediction.tolist().index(max(prediction)))

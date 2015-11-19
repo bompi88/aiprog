@@ -22,7 +22,8 @@ class MNISTTrainer(object):
             datasets=provided_datasets,
             activation_function=[T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid],
             learning_rate=0.1,
-            regression_layer=SumOfSquaredErrors
+            regression_layer=SumOfSquaredErrors,
+            gui_worker=gui_worker
         )
 
         self.gui_worker = gui_worker

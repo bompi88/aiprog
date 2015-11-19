@@ -1,6 +1,7 @@
 """ A Widget for drawing Graph states """
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import pyqtSignal
+import pyqtgraph as pg
 
 from src.modules.module5.utils.mnist_worker import MNISTWorker
 
@@ -9,6 +10,7 @@ class MNISTGUI(QtGui.QFrame):
     """ Implement QFrame, which is a subclass of QWidget """
     status_message = pyqtSignal(str)
     score_message = pyqtSignal(str)
+    new_data = pyqtSignal(object)
 
     def __init__(self, parent):
         QtGui.QFrame.__init__(self, parent)
@@ -16,16 +18,30 @@ class MNISTGUI(QtGui.QFrame):
         self.worker = None
         self.started = False
 
+        pg.setConfigOption('background', 'w')
+
+        self.my_plot = pg.PlotWidget()
+        self.my_plot.getAxis('bottom').setPen('k')
+        self.my_plot.getAxis('left').setPen('k')
+
+        self.hBoxLayout = QtGui.QHBoxLayout()
+
         self.widget_size_px = 600
         self.init_ui()
 
     def init_ui(self):
         """ Initialize the UI """
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
+
         size = QtCore.QSize(self.widget_size_px, self.widget_size_px)
+
         self.setMinimumSize(size)
         self.parent().adjustSize()
         self.parent().setWindowTitle('Module 5 - MNIST classification')
+
+        self.hBoxLayout.setMargin(0)
+        self.hBoxLayout.addWidget(self.my_plot)
+        self.setLayout(self.hBoxLayout)
 
     def start_training(self):
         """ Start the search in the worker thread """
@@ -34,9 +50,6 @@ class MNISTGUI(QtGui.QFrame):
 
     def ended(self):
         self.status_message.emit('Terminated..')
-
-    def start_manual_game(self):
-        self.start(True)
 
     def end(self):
         if not self.started:
@@ -51,7 +64,8 @@ class MNISTGUI(QtGui.QFrame):
             return
 
         self.worker = MNISTWorker(self)
-        self.worker.train()
+        self.new_data.connect(self.plot)
+        self.worker.start()
 
         self.started = True
         self.update()
@@ -73,11 +87,8 @@ class MNISTGUI(QtGui.QFrame):
 
         self.status_message.emit(str('Testing started...'))
 
-    def paintEvent(self, _):  # pylint: disable=invalid-name
-        """ Called by the Qt event loop when the widget should be updated """
-        painter = QtGui.QPainter(self)
-
-        # self.paint_image(painter, image)
+    def plot(self, data):
+        self.my_plot.plot(data, pen="g")
 
     def resizeEvent(self, e):  # pylint: disable=invalid-name
         """ Handles widget resize """
@@ -91,7 +102,3 @@ class MNISTGUI(QtGui.QFrame):
                                          self.widget_size_px))
         self.parent().adjustSize()
         self.update()
-
-    def paint_image(self, painter, image):
-        """ Draws an MNIST image """
-        return
