@@ -8,5 +8,5 @@ def normalize_images(images):
     return images
 
 
-def as_binary_vector(num):
-    return [1 if num == i else 0 for i in range(10)]
+def as_binary_vector(num, n_output):
+    return [1 if num == i else 0 for i in range(n_output)]

@@ -36,14 +36,16 @@ class Ann(object):
         self.params = []
         self.labels = []
 
+        self.n_outputs = structure[-1]
+
         self.train_set_images, self.train_set_labels = datasets[0]
         self.test_set_images, self.test_set_labels = datasets[1]
 
         print('----> Normalizing images...')
         self.gui_worker.gui.status_message.emit("Normalizing images...")
 
-        self.train_set_images = normalize_images(self.train_set_images)
-        self.test_set_images = normalize_images(self.test_set_images)
+        # self.train_set_images = normalize_images(self.train_set_images)
+        # self.test_set_images = normalize_images(self.test_set_images)
 
         print('----> Constructing the neural net...')
         self.gui_worker.gui.status_message.emit("Constructing the neural net...")
@@ -113,7 +115,7 @@ class Ann(object):
             total_error = 0
 
             for i, c in enumerate(self.train_set_images):
-                prediction, error = self.trainer(c, as_binary_vector(self.train_set_labels[i]))
+                prediction, error = self.trainer(c, as_binary_vector(self.train_set_labels[i], self.n_outputs))
 
                 if prediction.tolist().index(max(prediction)) != self.train_set_labels[i]:
                     n_errors += 1

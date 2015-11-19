@@ -1,16 +1,16 @@
 from src.algorithms.ann.sum_of_squared_errors import SumOfSquaredErrors
-from src.utils.mnist_basics import load_all_flat_cases, minor_demo
 from src.algorithms.ann.ann import Ann
+from src.utils.ann2048_basics import load_2048_example
 from theano import tensor as T
 
 
-class MNISTTrainer(object):
+class Ann2048Trainer(object):
     def __init__(self, gui_worker=None):
 
         print('----> Loading cases...')
 
-        training_set = load_all_flat_cases('training')
-        testing_set = load_all_flat_cases('testing')
+        training_set = load_2048_example()
+        testing_set = load_2048_example()
 
         provided_datasets = [
             training_set,
@@ -18,12 +18,11 @@ class MNISTTrainer(object):
         ]
 
         self.net = Ann(
-            structure=[784, 150, 10],
+            structure=[16, 200, 4],
             datasets=provided_datasets,
-            activation_function=[T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid],
+            activation_function=[T.nnet.sigmoid, T.nnet.sigmoid],
             learning_rate=0.1,
-            regression_layer=SumOfSquaredErrors,
-            gui_worker=gui_worker
+            regression_layer=SumOfSquaredErrors
         )
 
         self.gui_worker = gui_worker
@@ -31,12 +30,12 @@ class MNISTTrainer(object):
     def train(self, epochs=60):
         self.net.train(epochs)
 
-    def test(self):
-        minor_demo(self.net)
+    # def test(self):
+    #    minor_demo(self.net)
 
 if __name__ == '__main__':
 
-    trainer = MNISTTrainer()
+    trainer = Ann2048Trainer()
 
     trainer.train()
-    trainer.test()
+    # trainer.test()
