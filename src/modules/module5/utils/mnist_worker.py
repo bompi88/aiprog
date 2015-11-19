@@ -15,7 +15,8 @@ class MNISTWorker(QThread):
 
     def run(self):
         self.trainer = self.trainer(self)
-        self.trainer.train()
+        self.trainer.train(5)
+        self.save()
         self.trainer.test()
 
         self.gui.ended()
@@ -37,6 +38,12 @@ class MNISTWorker(QThread):
 
     def plot(self, data):
         self.gui.new_data.emit(data)
+
+    def open(self, path="trained-ann"):
+        self.trainer.open(path)
+
+    def save(self, path="trained-ann"):
+        self.trainer.save(path)
 
     def __del__(self):
         self.exiting = True

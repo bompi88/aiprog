@@ -102,3 +102,13 @@ class MNISTGUI(QtGui.QFrame):
                                          self.widget_size_px))
         self.parent().adjustSize()
         self.update()
+
+    def open(self):
+        path = QtGui.QFileDialog.getOpenFileName(self.parent())
+
+        self.worker.open(path)
+
+    def save(self):
+        path = QtGui.QFileDialog.getSaveFileName(self.parent())
+
+        self.worker.save(path)

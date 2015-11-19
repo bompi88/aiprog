@@ -135,9 +135,11 @@ class Ann(object):
             print("Number of misclassifications: ", n_errors, "\n")
             print("Error percentage: ", (n_errors / len(self.train_set_images)) * 100)
         print("", epochs, " epochs ran in ", time.time() - start_time, " seconds.")
+
         return errors
 
     def test(self):
+
         print('----> Started testing...')
         self.gui_worker.gui.status_message.emit("Started testing...")
 

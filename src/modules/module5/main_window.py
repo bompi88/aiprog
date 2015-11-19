@@ -46,6 +46,16 @@ class MainWindow(QtGui.QMainWindow):
         menu = self.menuBar()
         file_menu = menu.addMenu('&File')
 
+        open_action = QtGui.QAction('&Open', self)
+        open_action.setShortcut('Ctrl+K')
+        open_action.triggered.connect(self.gui.open)
+        file_menu.addAction(open_action)
+
+        save_action = QtGui.QAction('&Save', self)
+        save_action.setShortcut('Ctrl+K')
+        save_action.triggered.connect(self.gui.save)
+        file_menu.addAction(save_action)
+
         kill_action = QtGui.QAction('&Kill game', self)
         kill_action.setShortcut('Ctrl+K')
         kill_action.triggered.connect(self.gui.end)

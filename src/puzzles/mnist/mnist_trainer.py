@@ -2,6 +2,7 @@ from src.algorithms.ann.sum_of_squared_errors import SumOfSquaredErrors
 from src.utils.mnist_basics import load_all_flat_cases, minor_demo
 from src.algorithms.ann.ann import Ann
 from theano import tensor as T
+import pickle
 
 
 class MNISTTrainer(object):
@@ -33,6 +34,16 @@ class MNISTTrainer(object):
 
     def test(self):
         minor_demo(self.net)
+
+    def open(self, path):
+        file = open(path, 'rb')
+        self.net = pickle.load(file)
+        file.close()
+
+    def save(self, path="trained-ann"):
+        file = open(path, 'wb')
+        pickle.dump(self.net, file, protocol=pickle.HIGHEST_PROTOCOL)
+        file.close()
 
 if __name__ == '__main__':
 
