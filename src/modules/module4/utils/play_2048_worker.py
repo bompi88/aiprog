@@ -13,15 +13,19 @@ class Play2048Worker(QThread):
 
         self.gui = gui
         self.player = Play2048Player(gui.search, gui.depth, self)
+        self.states = []
 
     def run(self):
         self.player.play()
 
         self.gui.game_ended()
 
-    def move_completed(self):
+    def move_completed(self, state):
         if self.gui.take_screenshots:
             self.gui.screenshot.emit()
+
+        if self.gui.pickle_states:
+            self.states.append(state)
 
         sleep(self.gui.delay / 1000.0)
         self.gui.score_message.emit('Score: {}'.format(self.player.game.score))

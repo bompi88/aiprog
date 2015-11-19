@@ -9,6 +9,9 @@ from src.algorithms.adversial_search.expectimax_c import ExpectimaxC
 from src.puzzles.play_2048.play_2048_player import Play2048Player
 
 from math import log
+import pickle
+import time
+import res.play2048s
 
 
 class Play2048GUI(QtGui.QFrame):
@@ -39,6 +42,7 @@ class Play2048GUI(QtGui.QFrame):
         self.init_colors()
 
         self.take_screenshots = False
+        self.pickle_states = False
 
         self.move_keys = {0: 'left', 1: 'up', 2: 'right', 3: 'down'}
 
@@ -101,6 +105,13 @@ class Play2048GUI(QtGui.QFrame):
         self.status_message.emit('Game ended')
         if self.take_screenshots:
             self.parent().animate()
+
+        if self.pickle_states:
+            path = res.play2048s.__path__[0] + '/'
+            filename = str(round(time.time())) + '.p'
+            f = open(path + filename, 'wb')
+            pickle.dump(self.worker.states, f)
+            self.pickle_states = False
 
     def start_manual_game(self):
         self.start(True)
@@ -228,3 +239,8 @@ class Play2048GUI(QtGui.QFrame):
         self.take_screenshots = take_screenshots
         if take_screenshots:
             self.status_message.emit('Taking screenshots')
+
+    def set_pickling(self, do_pickle):
+        self.pickle_states = do_pickle
+        if do_pickle:
+            self.status_message.emit('Saving game states')

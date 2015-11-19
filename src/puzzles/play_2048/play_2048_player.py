@@ -13,6 +13,12 @@ class Play2048Player(object):
     def actions(cls):
         return {'left': [-1, 0], 'up': [0, -1], 'right': [1, 0], 'down': [0, 1]}
 
+    @classmethod
+    def move_id(cls, move):
+        for i, action in enumerate(cls.actions().values()):
+            if move == action:
+                return i
+
     def play(self):
         ended = False
 
@@ -20,11 +26,13 @@ class Play2048Player(object):
             new_game = self.game.copy_with_board(self.game.board)
             move = self.search.decision(new_game)
 
+            state = (self.move_id(move), list(self.game.board))
+
             if self.game.move(move):
                 self.game.next_state()
 
                 if self.gui_worker:
-                    self.gui_worker.move_completed()
+                    self.gui_worker.move_completed(state)
 
             if not self.game.is_possible():
                 ended = True

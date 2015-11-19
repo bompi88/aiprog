@@ -60,6 +60,7 @@ class MainWindow(QtGui.QMainWindow):
         file_menu = menu.addMenu('&File')
         delay_menu = menu.addMenu('&Delay')
         screenshots_menu = menu.addMenu('&Screenshots')
+        pickling_menu = menu.addMenu('&Save states')
         depth_menu = menu.addMenu('&Depth')
 
         kill_action = QtGui.QAction('&Kill game', self)
@@ -90,6 +91,14 @@ class MainWindow(QtGui.QMainWindow):
         screens_off = QtGui.QAction('&Off', self)
         screens_off.triggered.connect(lambda: self.gui.set_screenshots(False))
         screenshots_menu.addAction(screens_off)
+
+        pickling_on = QtGui.QAction('&On', self)
+        pickling_on.triggered.connect(lambda: self.gui.set_pickling(True))
+        pickling_menu.addAction(pickling_on)
+
+        pickling_off = QtGui.QAction('&Off', self)
+        pickling_off.triggered.connect(lambda: self.gui.set_pickling(False))
+        pickling_menu.addAction(pickling_off)
 
         depths = [2, 3, 4]
         for depth in depths:
