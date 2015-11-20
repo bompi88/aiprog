@@ -36,10 +36,10 @@ def process(state):
 
     for i, tile in enumerate(state):
 
-        if modifier[i] - sub > 0:
+        if modifier[i] - sub >= 0:
             modifier[i] = sub - modifier[i]
 
         if state[i] != 0:
-            state[i] = modifier[i] + state[i]
+            state[i] = (modifier[i] + state[i]) * state[i] # * (16 - modifier[i])
 
     return state

@@ -29,6 +29,9 @@ static int NO_MOVE_VECTOR[2] = { 0, 0 };
 
 #define HEURISTIC_CONSTANTS double smoothness, double max_tile, double free_tiles_multiplier, double max_placement, double monotonicity
 
+inline int min ( int a, int b ) { return a < b ? a : b; }
+inline int max ( int a, int b ) { return a > b ? a : b; }
+
 static double smoothness_constant;
 static double max_tile_constant;
 static double free_tiles_constant;
@@ -485,14 +488,14 @@ double evaluation_function(int* board) {
 
         for (int i = 0; i < 16; i++) {
 
-            if (modifier[i+4*k] - sub > 0) {
+            if (modifier[i+4*k] - sub >= 0) {
                 modifier[i+4*k] = sub - modifier[i+4*k];
             }
 
             if (board[i+4*k] == 0) {
                 modifier[i+4*k] = 0;
             } else {
-                modifier[i+4*k] = modifier[i+4*k] + board[i+4*k];
+                modifier[i+4*k] = (modifier[i+4*k] + board[i+4*k]) * (16 - modifier[i+4*k]) * board[i+4*k] * board[i+4*k];
             }
 
             sum = sum + abs(modifier[i+4*k]);
@@ -503,7 +506,7 @@ double evaluation_function(int* board) {
         }
     }
 
-    return (-(float)min_possibility + 1.5 * (float)free_tiles(board));
+    return (-(float)min_possibility) + ((float)free_tiles(board) * (float)free_tiles(board) * (float)free_tiles(board) * 5.15);
 }
 
 double max_placement(int* board) {
