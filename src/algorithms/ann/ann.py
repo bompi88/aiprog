@@ -26,6 +26,12 @@ class Ann(object):
         :return:
         """
 
+        if not regression_layer:
+            regression_layer = SumOfSquaredErrors
+
+        if not learning_rate:
+            learning_rate = 0.1
+
         self.random_feed = numpy.random.RandomState(23455)
         self.gui_worker = gui_worker
 
@@ -125,7 +131,8 @@ class Ann(object):
                 total_error += error
             errors.append(total_error)
             if self.gui_worker:
-                self.gui_worker.plot(errors)
+                if getattr(self.gui_worker, 'plot', None):
+                    self.gui_worker.plot(errors)
                 self.gui_worker.gui.status_message.emit(
                     "Epoch: {}, Error measure: {}, Number of misclassifications: {}, Error percentage: {}, Elapsed time: {}"
                     .format(
@@ -185,12 +192,12 @@ class Ann(object):
         if self.gui_worker:
             self.gui_worker.gui.status_message.emit("Normalizing cases...")
 
-        print(feature_sets)
         if normalize:
             feature_sets = normalize(feature_sets)
         else:
             feature_sets = normalize_images(feature_sets)
 
+        print(feature_sets)
         print('----> Run blind tests...')
         if self.gui_worker:
             self.gui_worker.gui.status_message.emit("Run blind tests...")

@@ -1,79 +1,57 @@
 from src.algorithms.ann.sum_of_squared_errors import SumOfSquaredErrors
 from src.algorithms.ann.ann import Ann
 from src.utils.ann2048_basics import load_2048_example
-from src.utils.ann2048_basics import process_states
-from src.puzzles.play_2048.play_2048_player import Play2048Player
-from src.puzzles.play_2048.play_2048_state import Play2048State
 from theano import tensor as T
-from copy import deepcopy
-from random import randint
+import res.play2048s.anns
+import pickle
+
 
 class Ann2048Trainer(object):
-    def __init__(self, gui_worker=None):
+    def __init__(self, structure=None, provided_datasets=None,
+                 activation_function=None, regression_layer=None,
+                 learning_rate=None, gui_worker=None):
 
-        self.game = Play2048State()
-        self.mapping = ['left', 'up', 'right', 'down']
-        self.trained = False
+        if not provided_datasets:
+            print('----> Loading cases...')
 
-        print('----> Loading cases...')
+            min_tile = None
 
-        training_set = load_2048_example()
-        testing_set = load_2048_example()
+            if gui_worker:
+                min_tile = gui_worker.gui.min_save_tiles
 
-        provided_datasets = [
-            training_set,
-            testing_set
-        ]
+            training_set = load_2048_example(min_tile)
+            testing_set = load_2048_example(min_tile)
+
+            provided_datasets = [
+                training_set,
+                testing_set
+            ]
 
         self.net = Ann(
-            structure=[16, 200, 4],
+            gui_worker=gui_worker,
+            structure=structure if structure else [17, 144, 30, 4],
             datasets=provided_datasets,
-            activation_function=[T.nnet.sigmoid, T.nnet.sigmoid],
-            learning_rate=0.1,
-            regression_layer=SumOfSquaredErrors
+            activation_function=activation_function if activation_function else [T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid],
+            learning_rate=learning_rate,
+            regression_layer=regression_layer
         )
 
         self.gui_worker = gui_worker
 
-    def train(self, epochs=60):
-        if not self.trained:
-            self.net.train(epochs)
-        self.trained = True
+    def save(self, path=None):
+        if not path:
+            path = res.play2048s.anns.__path__[0] + "/trained-ann-2048"
 
-    def blind_test(self, state):
-        return self.net.blind_test(state)
+        file = open(path, 'wb')
+        pickle.dump(self.net, file, protocol=pickle.HIGHEST_PROTOCOL)
+        file.close()
 
-    # def test(self):
-    #    minor_demo(self.net)
-
-    def play(self):
-        ended = False
-
-        while not ended:
-            new_game = self.game.copy_with_board(self.game.board)
-
-            move = new_game.possible_moves[self.mapping[self.net.blind_test([deepcopy(new_game.board)], normalize=process_states)[0]]]
-
-            state = (Play2048Player.move_id(move), list(self.game.board))
-
-            if self.game.move(move):
-                self.game.next_state()
-
-                if self.gui_worker:
-                    self.gui_worker.move_completed(state)
-            else:
-                # TODO: This must be removed, but how?
-                if self.game.move(new_game.possible_moves[self.mapping[randint(0, 3)]]):
-                    self.game.next_state()
-            if not self.game.is_possible():
-                ended = True
-
-    def __str__(self):
-        return '\n'.join(['-'.join(str(t) for t in r) for r in self.game.board])
+    def train(self, epochs=1):
+        self.net.train(epochs)
 
 if __name__ == '__main__':
 
     trainer = Ann2048Trainer()
 
     trainer.train(100)
-    # trainer.test()
+    trainer.save()

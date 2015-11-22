@@ -37,6 +37,9 @@ class MainWindow(QtGui.QMainWindow):
         self.init_toolbar()
 
         status_bar_label = QtGui.QLabel()
+        status_bar_label.setWordWrap(True)
+        status_bar_label.setFixedWidth(600)
+
         self.statusBar().addWidget(status_bar_label)
 
         score_label = QtGui.QLabel()
@@ -61,11 +64,13 @@ class MainWindow(QtGui.QMainWindow):
         delay_menu = menu.addMenu('&Delay')
         screenshots_menu = menu.addMenu('&Screenshots')
         pickling_menu = menu.addMenu('&Save states')
+        delete_state_menu = menu.addMenu('&Delete states')
+        min_tile_menu = menu.addMenu('&Min tile')
         depth_menu = menu.addMenu('&Depth')
 
-        kill_action = QtGui.QAction('&Kill game', self)
+        kill_action = QtGui.QAction('&Kill runnning process', self)
         kill_action.setShortcut('Ctrl+K')
-        kill_action.triggered.connect(self.gui.end_search)
+        kill_action.triggered.connect(self.gui.end_process)
         file_menu.addAction(kill_action)
 
         reset_size_action = QtGui.QAction('&Reset size', self)
@@ -107,6 +112,20 @@ class MainWindow(QtGui.QMainWindow):
             depth_action.triggered.connect(make_function([], expr, locals()))
             depth_menu.addAction(depth_action)
 
+        min_tiles = [7, 8, 9, 10, 11, 12]
+        for min_tile in min_tiles:
+            min_tile_action = QtGui.QAction('&' + str(2 ** min_tile), self)
+            expr = 'self.gui.set_min_save_tiles({})'.format(min_tile)
+            min_tile_action.triggered.connect(make_function([], expr, locals()))
+            min_tile_menu.addAction(min_tile_action)
+
+        delete_states = [7, 8, 9, 10, 11, 12]
+        for delete_state in delete_states:
+            delete_state_action = QtGui.QAction('&' + str(2 ** delete_state), self)
+            expr = 'self.gui.delete_states({})'.format(delete_state)
+            delete_state_action.triggered.connect(make_function([], expr, locals()))
+            delete_state_menu.addAction(delete_state_action)
+
     def init_toolbar(self):
         """ Initializes a toolbar, with a run button and delay controls """
         play_icon = QtGui.QIcon(res.imgs.__path__[0] + '/play.png')
@@ -117,13 +136,24 @@ class MainWindow(QtGui.QMainWindow):
         start_action = QtGui.QAction('&Play yourself', self)
         start_action.triggered.connect(self.gui.start_manual_game)
 
-        test_action = QtGui.QAction('&Test ann', self)
+        train_action = QtGui.QAction('&Train', self)
+        train_action.triggered.connect(self.gui.start_training)
+
+        test_action = QtGui.QAction('&Test', self)
         test_action.triggered.connect(self.gui.start_test)
 
         toolbar = self.addToolBar('Toolbar')
         toolbar.addAction(run_action)
         toolbar.addAction(start_action)
+        toolbar.addAction(train_action)
         toolbar.addAction(test_action)
+
+        save_num_plays = [100, 1000, 10000, 30000]
+        for save_plays in save_num_plays:
+            save_plays_action = QtGui.QAction('&Save ' + str(save_plays), self)
+            expr = 'self.gui.save_plays({})'.format(save_plays)
+            save_plays_action.triggered.connect(make_function([], expr, locals()))
+            toolbar.addAction(save_plays_action)
 
     def shoot(self):
         path = res.play2048s.__path__[0]
