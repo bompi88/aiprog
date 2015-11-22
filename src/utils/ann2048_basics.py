@@ -26,7 +26,7 @@ def load_2048_example(min_tile=1):
 
     features, labels = [], []
 
-    for line in list(data.values())[:10000]:
+    for line in list(data.values())[:30000]:
         features.append(process(line[1]))
         labels.append(line[0])
 
@@ -69,5 +69,5 @@ def process(state):
         sum += abs(state[i])
 
     #state.append(sum)
-    state.append(max(state))
+    # state.append(max(state))
     return state

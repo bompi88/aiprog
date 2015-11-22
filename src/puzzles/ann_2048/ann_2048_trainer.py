@@ -29,7 +29,7 @@ class Ann2048Trainer(object):
 
         self.net = Ann(
             gui_worker=gui_worker,
-            structure=structure if structure else [17, 144, 30, 4],
+            structure=structure if structure else [16, 144, 30, 4],
             datasets=provided_datasets,
             activation_function=activation_function if activation_function else [T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid],
             learning_rate=learning_rate,
@@ -46,7 +46,7 @@ class Ann2048Trainer(object):
         pickle.dump(self.net, file, protocol=pickle.HIGHEST_PROTOCOL)
         file.close()
 
-    def train(self, epochs=1):
+    def train(self, epochs=100):
         self.net.train(epochs)
 
 if __name__ == '__main__':

@@ -30,6 +30,7 @@ class Play2048GUI(QtGui.QFrame):
 
         self.depth = 2
         self.search = ExpectimaxC
+        self.net = None
 
         self.delay = 50
         self.worker = None
@@ -175,7 +176,7 @@ class Play2048GUI(QtGui.QFrame):
     def start_test(self):
         self.end_process()
 
-        self.worker = Play2048TestWorker(self)
+        self.worker = Play2048TestWorker(self, ann=self.net)
         self.worker.start()
 
         self.started = True
