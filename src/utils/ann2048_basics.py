@@ -75,8 +75,7 @@ def process_states(states):
 
 
 def process(state):
-    # return [s / max(state) for s in state]
-
+    # state = [s / max(state) for s in state]
     modifier = [
         15, 14, 13, 12,
         8, 9, 10, 11,
@@ -88,7 +87,7 @@ def process(state):
 
     sum = 0
 
-    for i, tile in enumerate(state):
+    for i in range(16):
 
         if modifier[i] - sub >= 0:
             modifier[i] = sub - modifier[i]
@@ -98,6 +97,6 @@ def process(state):
             state[i] = (modifier[i] + state[i]) #  * state[i] # * state[i] * (16 - modifier[i])
         sum += abs(state[i])
 
-    #state.append(sum)
-    # state.append(max(state))
+    if len(state) == 16:
+        state.append(max(state))
     return state

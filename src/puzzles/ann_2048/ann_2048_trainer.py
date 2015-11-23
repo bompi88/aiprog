@@ -33,7 +33,7 @@ class Ann2048Trainer(object):
 
         self.net = Ann(
             gui_worker=gui_worker,
-            structure=structure if structure else [16, 144, 30, 4],
+            structure=structure if structure else [17, 300, 60, 4],
             datasets=provided_datasets,
             activation_function=activation_function if activation_function else [T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid],
             learning_rate=learning_rate,
