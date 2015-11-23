@@ -3,11 +3,12 @@ import src.clibs
 
 
 class ExpectimaxC(object):
-    def __init__(self, depth):
+    def __init__(self, depth, heuristic=0):
         self.path = src.clibs.__path__[0] + '/expectimax_lib.so'
         self.search = ctypes.CDLL(self.path)
 
         self.depth = depth
+        self.heuristic = heuristic
 
         self.smoothness_constant = 0.2
         self.max_tile_constant = 0.9
@@ -24,7 +25,8 @@ class ExpectimaxC(object):
             ctypes.c_double(self.max_tile_constant),
             ctypes.c_double(self.free_tiles_constant),
             ctypes.c_double(self.max_placement_constant),
-            ctypes.c_double(self.monotonicity_constant)
+            ctypes.c_double(self.monotonicity_constant),
+            self.heuristic
         )
 
         mapping = ['left', 'up', 'right', 'down']

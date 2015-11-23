@@ -29,11 +29,15 @@ static int NO_MOVE_VECTOR[2] = { 0, 0 };
 
 #define HEURISTIC_CONSTANTS double smoothness, double max_tile, double free_tiles_multiplier, double max_placement, double monotonicity
 
+inline int min ( int a, int b ) { return a < b ? a : b; }
+inline int max ( int a, int b ) { return a > b ? a : b; }
+
 static double smoothness_constant;
 static double max_tile_constant;
 static double free_tiles_constant;
 static double max_placement_constant;
 static double monotonicity_constant;
+static int heuristic;
 
 static int successor_tiles[32];
 static int num_successors = 0;
@@ -41,14 +45,15 @@ static int num_successors = 0;
 
 int main() {
     int board[] = {0, 0, 0, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    printf("%d\n", decision_map(2, board));
+    printf("%d\n", decision_map(2, board, 0));
 }
 
-int decision(int depth, BOARD_ARGS, HEURISTIC_CONSTANTS) {
+int decision(int depth, BOARD_ARGS, HEURISTIC_CONSTANTS, int heuristic_number) {
     srand((unsigned int)time(NULL));
 
     int arg_board[] = {BOARD_ARGS_VALUES};
 
+    heuristic = heuristic_number;
     smoothness_constant = smoothness;
     max_tile_constant = max_tile;
     free_tiles_constant = free_tiles_multiplier;
@@ -65,8 +70,8 @@ int decision(int depth, BOARD_ARGS, HEURISTIC_CONSTANTS) {
     return max_node.move;
 }
 
-int decision_map(int depth, int* board) {
-    return decision(depth, BOARD_ARGS_ELEMENTS, 0.2, 0.9, 2.3, 1.0, 1.9);
+int decision_map(int depth, int* board, int heuristic_number) {
+    return decision(depth, BOARD_ARGS_ELEMENTS, 0.2, 0.9, 2.3, 1.0, 1.9, heuristic_number);
 }
 
 ExpectimaxNode max_value(int* board, int depth) {
@@ -397,19 +402,6 @@ int is_impossible(int* board) {
     return impossible;
 }
 
-double evaluation_function(int* board) {
-    if (is_impossible(board)) {
-        return INT_MIN;
-    }
-
-    return (
-            (smoothness(board) * smoothness_constant) +
-            (max_tile(board) * max_tile_constant) +
-            (log(free_tiles(board)) * free_tiles_constant) +
-            (max_placement(board) * max_placement_constant) +
-            (monotonicity(board) * monotonicity_constant)
-           );
-}
 
 int free_tiles(int* board) {
     int free_value = 0;
@@ -423,8 +415,8 @@ int free_tiles(int* board) {
     return free_value;
 }
 
-double max_tile(int* board) {
-    double max_tile = 0;
+int max_tile(int* board) {
+    int max_tile = 0;
 
     for (int i = 0; i < 16; i++) {
         if (board[i] > max_tile) {
@@ -433,6 +425,61 @@ double max_tile(int* board) {
     }
 
     return max_tile;
+}
+
+double min_possibility(int* board) {
+    int modifier[] = {
+            // Top left corner
+            15, 14, 13, 12,
+            8, 9, 10, 11,
+            7, 6, 5, 4,
+            0, 1, 2, 3
+    };
+
+    int sub = 15 - max_tile(board);
+
+    int min_possibility = INT_MAX;
+
+    int sum = 0;
+
+    for (int i = 0; i < 16; i++) {
+
+        if (modifier[i] - sub >= 0) {
+            modifier[i] = sub - modifier[i];
+        }
+
+        if (board[i] == 0) {
+            modifier[i] = 0;
+        } else {
+            modifier[i] =
+                    (modifier[i] + board[i]) * (16 - modifier[i]) * board[i] * board[i];
+        }
+
+        sum = sum + abs(modifier[i]);
+    }
+
+    if (sum < min_possibility) {
+        min_possibility = sum;
+    }
+
+    return (-(float)min_possibility) + ((float)free_tiles(board) * (float)free_tiles(board) * (float)free_tiles(board) * 5.15);
+}
+
+double evaluation_function(int* board) {
+    if (is_impossible(board)) {
+        return INT_MIN;
+    }
+
+    if(heuristic == 1) {
+        return min_possibility(board);
+    }
+    return (
+            (smoothness(board) * smoothness_constant) +
+            (max_tile(board) * max_tile_constant) +
+            (log(free_tiles(board)) * free_tiles_constant) +
+            (max_placement(board) * max_placement_constant) +
+            (monotonicity(board) * monotonicity_constant)
+    );
 }
 
 double max_placement(int* board) {

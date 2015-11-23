@@ -4,6 +4,9 @@ from PyQt4.QtCore import pyqtSignal
 
 from src.modules.module4.utils.play_2048_worker import Play2048Worker
 from src.modules.module4.utils.play_2048_manual import Play2048Manual
+from src.modules.module4.utils.play_2048_test_worker import Play2048TestWorker
+from src.modules.module4.utils.play_2048_train_worker import Play2048TrainWorker
+from src.modules.module4.utils.play_2048_save_worker import Play2048SaveWorker
 from src.algorithms.adversial_search.expectimax_c import ExpectimaxC
 
 from src.puzzles.play_2048.play_2048_player import Play2048Player
@@ -11,7 +14,9 @@ from src.puzzles.play_2048.play_2048_player import Play2048Player
 from math import log
 import pickle
 import time
+import os
 import res.play2048s
+import res.play2048s.ai_runs
 
 
 class Play2048GUI(QtGui.QFrame):
@@ -25,8 +30,12 @@ class Play2048GUI(QtGui.QFrame):
 
         self.depth = 2
         self.search = ExpectimaxC
+        self.net = None
 
         self.delay = 50
+        self.heuristic = 0
+        self.epochs = 100
+        self.num_cases = 10000
         self.worker = None
         self.started = False
         self.manual_mode = None
@@ -43,6 +52,9 @@ class Play2048GUI(QtGui.QFrame):
 
         self.take_screenshots = False
         self.pickle_states = False
+        self.min_save_tiles = 10
+        self.reload_saves = True
+        self.states = {}
 
         self.move_keys = {0: 'left', 1: 'up', 2: 'right', 3: 'down'}
 
@@ -98,7 +110,7 @@ class Play2048GUI(QtGui.QFrame):
 
     def start_search(self):
         """ Start the search in the worker thread """
-        self.end_search()
+        self.end_process()
         self.start()
 
     def game_ended(self):
@@ -113,10 +125,92 @@ class Play2048GUI(QtGui.QFrame):
             pickle.dump(self.worker.states, f)
             self.pickle_states = False
 
+    def single_save_ended(self, tile=None):
+        path = res.play2048s.ai_runs.__path__[0] + '/'
+        filename = str(2 ** tile) + '_' + str(self.heuristic) if tile else str(round(time.time()))
+        filename += '.p'
+
+        if self.reload_saves:
+            self.states = {}
+
+        if tile:
+            if self.reload_saves:
+                has_file = False
+                if os.path.exists(path + filename):
+                    has_file = True
+
+                if has_file:
+                    fr = open(path + filename, 'rb')
+                    while 1:
+                        try:
+                            z = self.states.get(tile, {})
+                            z.update(pickle.load(fr))
+                            self.states[tile] = z
+                        except EOFError:
+                            break
+                    fr.close()
+        else:
+            tile = 1
+
+        p = self.states.get(tile, {})
+        p.update(self.worker.states)
+        self.states[tile] = p
+
+        fw = open(path + filename, 'wb')
+
+        pickle.dump(self.states[tile], fw)
+        fw.close()
+
+    def save_ended(self):
+        self.status_message.emit('Saving states finished')
+
+    def training_ended(self):
+        self.status_message.emit('Training finished')
+
+    def testing_ended(self):
+        self.status_message.emit('Testing finished')
+        if self.take_screenshots:
+            self.parent().animate()
+
     def start_manual_game(self):
+        self.end_process()
         self.start(True)
 
-    def end_search(self):
+    def start_test(self):
+        self.end_process()
+
+        self.worker = Play2048TestWorker(self, ann=self.net)
+        self.worker.start()
+
+        self.started = True
+        self.update()
+
+        self.status_message.emit(str('Test started'))
+
+    def start_training(self):
+        self.end_process()
+
+        self.worker = Play2048TrainWorker(self)
+        self.worker.start()
+
+        self.started = True
+        self.update()
+
+        self.status_message.emit(str('Training started'))
+
+    def save_plays(self, num_plays):
+        self.reload_saves = True
+        self.end_process()
+
+        self.worker = Play2048SaveWorker(self, num_plays, self.min_save_tiles)
+        self.worker.start()
+
+        self.started = True
+        self.update()
+
+        self.status_message.emit(str('Saving ' + str(num_plays) + ' plays'))
+
+    def end_process(self):
         if not self.started:
             return
 
@@ -124,6 +218,8 @@ class Play2048GUI(QtGui.QFrame):
             self.worker.end_worker()
         self.worker = None
         self.started = False
+        self.score_message.emit(str(''))
+        self.status_message.emit(str(''))
 
     def start(self, manual=False):
         if self.started:
@@ -154,7 +250,10 @@ class Play2048GUI(QtGui.QFrame):
         font.setPointSize(self.font_size)
         painter.setFont(font)
 
-        board = self.worker.board() if self.started else self.splash_screen
+        if getattr(self.worker, 'board', None):
+            board = self.worker.board() if self.started else self.splash_screen
+        else:
+            board = self.splash_screen
 
         self.paint_board(painter, board)
         self.paint_outer_border(painter)
@@ -244,3 +343,28 @@ class Play2048GUI(QtGui.QFrame):
         self.pickle_states = do_pickle
         if do_pickle:
             self.status_message.emit('Saving game states')
+
+    def set_min_save_tiles(self, min_tile):
+        self.min_save_tiles = min_tile
+        self.status_message.emit(
+            'Saving / Using plays that has tiles greater than or equal ' + str(2 ** self.min_save_tiles)
+        )
+
+    def set_heuristic(self, heuristic):
+        self.heuristic = heuristic
+        self.status_message.emit('Using Heuristic ' + str(heuristic + 1))
+
+    def set_epochs(self, epochs):
+        self.epochs = epochs
+        self.status_message.emit('Will use epochs of ' + str(epochs))
+
+    def set_num_cases(self, num_cases):
+        self.num_cases = num_cases
+        self.status_message.emit('Number of cases to be used is ' + str(num_cases))
+
+    def delete_states(self, tile):
+        if not tile:
+            return
+        path = res.play2048s.ai_runs.__path__[0] + '/'
+        filename = str(2 ** tile) + '.p'
+        os.remove(path + filename)

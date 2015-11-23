@@ -2,10 +2,10 @@ from src.puzzles.play_2048.play_2048_state import Play2048State
 
 
 class Play2048Player(object):
-    def __init__(self, search, depth, gui_worker=None):
+    def __init__(self, search, depth, heuristic=0, gui_worker=None):
         self.game = Play2048State()
 
-        self.search = search(depth)
+        self.search = search(depth, heuristic)
 
         self.gui_worker = gui_worker
 
