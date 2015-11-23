@@ -17,3 +17,5 @@ res/play2048s/ai_runs/256_0.p filter=lfs diff=lfs merge=lfs -text
 res/play2048s/ai_runs/4096_0.p filter=lfs diff=lfs merge=lfs -text
 res/play2048s/ai_runs/512_0.p filter=lfs diff=lfs merge=lfs -text
 res/play2048s/ai_runs/1024_1.p filter=lfs diff=lfs merge=lfs -text
+res/play2048s/ai_runs/2048_1.p filter=lfs diff=lfs merge=lfs -text
+res/play2048s/ai_runs/512_1.p filter=lfs diff=lfs merge=lfs -text
