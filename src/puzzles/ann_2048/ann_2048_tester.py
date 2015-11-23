@@ -12,6 +12,7 @@ class Ann2048Tester(object):
     def __init__(self, path=None, ann=None, gui_worker=None):
 
         self.game = Play2048State()
+        self.gui_worker = gui_worker
         self.mapping = ['left', 'up', 'right', 'down']
 
         print('----> Loading Neural net from file...')
@@ -19,7 +20,6 @@ class Ann2048Tester(object):
             self.net = ann
         else:
             self.net = self.open(path)
-        self.gui_worker = gui_worker
 
         if self.assert_no_net("No supported ann file found at current path."):
             return

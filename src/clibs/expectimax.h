@@ -25,14 +25,16 @@ double smoothness(int *board);
 int get_neighbour_value(int* board, int x, int y, int direction);
 int amount_of_successors(int* board);
 int** generate_successors_max(int* board);
+double min_possibility(int* board);
 int** generate_successors_chance(int* board);
-int decision_map(int depth, int* board);
+int decision_map(int depth, int* board, int heuristic_number);
 int decision(int depth, int b0, int b1, int b2, int b3, int b4, int b5, int b6,
                         int b7, int b8, int b9, int b10, int b11, int b12,
                         int b13, int b14, int b15,
                         double smoothness, double max_tile,
                         double free_tiles_multiplier, double max_placement,
-                        double monotonicity);
+                        double monotonicity,
+                        int heuristic_number);
 void print_board(int* board);
 
 #endif //AIPROG_EXPECTIMAX_H

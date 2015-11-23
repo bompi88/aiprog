@@ -12,7 +12,7 @@ class Play2048Worker(QThread):
         self.exiting = False
 
         self.gui = gui
-        self.player = Play2048Player(gui.search, gui.depth, self)
+        self.player = Play2048Player(gui.search, gui.depth, gui.heuristic, self)
         self.states = []
 
     def run(self):

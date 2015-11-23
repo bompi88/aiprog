@@ -1,4 +1,4 @@
-from src.algorithms.ann.sum_of_squared_errors import SumOfSquaredErrors
+from src.utils.ann2048_basics import process_states
 from src.algorithms.ann.ann import Ann
 from src.utils.ann2048_basics import load_2048_example
 from theano import tensor as T
@@ -12,15 +12,19 @@ class Ann2048Trainer(object):
                  learning_rate=None, gui_worker=None):
 
         if not provided_datasets:
-            print('----> Loading cases...')
-
             min_tile = None
+            heuristic = None
+            num_cases = None
 
             if gui_worker:
                 min_tile = gui_worker.gui.min_save_tiles
+                heuristic = gui_worker.gui.heuristic
+                num_cases = gui_worker.gui.num_cases
+            else:
+                print('----> Loading cases...')
 
-            training_set = load_2048_example(min_tile)
-            testing_set = load_2048_example(min_tile)
+            training_set = load_2048_example(min_tile, heuristic, num_cases)
+            testing_set = load_2048_example(min_tile, heuristic, num_cases)
 
             provided_datasets = [
                 training_set,
@@ -33,7 +37,8 @@ class Ann2048Trainer(object):
             datasets=provided_datasets,
             activation_function=activation_function if activation_function else [T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid],
             learning_rate=learning_rate,
-            regression_layer=regression_layer
+            regression_layer=regression_layer,
+            normalize=process_states
         )
 
         self.gui_worker = gui_worker

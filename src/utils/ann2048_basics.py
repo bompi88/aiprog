@@ -4,12 +4,12 @@ import numpy as np
 from copy import deepcopy
 
 
-def load_2048_example(min_tile=1):
+def load_2048_example(min_tile=1, heuristic=0, cases=10000):
     path = res.play2048s.ai_runs.__path__[0]
     data = {}
 
     while min_tile < 15:
-        file_path = path + '/' + str(2 ** min_tile) + '.p'
+        file_path = path + '/' + str(2 ** min_tile) + '_' + str(heuristic) + '.p'
 
         try:
             f = open(file_path, 'rb')
@@ -27,7 +27,7 @@ def load_2048_example(min_tile=1):
 
     features, labels = [], []
 
-    for line in list(data.values())[:30000]:
+    for line in list(data.values())[:cases]:
         features.append(process(line[1]))
         labels.append(line[0])
 
@@ -68,13 +68,9 @@ def list_mirror(feature):
 
 
 def process_states(states):
-
     r = []
-
     for state in states:
         r.append(process(deepcopy(state)))
-        print(process(deepcopy(state)))
-
     return r
 
 

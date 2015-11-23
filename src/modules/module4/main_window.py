@@ -66,7 +66,10 @@ class MainWindow(QtGui.QMainWindow):
         pickling_menu = menu.addMenu('&Save states')
         delete_state_menu = menu.addMenu('&Delete states')
         min_tile_menu = menu.addMenu('&Min tile')
+        heuristics_menu = menu.addMenu('&Heuristics')
         depth_menu = menu.addMenu('&Depth')
+        epochs_menu = menu.addMenu('&Epochs')
+        num_cases_menu = menu.addMenu('&Number of cases')
 
         kill_action = QtGui.QAction('&Kill runnning process', self)
         kill_action.setShortcut('Ctrl+K')
@@ -125,6 +128,27 @@ class MainWindow(QtGui.QMainWindow):
             expr = 'self.gui.delete_states({})'.format(delete_state)
             delete_state_action.triggered.connect(make_function([], expr, locals()))
             delete_state_menu.addAction(delete_state_action)
+
+        heuristics = [0, 1]
+        for heuristic in heuristics:
+            heuristics_action = QtGui.QAction('&Heuristic ' + str(heuristic + 1), self)
+            expr = 'self.gui.set_heuristic({})'.format(heuristic)
+            heuristics_action.triggered.connect(make_function([], expr, locals()))
+            heuristics_menu.addAction(heuristics_action)
+
+        epochs = [10, 30, 60, 100, 200, 300, 500, 1000, 2000, 3000, 4000, 5000, 10000]
+        for epoch in epochs:
+            epoch_action = QtGui.QAction('&' + str(epoch), self)
+            expr = 'self.gui.set_epochs({})'.format(epoch)
+            epoch_action.triggered.connect(make_function([], expr, locals()))
+            epochs_menu.addAction(epoch_action)
+
+        num_cases_items = [10, 100, 500, 1000, 5000, 10000, 20000, 30000, 40000, 50000, 60000]
+        for num_cases in num_cases_items:
+            num_cases_action = QtGui.QAction('&' + str(num_cases), self)
+            expr = 'self.gui.set_num_cases({})'.format(num_cases)
+            num_cases_action.triggered.connect(make_function([], expr, locals()))
+            num_cases_menu.addAction(num_cases_action)
 
     def init_toolbar(self):
         """ Initializes a toolbar, with a run button and delay controls """

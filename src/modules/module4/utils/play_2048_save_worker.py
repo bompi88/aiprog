@@ -22,7 +22,7 @@ class Play2048SaveWorker(QThread):
     def run(self):
         while self.played < self.num_plays:
             self.states = {}
-            self.player = Play2048Player(self.search, self.depth, self)
+            self.player = Play2048Player(self.search, self.depth, self.gui.heuristic, self)
             self.player.play()
             if self.player.game.max_tile() >= self.min_tile:
                 self.played += 1

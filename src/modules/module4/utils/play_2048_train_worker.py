@@ -22,7 +22,7 @@ class Play2048TrainWorker(QThread):
         )
 
     def run(self):
-        self.trainer.train()
+        self.trainer.train(self.gui.epochs)
         self.gui.net = self.trainer.net
         self.trainer.save()
         self.gui.training_ended()

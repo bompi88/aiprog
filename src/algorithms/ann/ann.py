@@ -15,7 +15,7 @@ import time
 class Ann(object):
 
     def __init__(self, structure, datasets, activation_function=T.nnet.sigmoid, learning_rate=0.1,
-                 regression_layer=SumOfSquaredErrors, gui_worker=None):
+                 regression_layer=SumOfSquaredErrors, gui_worker=None, normalize=normalize_images):
         """
         Creates a neural net.
 
@@ -47,16 +47,18 @@ class Ann(object):
         self.train_set_images, self.train_set_labels = datasets[0]
         self.test_set_images, self.test_set_labels = datasets[1]
 
-        print('----> Normalizing images...')
         if self.gui_worker:
-            self.gui_worker.gui.status_message.emit("Normalizing images...")
+            self.gui_worker.gui.status_message.emit("Normalizing cases...")
+        else:
+            print('----> Normalizing cases...')
 
-        # self.train_set_images = normalize_images(self.train_set_images)
-        # self.test_set_images = normalize_images(self.test_set_images)
+        self.train_set_images = normalize(self.train_set_images)
+        self.test_set_images = normalize(self.test_set_images)
 
-        print('----> Constructing the neural net...')
         if self.gui_worker:
             self.gui_worker.gui.status_message.emit("Constructing the neural net...")
+        else:
+            print('----> Constructing the neural net...')
 
         self.input = T.dvector('input')
         self.label = T.dvector('label')
@@ -112,14 +114,16 @@ class Ann(object):
         )
 
     def train(self, epochs=100):
-        print('----> Started training...')
         if self.gui_worker:
             self.gui_worker.gui.status_message.emit("Started training...")
+        else:
+            print('----> Started training...')
+
         errors = []
         start_time = time.time()
 
         for epoch in range(epochs):
-            print("## Epoch ", epoch, " ##")
+
             n_errors = 0
             total_error = 0
 
@@ -136,17 +140,20 @@ class Ann(object):
                 self.gui_worker.gui.status_message.emit(
                     "Epoch: {}, Error measure: {}, Number of misclassifications: {}, Error percentage: {}, Elapsed time: {}"
                     .format(
-                        epoch,
+                        epoch + 1,
                         total_error,
                         n_errors,
                         (n_errors / len(self.train_set_images)) * 100,
                         time.time() - start_time
                     )
                 )
-            print("Error measure: ", total_error)
-            print("Number of misclassifications: ", n_errors, "\n")
-            print("Error percentage: ", (n_errors / len(self.train_set_images)) * 100)
-        print("", epochs, " epochs ran in ", time.time() - start_time, " seconds.")
+            else:
+                print("## Epoch ", epoch + 1, " ##")
+                print("Error measure: ", total_error)
+                print("Number of misclassifications: ", n_errors, "\n")
+                print("Error percentage: ", (n_errors / len(self.train_set_images)) * 100)
+        if not self.gui_worker:
+            print("", epochs, " epochs ran in ", time.time() - start_time, " seconds.")
         return errors
 
     def test(self):
@@ -172,9 +179,10 @@ class Ann(object):
                     time.time() - start_time
                 )
             )
-        print("Number of misclassifications: ", n_errors, "\n")
-        print("Error percentage: ", (n_errors / len(self.test_set_images)) * 100)
-        print("Tests ran in ", time.time() - start_time, " seconds.")
+        else:
+            print("Number of misclassifications: ", n_errors, "\n")
+            print("Error percentage: ", (n_errors / len(self.test_set_images)) * 100)
+            print("Tests ran in ", time.time() - start_time, " seconds.")
 
     def blind_test(self, feature_sets, normalize=None):
         """
@@ -183,24 +191,27 @@ class Ann(object):
         :param feature_sets: list of sub-lists, where the sub-lists are the images to classify.
         :return:
         """
-        print('----> Started blind test...')
+
         if self.gui_worker:
             self.gui_worker.gui.status_message.emit("Started blind test...")
+        else:
+            print('----> Started blind test...')
         classifications = []
 
-        print('----> Normalizing cases...')
         if self.gui_worker:
             self.gui_worker.gui.status_message.emit("Normalizing cases...")
+        else:
+            print('----> Normalizing cases...')
 
         if normalize:
             feature_sets = normalize(feature_sets)
         else:
             feature_sets = normalize_images(feature_sets)
 
-        print(feature_sets)
-        print('----> Run blind tests...')
         if self.gui_worker:
             self.gui_worker.gui.status_message.emit("Run blind tests...")
+        else:
+            print('----> Run blind tests...')
         for test_case in feature_sets:
             prediction = self.predictor(test_case)
             classifications.append(prediction.tolist().index(max(prediction)))

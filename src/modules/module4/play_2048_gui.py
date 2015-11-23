@@ -33,6 +33,9 @@ class Play2048GUI(QtGui.QFrame):
         self.net = None
 
         self.delay = 50
+        self.heuristic = 0
+        self.epochs = 100
+        self.num_cases = 10000
         self.worker = None
         self.started = False
         self.manual_mode = None
@@ -124,7 +127,7 @@ class Play2048GUI(QtGui.QFrame):
 
     def single_save_ended(self, tile=None):
         path = res.play2048s.ai_runs.__path__[0] + '/'
-        filename = str(2 ** tile) if tile else str(round(time.time()))
+        filename = str(2 ** tile) + '_' + str(self.heuristic) if tile else str(round(time.time()))
         filename += '.p'
 
         if self.reload_saves:
@@ -346,6 +349,18 @@ class Play2048GUI(QtGui.QFrame):
         self.status_message.emit(
             'Saving / Using plays that has tiles greater than or equal ' + str(2 ** self.min_save_tiles)
         )
+
+    def set_heuristic(self, heuristic):
+        self.heuristic = heuristic
+        self.status_message.emit('Using Heuristic ' + str(heuristic + 1))
+
+    def set_epochs(self, epochs):
+        self.epochs = epochs
+        self.status_message.emit('Will use epochs of ' + str(epochs))
+
+    def set_num_cases(self, num_cases):
+        self.num_cases = num_cases
+        self.status_message.emit('Number of cases to be used is ' + str(num_cases))
 
     def delete_states(self, tile):
         if not tile:
