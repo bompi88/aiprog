@@ -71,7 +71,7 @@ class MainWindow(QtGui.QMainWindow):
         epochs_menu = menu.addMenu('&Epochs')
         num_cases_menu = menu.addMenu('&Number of cases')
 
-        kill_action = QtGui.QAction('&Kill runnning process', self)
+        kill_action = QtGui.QAction('&Kill running process', self)
         kill_action.setShortcut('Ctrl+K')
         kill_action.triggered.connect(self.gui.end_process)
         file_menu.addAction(kill_action)

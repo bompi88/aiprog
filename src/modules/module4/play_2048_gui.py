@@ -362,7 +362,8 @@ class Play2048GUI(QtGui.QFrame):
         self.num_cases = num_cases
         self.status_message.emit('Number of cases to be used is ' + str(num_cases))
 
-    def delete_states(self, tile):
+    @staticmethod
+    def delete_states(tile):
         if not tile:
             return
         path = res.play2048s.ai_runs.__path__[0] + '/'
