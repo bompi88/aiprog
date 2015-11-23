@@ -187,6 +187,17 @@ class Play2048GUI(QtGui.QFrame):
 
         self.status_message.emit(str('Test started'))
 
+    def start_welch(self):
+        self.end_process()
+
+        self.worker = Play2048TestWorker(self, welch=True, ann=self.net)
+        self.worker.start()
+
+        self.started = True
+        self.update()
+
+        self.status_message.emit(str('Welch test started'))
+
     def start_training(self):
         self.end_process()
 

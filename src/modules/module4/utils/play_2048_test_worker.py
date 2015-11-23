@@ -7,9 +7,10 @@ from src.puzzles.ann_2048.ann_2048_tester import Ann2048Tester
 class Play2048TestWorker(QThread):
     """ Inherit QThread for easy threading """
 
-    def __init__(self, gui, path=None, ann=None):
+    def __init__(self, gui, path=None, welch=False, ann=None):
         QThread.__init__(self, None)
         self.exiting = False
+        self.welch = welch
 
         self.gui = gui
         self.tester = Ann2048Tester(
@@ -21,7 +22,10 @@ class Play2048TestWorker(QThread):
         self.states = []
 
     def run(self):
-        self.tester.play()
+        if self.welch:
+            self.tester.welch_test()
+        else:
+            self.tester.play()
         self.gui.testing_ended()
 
     def move_completed(self, state):

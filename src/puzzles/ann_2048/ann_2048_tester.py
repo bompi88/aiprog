@@ -5,7 +5,7 @@ from copy import deepcopy
 from random import randint
 import res.play2048s.anns
 import pickle
-from src.utils.ann2048_basics import process
+from src.utils.ai2048demo import welch
 
 
 class Ann2048Tester(object):
@@ -35,6 +35,28 @@ class Ann2048Tester(object):
         if self.assert_no_net():
             return
         return self.net.blind_test(state)
+
+    def welch_test(self):
+        random_plays = []
+        ann_plays = []
+
+        for i in range(50):
+            self.game = Play2048State()
+            random_plays.append(2 ** self.play_random())
+            if self.gui_worker:
+                self.gui_worker.gui.status_message.emit('Random test, ' + str(i) + '/' + str(50))
+
+        for i in range(50):
+            self.game = Play2048State()
+            ann_plays.append(2 ** self.play())
+            if self.gui_worker:
+                self.gui_worker.gui.status_message.emit('Ann test, ' + str(i) + '/' + str(50))
+
+        text = welch(random_plays, ann_plays)
+
+        print(text)
+        if self.gui_worker:
+            self.gui_worker.gui.status_message.emit(str(text))
 
     def set_ann(self, ann):
         self.net = ann
@@ -107,6 +129,32 @@ class Ann2048Tester(object):
 
             if not self.game.is_possible():
                 ended = True
+
+        return max(self.game.board)
+
+    def play_random(self):
+        ended = False
+
+        while not ended:
+            new_game = self.game.copy_with_board(self.game.board)
+
+            move = new_game.possible_moves[
+                self.mapping[
+                    randint(0, 3)
+                ]
+            ]
+
+            state = (Play2048Player.move_id(move), list(self.game.board))
+
+            if self.game.move(move):
+                self.game.next_state()
+
+                if self.gui_worker:
+                    self.gui_worker.move_completed(state)
+            if not self.game.is_possible():
+                ended = True
+
+        return max(self.game.board)
 
     def __str__(self):
         return '\n'.join(['-'.join(str(t) for t in r) for r in self.game.board])

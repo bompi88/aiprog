@@ -166,11 +166,15 @@ class MainWindow(QtGui.QMainWindow):
         test_action = QtGui.QAction('&Test', self)
         test_action.triggered.connect(self.gui.start_test)
 
+        welch_action = QtGui.QAction('&Welch', self)
+        welch_action.triggered.connect(self.gui.start_welch)
+
         toolbar = self.addToolBar('Toolbar')
         toolbar.addAction(run_action)
         toolbar.addAction(start_action)
         toolbar.addAction(train_action)
         toolbar.addAction(test_action)
+        toolbar.addAction(welch_action)
 
         save_num_plays = [100, 1000, 10000, 30000]
         for save_plays in save_num_plays:
