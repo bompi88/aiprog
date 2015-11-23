@@ -8,6 +8,4 @@ class SumOfSquaredErrors(LogisticRegressionLayer):
         LogisticRegressionLayer.__init__(self, _input, n_in, n_out, activation)
 
     def error(self, label):
-        print(self.prediction)
-        print(label)
         return T.sum((self.prediction - label)**2)
