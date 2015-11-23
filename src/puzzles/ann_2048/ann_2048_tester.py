@@ -41,16 +41,16 @@ class Ann2048Tester(object):
         ann_plays = []
 
         for i in range(50):
+            if self.gui_worker:
+                self.gui_worker.gui.status_message.emit('Random test, ' + str(i + 1) + '/' + str(50))
             self.game = Play2048State()
             random_plays.append(2 ** self.play_random())
-            if self.gui_worker:
-                self.gui_worker.gui.status_message.emit('Random test, ' + str(i) + '/' + str(50))
 
         for i in range(50):
+            if self.gui_worker:
+                self.gui_worker.gui.status_message.emit('Ann test, ' + str(i + 1) + '/' + str(50))
             self.game = Play2048State()
             ann_plays.append(2 ** self.play())
-            if self.gui_worker:
-                self.gui_worker.gui.status_message.emit('Ann test, ' + str(i) + '/' + str(50))
 
         text = welch(random_plays, ann_plays)
 
@@ -84,53 +84,39 @@ class Ann2048Tester(object):
         while not ended:
             new_game = self.game.copy_with_board(self.game.board)
             print(deepcopy(new_game.board))
-            int_move = self.net.blind_test([new_game.board], normalize=process_states)[0]
+            moves = self.net.play2048_test([new_game.board], normalize=process_states)[0]
 
-            move = new_game.possible_moves[
-                self.mapping[
-                    int_move
-                ]
-            ]
-
-            state = (Play2048Player.move_id(move), list(self.game.board))
-
-            if self.game.move(move):
-                self.game.next_state()
-
-                if self.gui_worker:
-                    self.gui_worker.move_completed(state)
-            else:
-                print("Could not move in the specified direction. Used random direction instead.")
-                # TODO: This must be removed, but how? Maybe select the next most probabilistic move? and then select a
-                # a random move if that also do not work?
-                move = new_game.possible_moves[
-                    self.mapping[
-                        (int_move + 1) % 3
-                    ]
-                ]
-                if self.game.move(move):
-                    self.game.next_state()
-                else:
-                    move = new_game.possible_moves[
-                        self.mapping[
-                            (int_move + 2) % 3
-                        ]
-                    ]
-                    if self.game.move(move):
-                        self.game.next_state()
-                    else:
-                        move = new_game.possible_moves[
-                            self.mapping[
-                                (int_move + 3) % 3
-                            ]
-                        ]
-                        if self.game.move(move):
-                            self.game.next_state()
+            self.do_move(new_game, moves)
 
             if not self.game.is_possible():
                 ended = True
 
         return max(self.game.board)
+
+    def do_move(self, new_game, moves):
+        if not len(moves):
+            return
+
+        index_move = moves.index(max(moves))
+
+        move = new_game.possible_moves[
+            self.mapping[
+                index_move
+            ]
+        ]
+
+        del moves[index_move]
+
+        state = (Play2048Player.move_id(move), list(self.game.board))
+
+        if self.game.move(move):
+            self.game.next_state()
+
+            if self.gui_worker:
+                self.gui_worker.move_completed(state)
+            return
+        else:
+            self.do_move(new_game, moves)
 
     def play_random(self):
         ended = False

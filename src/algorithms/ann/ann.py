@@ -218,6 +218,21 @@ class Ann(object):
 
         return classifications
 
+    def play2048_test(self, feature_sets, normalize=None):
+
+        classifications = []
+
+        if normalize:
+            feature_sets = normalize(feature_sets)
+        else:
+            feature_sets = normalize_images(feature_sets)
+
+        for test_case in feature_sets:
+            prediction = self.predictor(test_case)
+            classifications.append(prediction.tolist())
+
+        return classifications
+
     @staticmethod
     def print_case(case):
         for row in range(28):
