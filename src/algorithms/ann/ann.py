@@ -138,9 +138,10 @@ class Ann(object):
                 if getattr(self.gui_worker, 'plot', None):
                     self.gui_worker.plot(errors)
                 self.gui_worker.gui.status_message.emit(
-                    "Epoch: {}, Error measure: {}, Number of misclassifications: {}, Error percentage: {}, Elapsed time: {}"
+                    "Epoch: {}/{}, Error measure: {}, Number of misclassifications: {}, Error percentage: {}, Elapsed time: {}"
                     .format(
                         epoch + 1,
+                        epochs,
                         total_error,
                         n_errors,
                         (n_errors / len(self.train_set_images)) * 100,
@@ -148,7 +149,7 @@ class Ann(object):
                     )
                 )
             else:
-                print("## Epoch ", epoch + 1, " ##")
+                print("## Epoch ", epoch + 1, "/", epochs, " ##")
                 print("Error measure: ", total_error)
                 print("Number of misclassifications: ", n_errors, "\n")
                 print("Error percentage: ", (n_errors / len(self.train_set_images)) * 100)
