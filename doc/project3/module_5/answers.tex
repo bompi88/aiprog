@@ -19,7 +19,7 @@ hand-written images of the digits 0-9.
 
 \subsection{Theano construction}
 
-Inspiration: (\textcolor{red}{TODO}: Ref [http://deeplearning.net/tutorial/logreg.html])
+Inspiration: \footnote{(\textcolor{red}{TODO}: Ref [http://deeplearning.net/tutorial/logreg.html])}
 
 \subsection{The five ANNs}
 
@@ -33,6 +33,22 @@ Inspiration: (\textcolor{red}{TODO}: Ref [http://deeplearning.net/tutorial/logre
 % the 5 designs. That comparison constitutes the core of the report
 % for this module.
 
+Below is a table of our five ANNs. They all have an input layer of 784, and
+an output layer of 10. We have used the theano Sigmoid function as the
+activation function in all hidden layers.
+
+\begin{center}
+  \begin{tabular}{ | c | c | c | c | c | }
+    \hline
+    \# & Hidden layer sizes & Learning rate \\ \hline
+    1 & [150] & 0.1 \\ \hline
+    2 & [150] & 0.2 \\ \hline
+    3 & [200, 40] & 0.1 \\ \hline
+    4 & [40] & 0.1 \\ \hline
+    5 & [200, 40] & 0.2 \\
+    \hline
+  \end{tabular}
+\end{center}
+
 - Description
 - Statistics
-
