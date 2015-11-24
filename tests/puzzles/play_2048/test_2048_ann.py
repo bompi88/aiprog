@@ -22,25 +22,13 @@ def open_ann(path=None):
 
 if __name__ == '__main__':
 
-    trainer = Ann2048Trainer(
-        structure=[17, 300, 60, 4],
-        learning_rate=0.1
-    )
+    # trainer = Ann2048Trainer(
+    #     structure=[17, 300, 60, 4],
+    #     learning_rate=0.1
+    # )
+    #
+    # trainer.train(500)
+    # trainer.save(res.play2048s.anns.__path__[0] + "/trained-ann-")
 
-    trainer.train(500)
-    trainer.save(res.play2048s.anns.__path__[0] + "/trained-ann-")
-
-    tester = Ann2048Tester()
+    tester = Ann2048Tester(path=res.play2048s.anns.__path__[0] + "/trained-ann-")
     tester.welch_test()
-
-    for i in range(10, 30):
-        trainer = Ann2048Trainer(
-            structure=[16, 10 * i, 5 * i, 4],
-            learning_rate=0.1
-        )
-
-        trainer.train(500)
-        trainer.save(res.play2048s.anns.__path__[0] + "/trained-ann-" + i)
-
-        tester = Ann2048Tester()
-        tester.welch_test()
