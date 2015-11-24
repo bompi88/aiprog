@@ -22,6 +22,9 @@ if __name__ == '__main__':
         regression_layer=SumOfSquaredErrors
     )
 
+    net1.train(100)
+    minor_demo(net1)
+
     net2 = Ann(
         structure=[784, 150, 10],
         datasets=provided_datasets,
@@ -29,6 +32,9 @@ if __name__ == '__main__':
         learning_rate=0.2,
         regression_layer=SumOfSquaredErrors
     )
+
+    net2.train(100)
+    minor_demo(net1)
 
     net3 = Ann(
         structure=[784, 200, 40, 10],
@@ -38,6 +44,9 @@ if __name__ == '__main__':
         regression_layer=SumOfSquaredErrors
     )
 
+    net3.train(100)
+    minor_demo(net1)
+
     net4 = Ann(
         structure=[784, 40, 10],
         datasets=provided_datasets,
@@ -46,6 +55,9 @@ if __name__ == '__main__':
         regression_layer=SumOfSquaredErrors
     )
 
+    net4.train(100)
+    minor_demo(net1)
+
     net5 = Ann(
         structure=[784, 200, 40, 10],
         datasets=provided_datasets,
@@ -53,18 +65,6 @@ if __name__ == '__main__':
         learning_rate=0.2,
         regression_layer=SumOfSquaredErrors
     )
-
-    net1.train(100)
-    minor_demo(net1)
-
-    net2.train(100)
-    minor_demo(net1)
-
-    net3.train(100)
-    minor_demo(net1)
-
-    net4.train(100)
-    minor_demo(net1)
 
     net5.train(100)
     minor_demo(net1)
