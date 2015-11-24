@@ -18,17 +18,17 @@ class MNISTTrainer(object):
         ]
 
         self.net = Ann(
-            structure=[784, 150, 10],
+            structure=[784, 200, 40, 10],
             datasets=provided_datasets,
             activation_function=[T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid],
-            learning_rate=0.1,
+            learning_rate=0.2,
             regression_layer=SumOfSquaredErrors,
             gui_worker=gui_worker
         )
 
         self.gui_worker = gui_worker
 
-    def train(self, epochs=60):
+    def train(self, epochs=80):
         self.net.train(epochs)
 
     def test(self):

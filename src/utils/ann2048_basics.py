@@ -102,9 +102,9 @@ def process(state):
             state[i] = (modifier[i] + state[i]) #  * state[i] # * state[i] * (16 - modifier[i])
         sum += abs(state[i])
 
-    state = [s / (1 + max(state)) for s in state]
+    # state = [s / (1 + max(state)) for s in state]
     #
-    # if len(state) == 16:
-    #     state.append(max(state))
+    if len(state) == 16:
+        state.append(max(state))
     #     state.append(sum)
     return state

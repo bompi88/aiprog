@@ -23,8 +23,8 @@ def open_ann(path=None):
 if __name__ == '__main__':
 
     trainer = Ann2048Trainer(
-        structure=[16, 300, 60, 4],
-        learning_rate=0.2
+        structure=[17, 300, 60, 4],
+        learning_rate=0.1
     )
 
     trainer.train(500)

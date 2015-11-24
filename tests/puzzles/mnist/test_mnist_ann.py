@@ -68,5 +68,3 @@ if __name__ == '__main__':
 
     net5.train(100)
     minor_demo(net5)
-
-net2 net5 net4 net3
