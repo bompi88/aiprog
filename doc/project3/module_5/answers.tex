@@ -13,13 +13,13 @@
 This report describes five different artifical neural networks (ANNs)
 that we have constructed using Theano during this project. They have
 been trained and tested on the MNIST data set.
-(\textcolor{red}{TODO}: Ref [http://yann.lecun.com/exdb/mnist/])
-This is a set of
+\footnote{http://yann.lecun.com/exdb/mnist/} This is a set of
 hand-written images of the digits 0-9.
 
 \subsection{Theano construction}
 
-Inspiration: \footnote{(\textcolor{red}{TODO}: Ref [http://deeplearning.net/tutorial/logreg.html])}
+Due to difficulties with module 6, we did not have much time left for report
+writing, we have included what little we could.
 
 \subsection{The five ANNs}
 
@@ -35,17 +35,21 @@ Inspiration: \footnote{(\textcolor{red}{TODO}: Ref [http://deeplearning.net/tuto
 
 Below is a table of our five ANNs. They all have an input layer of 784, and
 an output layer of 10. We have used the theano Sigmoid function as the
-activation function in all hidden layers.
+activation function in all hidden layers. We have used the sum of squared
+errors as the error function.
+
+We have also included the testing data we used in determining that net 5
+was the one we would use at the demo.
 
 \begin{center}
   \begin{tabular}{ | c | c | c | c | c | }
     \hline
-    \# & Hidden layer sizes & Learning rate \\ \hline
-    1 & [150] & 0.1 \\ \hline
-    2 & [150] & 0.2 \\ \hline
-    3 & [200, 40] & 0.1 \\ \hline
-    4 & [40] & 0.1 \\ \hline
-    5 & [200, 40] & 0.2 \\
+    \# & Hidden layer sizes & Learning rate & Training set & Testing set & Demo 100 \\ \hline
+    1 & [150] & 0.1 & 99.75\% & 98.22\% & 91\% \\ \hline
+    2 & [150] & 0.2 & 99.71\% & 97.99\% & 93\% \\ \hline
+    3 & [200, 40] & 0.1 & 99.84\% & 98.24\% & 91\% \\ \hline
+    4 & [40] & 0.1 & 98.93\% & 96.19\% & 85\% \\ \hline
+    5 & [200, 40] & 0.2 & 99.83\% & 98.23\% & 93\% \\
     \hline
   \end{tabular}
 \end{center}
