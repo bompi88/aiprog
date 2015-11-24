@@ -83,7 +83,6 @@ class Ann2048Tester(object):
 
         while not ended:
             new_game = self.game.copy_with_board(self.game.board)
-            print(deepcopy(new_game.board))
             moves = self.net.play2048_test([new_game.board], normalize=process_states)[0]
 
             self.do_move(new_game, moves)
@@ -94,7 +93,8 @@ class Ann2048Tester(object):
         return max(self.game.board)
 
     def do_move(self, new_game, moves):
-        if not len(moves):
+
+        if len(moves) == 0:
             return
 
         index_move = moves.index(max(moves))
