@@ -2,11 +2,16 @@ import res.play2048s.ai_runs
 import pickle
 import numpy as np
 from copy import deepcopy
+import random
 
 
-def load_2048_example(min_tile=1, heuristic=0, cases=10000):
+def load_2048_example(min_tile, heuristic, cases):
     path = res.play2048s.ai_runs.__path__[0]
     data = {}
+
+    min_tile = min_tile if min_tile else 1
+    heuristic = heuristic if heuristic else 0
+    cases = cases if cases else 30000
 
     while min_tile < 15:
         file_path = path + '/' + str(2 ** min_tile) + '_' + str(heuristic) + '.p'
@@ -31,7 +36,7 @@ def load_2048_example(min_tile=1, heuristic=0, cases=10000):
         features.append(process(line[1]))
         labels.append(line[0])
 
-    return features, labels
+    return (features[:int(cases*0.9)], labels[:int(cases*0.9)]), (features[int(cases*0.9):], labels[int(cases*0.9):])
 
 
 def eightway_mirror(states):
@@ -75,7 +80,7 @@ def process_states(states):
 
 
 def process(state):
-    # state = [s / max(state) for s in state]
+
     modifier = [
         15, 14, 13, 12,
         8, 9, 10, 11,
@@ -97,6 +102,9 @@ def process(state):
             state[i] = (modifier[i] + state[i]) #  * state[i] # * state[i] * (16 - modifier[i])
         sum += abs(state[i])
 
-    if len(state) == 16:
-        state.append(max(state))
+    state = [s / (1 + max(state)) for s in state]
+    #
+    # if len(state) == 16:
+    #     state.append(max(state))
+    #     state.append(sum)
     return state

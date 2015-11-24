@@ -1,5 +1,5 @@
-import theano.tensor as T
-import theano
+from theano import tensor as T
+from theano import theano
 import numpy
 
 

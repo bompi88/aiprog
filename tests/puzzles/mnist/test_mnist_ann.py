@@ -34,7 +34,7 @@ if __name__ == '__main__':
     )
 
     net2.train(100)
-    minor_demo(net1)
+    minor_demo(net2)
 
     net3 = Ann(
         structure=[784, 200, 40, 10],
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     )
 
     net3.train(100)
-    minor_demo(net1)
+    minor_demo(net3)
 
     net4 = Ann(
         structure=[784, 40, 10],
@@ -56,7 +56,7 @@ if __name__ == '__main__':
     )
 
     net4.train(100)
-    minor_demo(net1)
+    minor_demo(net4)
 
     net5 = Ann(
         structure=[784, 200, 40, 10],
@@ -67,4 +67,6 @@ if __name__ == '__main__':
     )
 
     net5.train(100)
-    minor_demo(net1)
+    minor_demo(net5)
+
+net2 net5 net4 net3

@@ -7,7 +7,7 @@ from src.algorithms.ann.hidden_layer import HiddenLayer
 from src.algorithms.ann.sum_of_squared_errors import SumOfSquaredErrors
 
 from theano import tensor as T
-import theano
+from theano import theano
 import numpy
 import time
 

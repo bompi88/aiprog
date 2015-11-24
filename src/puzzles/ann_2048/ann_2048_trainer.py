@@ -23,8 +23,7 @@ class Ann2048Trainer(object):
             else:
                 print('----> Loading cases...')
 
-            training_set = load_2048_example(min_tile, heuristic, num_cases)
-            testing_set = load_2048_example(min_tile, heuristic, num_cases)
+            training_set, testing_set = load_2048_example(min_tile, heuristic, num_cases)
 
             provided_datasets = [
                 training_set,
@@ -33,7 +32,7 @@ class Ann2048Trainer(object):
 
         self.net = Ann(
             gui_worker=gui_worker,
-            structure=structure if structure else [17, 300, 60, 4],
+            structure=structure if structure else [16, 300, 60, 4],
             datasets=provided_datasets,
             activation_function=activation_function if activation_function else [T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid, T.nnet.sigmoid],
             learning_rate=learning_rate,

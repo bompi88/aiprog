@@ -1,5 +1,5 @@
 from src.algorithms.ann.logistic_regression_layer import LogisticRegressionLayer
-import theano.tensor as T
+from theano import tensor as T
 
 
 class SumOfSquaredErrors(LogisticRegressionLayer):
