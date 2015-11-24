@@ -15,10 +15,10 @@ class Ann2048Tester(object):
         self.gui_worker = gui_worker
         self.mapping = ['left', 'up', 'right', 'down']
 
-        print('----> Loading Neural net from file...')
         if ann:
             self.net = ann
         else:
+            print('----> Loading Neural net from file...')
             self.net = self.open(path)
 
         if self.assert_no_net("No supported ann file found at current path."):
