@@ -83,7 +83,7 @@ class Ann2048Tester(object):
 
         while not ended:
             new_game = self.game.copy_with_board(self.game.board)
-            moves = self.net.play2048_test([new_game.board], normalize=process_states)[0]
+            moves = deepcopy(self.net.play2048_test([new_game.board], normalize=process_states)[0])
 
             self.do_move(new_game, moves)
 
@@ -93,19 +93,18 @@ class Ann2048Tester(object):
         return max(self.game.board)
 
     def do_move(self, new_game, moves):
-
-        if len(moves) == 0:
+        if not moves or len(moves) == 0:
             return
 
         index_move = moves.index(max(moves))
+
+        moves.pop(index_move)
 
         move = new_game.possible_moves[
             self.mapping[
                 index_move
             ]
         ]
-
-        del moves[index_move]
 
         state = (Play2048Player.move_id(move), list(self.game.board))
 
@@ -114,7 +113,6 @@ class Ann2048Tester(object):
 
             if self.gui_worker:
                 self.gui_worker.move_completed(state)
-            return
         else:
             self.do_move(new_game, moves)
 
